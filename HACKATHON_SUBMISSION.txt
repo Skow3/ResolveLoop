@@ -1,0 +1,144 @@
+================================================================================
+RESOLVELOOP: AUTONOMOUS SELF-IMPROVING FINANCE OPERATIONS WORKFORCE
+Maximor AI Hackathon — Track 1: Automated Agent Engineering
+"Every resolution makes the next one better."
+================================================================================
+
+## Inspiration
+
+Enterprise finance operations—disputed invoices, unapplied payments, billing reconciliation, and ASC 606 revenue recognition—suffer from chronic operational amnesia. Traditional AI agents and support bots treat every interaction as an isolated session: they query the same database tables, repeat the same naive routing errors, escalate identical edge cases to expensive human finance controllers, and fail to compound institutional intelligence over time.
+
+In finance, resolution is never just conversational. It requires verifying transactional evidence across ledgers, strictly complying with corporate policies, and learning procedural lessons when an investigation breaks down.
+
+Track 1 (Automated Agent Engineering) inspired us to ask:
+What if an operational finance workforce wasn't static?
+What if the system could design its own specialist agents, test them against real cases, diagnose its own execution failures, and autonomously engineer superior strategies without manual prompt hacking or code rewrites?
+
+We built ResolveLoop around a single guiding thesis:
+"ResolveLoop didn't just remember the failure. It engineered a better specialist."
+
+
+## What it does
+
+ResolveLoop is an autonomous, experience-driven finance operations workforce coupled with an Automated Agent Engineer (the Agent Factory). It operates through two interconnected closed loops:
+
+1. The Operational Case Loop:
+   CASE -> ROUTE -> SOLVE -> TOOLS -> EVALUATE -> REFLECT -> STORE EXPERIENCE -> RETRIEVE -> IMPROVE -> NEXT CASE
+   - Inbound customer inquiries (voice or text) are routed by an Orchestrator grounded in episodic memory.
+   - Tiered specialists (L1 Accounts Assistant, L2 Operations Specialist, L3 Senior Controller, L4 Executive Escalation) investigate cases using deterministic tools.
+   - Resolutions are evaluated on a multi-dimensional rubric (Quality, Latency, Tool Calls, Escalation Accuracy).
+   - Lessons from suboptimal paths and failures are synthesized into reusable procedural experiences in PostgreSQL.
+
+2. The Automated Agent Factory Loop (Track 1):
+   GOAL + TOOLS + EVALUATION -> GENERATE v0 -> TEST -> FAILURE ANALYSIS -> ENGINEER v1 -> REGRESSION TEST -> COMPARE -> PROMOTE
+   - Given an operational goal and allowed tools, the Factory synthesizes an initial specialist strategy (v0 CANDIDATE).
+   - It benchmarks v0 across evaluation test cases, categorizing failures into a structured taxonomy (excessive tool calls, improper tool sequencing, missing evidence, premature escalation).
+   - It queries past episodic memories, reflects on root causes, and engineers an improved candidate strategy (v1).
+   - It executes a multi-dimensional Pareto trade-off comparison and regression check.
+   - It verifies out-of-distribution generalization on novel, unseen cases.
+   - Upon promotion, v1 becomes ACTIVE in the runtime engine; predecessor versions are archived. Future customer calls immediately run on the upgraded specialist.
+
+The application delivers this through four integrated operational surfaces:
+- Customer Call Station: Hands-free conversational voice workspace powered by Smallest AI Pulse STT and Lightning TTS, featuring a living audio orb and live transcript.
+- Learning Lab Studio: Real-time agent evolution timeline, failure explorer, empirical benchmark replay runner, and strategy diff inspector.
+- Finance Ops CRM: Interactive explorer across 18 PostgreSQL tables of synthetic enterprise transactions, invoices, payments, and ASC 606 schedules.
+- Customer Executive Station: Governance portal for L4 warm-handoff briefs (21 structured fields) and human audit oversight.
+
+
+## How we built it
+
+We built ResolveLoop as a clean, performant, full-stack application designed for enterprise transparency and testability:
+
+- Architecture & Backend:
+  Python 3.10+ microservice built on Flask. Modularized into clean boundaries: engine orchestrator, strategy registry, agent factory, evaluation rubric, episodic memory store, voice client, and tool layer.
+
+- Type-Safe Strategy Versioning (AgentStrategy):
+  Rather than generating insecure arbitrary Python code with eval()/exec(), ResolveLoop represents agent intelligence as immutable, versioned data structures. Each strategy specifies system instructions, preferred tools, strict tool execution order, escalation thresholds, memory retrieval filters, and evaluation weights.
+
+- Relational PostgreSQL Persistence:
+  All state is grounded in 18 PostgreSQL tables (with local JSON fallback for deterministic testing): strategies, engineering runs, experiences, episodic memories, cases, customer profiles, invoices, payments, vendor bills, credit memos, corporate policies, ASC 606 revenue recognition schedules, feedback, and audit logs.
+
+- The Automated Agent Factory (agent_factory.py):
+  Implements the full meta-engineering pipeline. Validates tools against strict canonical signatures, executes batch test cases, classifies failures, synthesizes candidate strategies with git-style diffs, applies regression protection guardrails, and evaluates held-out unseen scenarios.
+
+- Multi-Dimensional Pareto Evaluator:
+  Evaluates agent performance holistically: Quality Score (0-100), Tool Efficiency (call count and sequence validity), Latency Budget, and Escalation Compliance (zero missed high-risk cases).
+
+- Multi-Tiered Specialist Hierarchy:
+  - Orchestrator (L0): Front-door voice/chat intake, intent extraction, and memory-informed routing.
+  - L1 Accounts Assistant: Fast (<1.5s), single-tool inquiries (balance checks, receipts).
+  - L2 Operations Specialist: Contextual multi-tool investigations (invoice mismatches, unapplied cash).
+  - L3 Senior Financial Controller: Multi-system cases (ASC 606 revenue divergence, contract disputes).
+  - L4 Executive Escalation: High-risk policy exceptions requiring human sign-off with 21-field handoff briefs.
+
+- Dual Voice Pipeline:
+  Smallest AI Pulse STT (streaming low-latency speech-to-text) and Smallest AI Lightning TTS (natural voice synthesis), backed by in-memory FFmpeg audio normalization and browser speech fallback.
+
+- Frontend Experience:
+  Responsive, cinematic UI utilizing Tailwind CSS, Lucide icons, and custom glassmorphic design tokens without heavyweight framework overhead.
+
+
+## Challenges we ran into
+
+1. Tool-Sequence Optimization vs. Premature Termination:
+   Early iterations of agent improvement showed that minimizing tool calls blindly is dangerous: an agent might skip an essential verification check (such as policy validation) simply to achieve a lower latency score. We had to implement multi-dimensional Pareto scoring that penalizes insufficient evidence just as heavily as redundant tool usage.
+
+2. Enforcing Bounded Self-Improvement:
+   Self-improving agent loops risk infinite recursion or prompt drift. We engineered strict bounds: every engineering run enforces a maximum of 3 iterations, explicit improvement thresholds, and immediate halts if regression is detected.
+
+3. Regression Protection on High-Risk Escalations:
+   When agents learn to resolve more cases autonomously, there is a serious safety risk that they learn to suppress necessary human escalations to artificially boost their "resolution rate." We built explicit escalation safety checks: candidate strategies that fail to escalate high-risk transactions (> $50,000 threshold or ambiguous policy) are flagged with "REGRESSION DETECTED" and rejected.
+
+4. Stateful Evolution in a Stateless LLM Runtime:
+   Foundation models are stateless. Creating genuine continuous improvement without fine-tuning weights required designing a clean Strategy Registry. When an engineered strategy is approved, the runtime engine updates its active pointer in PostgreSQL. The underlying LLM remains identical, but the operational system around it executes the new strategy immediately.
+
+5. Browser Audio Normalization:
+   WebRTC and browser MediaRecorder produce fragmented WebM/Opus audio streams, whereas high-speed voice STT APIs expect standard 24kHz mono PCM WAV. We built an in-memory FFmpeg audio pipeline that normalizes audio buffers in sub-50ms intervals without disk bottlenecks.
+
+
+## Accomplishments that we're proud of
+
+- Authentic Track 1 Meta-Engineering:
+  Given a goal ("Resolve customer short payments under early settlement discount terms") and a catalog of finance tools, ResolveLoop designs v0, discovers that payment verification was executing too late, reflects, engineers candidate v1 with reordered tools, passes regression protection, succeeds on a novel unseen case, and promotes v1 to active runtime.
+
+- Observable Runtime Strategy Switching:
+  The moment v1 is promoted in the Learning Lab, subsequent customer calls execute with the new strategy instructions and tool sequence. The evolution is visible, measurable, and auditable.
+
+- 100% Passing Automated Test Suite:
+  59 unit and integration tests across 8 test suites passing completely green, verifying agent generation, tool validation, failure analysis, reflection synthesis, strategy diffing, Pareto comparison, regression protection, unseen-case execution, and database persistence.
+
+- Complete Auditability Without Hidden Chain-of-Thought:
+  An 11-step immutable operational audit trail logs every case creation, routing choice, tool parameter, policy clause, evaluation grade, and feedback event. Decision evidence is transparently structured without unverified hallucinated reasoning.
+
+- Single-Viewport Glassmorphic UI:
+  A clean, responsive interface featuring the floating glass navigation bar, living voice orb station, interactive learning lab, finance CRM, and cinematic product overview.
+
+
+## What we learned
+
+- Agents Need Structured Versioning, Not Unconstrained Code Generation:
+  Allowing models to write raw executable code to "improve themselves" introduces severe security vulnerabilities and erratic runtime drift. Constraining agent evolution to type-safe, versioned configurations produces repeatable, explainable, and enterprise-grade improvements.
+
+- Failures are the Primary Learning Signal:
+  Successful cases confirm that existing heuristics work; failed cases isolate specific tool redundancies, sequencing mistakes, and policy oversights. Building a structured failure taxonomy is the single most critical prerequisite for automated agent engineering.
+
+- The Dual-Loop Separation is Essential:
+  Decoupling synchronous operational case execution (which must be fast and reliable for the customer) from the asynchronous meta-engineering cycle (which requires multi-case testing, replay benchmarking, and regression analysis) provides both high runtime performance and rigorous self-improvement.
+
+
+## What's next for ResolveLoop
+
+- Model Context Protocol (MCP) Integration:
+  Connect ResolveLoop's 18 canonical tools to live enterprise ERP and payment backends (NetSuite, SAP S/4HANA, Stripe Billing, Workday) via standardized MCP servers.
+
+- Expanded Multi-Domain Benchmark Suite:
+  Scale the benchmark evaluation suite from our current dispute scenarios to a comprehensive library of hundreds of synthetic and anonymized enterprise cases across international tax, intercompany transfer pricing, and foreign exchange hedging.
+
+- Dual-Custody Human Governance:
+  Implement dual-authorization (maker-checker) approval controls in the Customer Executive Station for promoting candidate strategies that affect mission-critical accounting workflows.
+
+- OpenTelemetry & Production Tracing:
+  Export granular spans for tool executions, routing latencies, and reflection cycles directly to standard enterprise observability platforms (Datadog, Prometheus).
+
+- Broader Autonomous Finance Specialists:
+  Expand the Agent Factory catalog to generate specialists for Treasury Liquidity Management, Month-End Subledger Close, and Statutory Financial Statement Compilation.
