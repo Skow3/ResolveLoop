@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15%20Tables-336791.svg)](https://www.postgresql.org/)
 [![Runtime Model](https://img.shields.io/badge/Runtime-GPT--5%20Nano-412991.svg)](https://openai.com/)
 [![Voice STT/TTS](https://img.shields.io/badge/Voice-Smallest%20AI%20Pulse%20%26%20Lightning-FF5722.svg)](https://smallest.ai/)
-[![Tests](https://img.shields.io/badge/Tests-31%20Passing-success.svg)](#18-testing--verification)
+[![Tests](https://img.shields.io/badge/Tests-31%20Passing-success.svg)](#21-testing--verification)
 
 ---
 
@@ -41,7 +41,40 @@ Warm Start (Pass 2): Case C1 retrieves memory ──> Routes directly to L2 ─�
 
 ---
 
-## 2. Why ResolveLoop Fits Track 1 (Automated Agent Engineering)
+## 2. Why We Built It This Way
+
+The interesting engineering problem in automated agent design is not:  
+> *"Can a language model answer a finance question?"*
+
+Any modern LLM provided with a basic prompt can recite accounting formulas or query a database table. The real engineering problem is:  
+> *"Can an agent workforce learn how to solve enterprise finance operations better after seeing real outcomes from previous cases?"*
+
+In ResolveLoop, the underlying foundation model (`gpt-5-nano`) **does not need retraining or weight fine-tuning after every call**. Instead, **the system around the model learns**.
+
+Every customer inquiry traverses an empirical operational cycle:
+$$\text{CASE} \longrightarrow \text{ACTION} \longrightarrow \text{OUTCOME} \longrightarrow \text{EVALUATION} \longrightarrow \text{REFLECTION} \longrightarrow \text{MEMORY} \longrightarrow \text{RETRIEVAL} \longrightarrow \text{BETTER NEXT ACTION}$$
+
+By structuring enterprise operations around persistent relational episodic memory, the workforce compounds institutional competence with every case it resolves—just like an elite human finance team.
+
+---
+
+## 3. What Makes ResolveLoop Different?
+
+| Capability Dimension | Traditional Finance Chatbot / Agent | ResolveLoop Autonomous Workforce | Verifiable Code Mechanism |
+| :--- | :--- | :--- | :--- |
+| **Core Objective** | Answers the current user question in isolation; resets state on hang up | Resolves the case **and** builds structured operational experience for future cases | [`engine.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/engine.py#L480-L520), [`reflect.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/reflect.py) |
+| **Persistence & Memory** | Stateless or ephemeral session-window memory; forgotten across calls | Persistent 7-layer memory hierarchy backed by 15 PostgreSQL tables | [`db.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/db.py#L40-L240), `experiences` table |
+| **Routing Architecture** | Fixed keyword matching or static single-prompt routing heuristics | Adaptive routing signals updated dynamically based on past case outcomes | Pre-dispatch similarity lookup in [`store.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/store.py) |
+| **Tool Execution Role** | Tools are strictly execution sinks to return raw JSON data | Tool outcomes, latencies, and evidence keys are indexed as operational knowledge | PostgreSQL `tool_calls` table & reflection telemetry |
+| **Investigation Strategy** | Re-executes the same exploratory prompt trial-and-error every time | Retrieves previous successful investigation plans and skips dead ends | `plan` synthesis with `retrieved_experiences` |
+| **Feedback Lifecycle** | Thumbs up/down ratings end at an executive analytics dashboard | User feedback directly weights evaluation and parameterizes reflection lessons | `feedback` table $\rightarrow$ experience confidence score |
+| **Workforce Organization** | Single monolithic assistant attempting to answer all financial inquiries | Coordinated 5-tier finance specialist workforce (L0 to L4) | [`OPERATIONS.md`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/OPERATIONS.md), [`handoff.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/handoff.py) |
+| **Escalation Protocol** | Generic fallback (*"Please hold while I transfer you to an agent"*) | Capability-based escalation with a 21-field structured `HandoffContext` | Zero customer repetition; recipient begins with verified evidence |
+| **Measurable Learning Loop** | None; performance remains static unless engineers edit prompts | Explicit evaluation $\rightarrow$ reflection $\rightarrow$ memory loop with empirical delta | `python -m resolve_loop.main --benchmark` (+3.34 pts, -33.3% esc) |
+
+---
+
+## 4. Why ResolveLoop Fits Track 1 (Automated Agent Engineering)
 
 Hackathon Track 1 asks fundamental questions about autonomous agent architecture: *Do the agents truly improve over time? Does memory grow? Do they learn contextual logic from tool data rather than static prompts?*
 
@@ -55,14 +88,31 @@ The table below maps the Track 1 evaluation criteria directly to our implemented
 | **Can it learn contextual logic?** | Yes. It derives contextual accounting rules from tool execution data (e.g., discovering that a $250 invoice shortage paid within 8 days matches policy `SHORT-PAY-01` 2/10 Net 30 terms, recording a rule to avoid false-positive escalations). | [`resolve_loop/engine.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/engine.py#L420-L480) |
 | **Does it learn from tools?** | Tool execution telemetry (payloads, latency, errors, evidence keys) is logged in PostgreSQL `tool_calls` and passed into the reflection engine to refine tool plans for future agents. | [`resolve_loop/finance_tools.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/finance_tools.py#L40-L75), `tool_calls` table |
 | **Can it apply that learning later?** | Yes. The Intelligent Router queries the experience store during pre-dispatch; if a similar past case required an escalated specialist, the router adapts the tier upfront (*"[LEARNED: Adapted route to L2]"*). | [`resolve_loop/engine.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/engine.py#L220-L260) |
-| **Does it balance speed, cost, and quality?** | Tier 0/L1 handles high-volume factual questions in ~300–600ms with minimal token consumption. Complex multi-system investigations (L2/L3) and executive approvals (L4) are reserved strictly for disputes exceeding material thresholds. | [Section 9: Cost, Speed, and Quality](#9-cost-speed-and-quality-tradeoffs) |
+| **Does it balance speed, cost, and quality?** | Tier 0/L1 handles high-volume factual questions in ~300–600ms with minimal token consumption. Complex multi-system investigations (L2/L3) and executive approvals (L4) are reserved strictly for disputes exceeding material thresholds. | [Section 12: Cost, Speed, and Quality](#12-cost-speed-and-quality-tradeoffs) |
 | **What happens when it is uncertain?** | When confidence falls below 70%, or when financial variance exceeds $50,000 (`ESC-400`), the system pauses execution and routes to the **Human Review Escrow** with a pre-assembled structured audit dossier. | [`resolve_loop/handoff.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/handoff.py#L91-L121), [`resolve_loop/finance_tools.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/finance_tools.py#L230-L255) |
 
 ---
 
-## 3. The ResolveLoop Learning Loop
+## 5. Where the Learning Happens: The 8-Point Mechanics
 
-At the heart of ResolveLoop is an 8-stage operational lifecycle that transforms single-shot customer interactions into durable enterprise knowledge:
+To understand how ResolveLoop improves without model retraining, trace these 8 concrete operational points:
+
+1. **Where Experience Is Stored**: Immutable records are committed to the PostgreSQL `experiences` table (`db.py`), with persistent JSON fallback in `data/experiences.json`.
+2. **What Information Is Stored**:
+   - Case metadata: `case_id`, `domain`, `priority`, caller context.
+   - Routing telemetry: `initial_route`, `actual_route`, `escalated` flag.
+   - Evaluator output: `evaluation_score` (0–100), metric breakdowns.
+   - Operational distillation: `lesson` text, `root_cause`, `recommended_route`, `tools_needed`, `avoid_tools`, and `confidence`.
+3. **How Evaluation Produces Feedback**: The objective rubric in [`evaluator.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/evaluator.py) grades every completed resolution across 4 dimensions: resolution completeness (50 pts), tool efficiency (20 pts), route appropriateness (15 pts), and policy compliance (15 pts).
+4. **How Reflection Produces a Lesson**: The [`reflect.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/reflect.py) synthesizer inspects the gap between the initial route and final acting tier. If a case escalated from Tier 1 to Tier 2, it identifies that Tier 1 lacked the necessary tool authorization, formulating a lesson that similar cases must route directly to Tier 2.
+5. **How the Lesson Becomes Persistent Memory**: The reflection output is saved as an experience vector with domain tags in PostgreSQL `experiences`. High-confidence recurring heuristics are drafted into the `learned_policies` table.
+6. **How Future Cases Retrieve It**: When a new inquiry arrives, [`store.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/store.py) executes similarity matching across past case descriptions and domain tags, returning the top-3 most relevant experiences.
+7. **How Retrieval Changes Routing & Strategy**: The Intelligent Router inspects retrieved experiences during pre-dispatch. If a similar past case required Tier 2, the router automatically upgrades the route from Tier 1 to Tier 2 (*"[LEARNED: Adapted route to L2]"*), eliminating redundant triage turns.
+8. **How the Result Is Evaluated Again**: The subsequent run is graded by the exact same objective rubric. Because first-contact resolution succeeded without escalation, the score increases (+3.34 pts) and repeat escalations drop to zero.
+
+---
+
+## 6. The ResolveLoop Learning Loop
 
 ```mermaid
 flowchart TD
@@ -114,7 +164,7 @@ flowchart TD
 
 ---
 
-## 4. Tool Use Is Part of the Learning System
+## 7. Tool Use Is Part of the Learning System
 
 Agents in ResolveLoop do not simply query mock data via text prompts. Every tool call interacts with PostgreSQL relational tables, records structured telemetry, and informs downstream reflection.
 
@@ -164,7 +214,7 @@ This telemetry is fed into the reflection engine to identify slow tools, failed 
 
 ---
 
-## 5. From Tool Data to Contextual Knowledge
+## 8. From Tool Data to Contextual Knowledge
 
 A core weakness of basic LLM prompts is the inability to distinguish between an illegitimate short payment and an authorized cash discount. ResolveLoop bridges this gap through contextual tool synthesis.
 
@@ -198,7 +248,7 @@ A core weakness of basic LLM prompts is the inability to distinguish between an 
 
 ---
 
-## 6. Memory That Grows: The 7 Enterprise Memory Layers
+## 9. Memory That Grows: The 7 Enterprise Memory Layers
 
 ResolveLoop does not rely on a single flat prompt buffer. It deploys **7 structured memory layers** backed by PostgreSQL:
 
@@ -230,7 +280,7 @@ ResolveLoop does not rely on a single flat prompt buffer. It deploys **7 structu
 
 ---
 
-## 7. Reflection: Turning Outcomes Into Lessons
+## 10. Reflection: Turning Outcomes Into Lessons
 
 ResolveLoop strictly prohibits unrestricted chain-of-thought hallucination. The reflection module ([`resolve_loop/reflect.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/reflect.py)) enforces a clean, deterministic schema that extracts actionable operational knowledge:
 
@@ -257,7 +307,7 @@ When Case C1 runs again or a similar short payment inquiry arrives, the Intellig
 
 ---
 
-## 8. Agent Hierarchy & Dynamic Warm Handoff
+## 11. Agent Hierarchy & Dynamic Warm Handoff
 
 Rather than using a single monolithic prompt, ResolveLoop implements a clear division of labor across **5 specialized tiers**:
 
@@ -315,7 +365,7 @@ The customer **never repeats account numbers, invoice IDs, or their problem**.
 
 ---
 
-## 9. Cost, Speed, and Quality Tradeoffs
+## 12. Cost, Speed, and Quality Tradeoffs
 
 A foundational principle of Automated Agent Engineering is **compute efficiency**. Routing every prompt to an expensive frontier model with massive context is slow and cost-prohibitive. ResolveLoop implements an explicit tiered tradeoff:
 
@@ -334,7 +384,7 @@ A foundational principle of Automated Agent Engineering is **compute efficiency*
 
 ---
 
-## 10. How We Demonstrate Improvement: Before vs. Learned
+## 13. How We Demonstrate Improvement: Before vs. Learned
 
 We do not present hypothetical claims. ResolveLoop includes an automated comparative benchmark suite ([`resolve_loop/benchmark.py`](file:///home/jankari/.ao/data/worktrees/syndicate_ao/syndicate_ao-2/resolve_loop/benchmark.py)) that executes identical seed test cases across two successive passes:
 - **Pass 1 (Cold Start)**: Clean environment with zero prior experiences.
@@ -363,21 +413,20 @@ SUCCESS: Learning loop confirmed! System adaptively improved performance.
 
 ---
 
-## 11. Human Guidance & Controlled Learning
+## 14. Security, Safety & Enterprise Governance
 
-Unsupervised learning in enterprise finance is dangerous. Without boundaries, agents might learn to approve unauthorized discounts or circumvent internal controls. ResolveLoop implements **tri-layer governance**:
+Financial automation demands strict safety boundaries and full transparency:
 
-1. **User Feedback Capture**: Direct thumbs-up / thumbs-down signals (👍 / 👎) on every response card adjust the confidence weight of stored experiences.
-2. **Two-Stage Rule Promotion**:
-   - High-performing reflections are initially committed to `learned_policies` with status `pending_review`.
-   - A human financial controller must promote the policy to `active` via the Executive Dashboard before it can be applied to live cases.
-3. **The $50,000 Human Review Escrow**:
-   - Any transaction or dispute involving > $50,000 triggers mandatory policy `ESC-400`.
-   - The agent freezes autonomous action and compiles a structured audit dossier for human CFO signoff.
+1. **Server-Side Credential Isolation**: All private keys (`OPENAI_API_KEY`, `SMALLEST_API_KEY`, `DATABASE_URL`) are isolated exclusively on the server runtime in environment variables. No credentials, tokens, or raw database connection strings are exposed to the client.
+2. **Synthetic Data Boundaries**: 100% of customer profiles, invoices, bank payments, and ledger balances are synthetic enterprise records. No live production bank accounts or proprietary corporate secrets are queried.
+3. **Zero Hidden Chain-of-Thought Exposure**: The customer-facing voice interface renders natural, verified explanations. Internal model reasoning scratchpads, raw routing thoughts, and intermediate reflection prompts are never leaked to the caller. Secondary call details are strictly sequestered in a structured metadata drawer (`[Details]`).
+4. **The $50,000 Human Review Escrow (`ESC-400`)**: Any transaction, billing adjustment, or dispute exceeding $50,000 freezes autonomous execution. The agent compiles an immutable audit dossier and transfers the case to the **Human Review Escrow Queue** for mandatory human CFO signoff.
+5. **Controlled Policy Promotion**: Operational heuristics generated by automated reflection are written to PostgreSQL `learned_policies` with an initial status of `pending_review`. They require explicit manual authorization from a corporate controller before being activated across live cases.
+6. **Immutable Audit Trail (`audit_events`)**: Every call initialization, tool execution, routing handoff, evaluation score, and feedback rating appends an immutable JSONB record to the PostgreSQL `audit_events` table for regulatory and compliance auditing.
 
 ---
 
-## 12. Complete System Architecture
+## 15. Complete System Architecture
 
 ```mermaid
 flowchart TD
@@ -439,7 +488,7 @@ flowchart TD
 
 ---
 
-## 13. Technology Stack
+## 16. Technology Stack
 
 ResolveLoop is built on modern, battle-tested components:
 
@@ -454,7 +503,7 @@ ResolveLoop is built on modern, battle-tested components:
 
 ---
 
-## 14. The 3-Minute Hackathon Demo
+## 17. The 3-Minute Hackathon Demo
 
 Follow this step-by-step path to experience the complete ResolveLoop lifecycle:
 
@@ -482,7 +531,7 @@ Follow this step-by-step path to experience the complete ResolveLoop lifecycle:
 
 ---
 
-## 15. Product Tour: Three Purpose-Built Views
+## 18. Product Tour: Three Purpose-Built Views
 
 ### 1. Customer Call Station (`/demo`)
 - **Living Voice Orb**: Organic, fluid audio visualizer responding dynamically to real Web Audio API amplitude. Supports 6 operational states: *Idle, Listening, Thinking, Speaking, Handoff, and Call Completed*.
@@ -500,7 +549,7 @@ Follow this step-by-step path to experience the complete ResolveLoop lifecycle:
 
 ---
 
-## 16. Repository Structure
+## 19. Repository Structure
 
 ```
 ResolveLoop/
@@ -538,7 +587,7 @@ ResolveLoop/
 
 ---
 
-## 17. Setup & Quickstart
+## 20. Setup & Quickstart
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -586,7 +635,7 @@ Open **`http://localhost:5000`** in your browser to launch the Customer Call Sta
 
 ---
 
-## 18. Testing & Verification
+## 21. Testing & Verification
 
 ResolveLoop includes a comprehensive test suite across 5 modules covering all 22 tools, database schema integrity, voice streaming, and learning benchmarks:
 
@@ -603,7 +652,7 @@ python3 -m unittest discover tests
 
 ---
 
-## 19. Known Limitations & Honest Engineering Disclaimers
+## 22. Known Limitations & Honest Engineering Disclaimers
 
 In accordance with Hackathon Track 1 integrity:
 - **Synthetic Finance Data**: All customer names, corporate entities, invoice numbers, dollar balances, and bank transactions are synthetic seed records designed for testing. No actual proprietary corporate financial data is included.
@@ -613,7 +662,7 @@ In accordance with Hackathon Track 1 integrity:
 
 ---
 
-## 20. Future Roadmap
+## 23. Future Roadmap
 
 - **Vector Semantic Search (`pgvector`)**: Transitioning from token-based PostgreSQL similarity search to dense vector embeddings using `pgvector` for multi-lingual case clustering.
 - **Bi-Directional Audio WebSockets**: Upgrading from REST chunked streaming to full-duplex WebSocket audio streaming for sub-200ms conversational turnarounds.
