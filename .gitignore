@@ -1,6 +1,13 @@
-# Environment files
+# Environment files (never commit API keys)
 .env
-.env.local
+.env.*
+!.env.example
 
 # Python caches
-# Data files generated at runtime (keep in repo for MVP demo initial state)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Voice responses generated at runtime
+data/voice_responses/

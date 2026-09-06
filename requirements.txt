@@ -1,2 +1,5 @@
-typing-extensions
-"""This repo uses a self-contained mock runtime; dependencies kept minimal."""
+# Dependencies for ResolveLoop MVP
+typing-extensions>=4.0.0
+requests>=2.28.0
+python-dotenv>=1.0.0
+# Optional: openai>=1.0.0 (if RESOLVELOOP_USE_LLM=1)
