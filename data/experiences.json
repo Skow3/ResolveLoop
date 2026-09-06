@@ -8674,6 +8674,148 @@
       "recommended_tools": [],
       "escalated": false,
       "timestamp": 1788687588.5190144
+    },
+    {
+      "case_id": "VOICE-1788689505",
+      "description": "Who are you?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-E5B0A7",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 75,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Effective resolution: a straightforward L1 handling with a concise identity/purpose explanation; no escalation and no tools required."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788689505",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For simple identity/purpose questions, handle at L1 with a concise self-introduction and no tools, reserving escalation or tool use for queries that require policy constraints, sensitive information, or action beyond stating the role."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788689513.878885
+    },
+    {
+      "case_id": "VOICE-1788689543",
+      "description": "I just want to know my account balance.",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's current balance from the billing system and present it to the customer, with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788681321'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "kb_lookup",
+          "open_ticket"
+        ],
+        "handoff_required": false,
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788689543",
+          "response_text": "Hello Alice, regarding your inquiry: Locked accounts require L3/L4 identity verification and manual unlock procedure.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 1,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 3,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Efficient L1 resolution: the agent used fetch_profile and kb_lookup to address the balance inquiry without escalation, and the case was resolved."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788689543",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, kb_lookup, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar cases, route to L1 and prioritize immediate fetch_profile plus targeted kb_lookup to resolve quickly without escalation, reserving open_ticket only when the knowledge base misses information or follow-up action is required."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "kb_lookup",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "kb_lookup",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788689554.806126
     }
   ]
 }

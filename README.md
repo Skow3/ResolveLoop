@@ -4,6 +4,8 @@ Maximor AI (powered by ResolveLoop) is an experience-driven multi-agent workforc
 
 > *"Maximor AI pairs an L1–L4 tiered finance workforce with PostgreSQL episodic memory and Smallest AI voice streaming. Every reconciliation and audit trail makes the next resolution faster."*
 
+📚 **System Flows Documentation:** For comprehensive end-to-end documentation of every workflow, state machine, and data lifecycle in the system, see [**FLOWS.md**](FLOWS.md).
+
 ---
 
 ## Key Highlights & Capabilities
@@ -58,7 +60,7 @@ python -m resolve_loop.seeds
 ```
 
 ### 3. Run the Full Test Suite
-Run the 11 unit tests covering baseline benchmark, voice, and finance operations:
+Run the 16 unit tests covering baseline benchmark, voice, finance operations, warm handoffs, and audit trails:
 ```bash
 python -m unittest discover tests
 ```
