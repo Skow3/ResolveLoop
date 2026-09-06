@@ -32,6 +32,7 @@ VOICE_DIR.mkdir(exist_ok=True)
 # Agent model. Runtime uses gpt-5-nano as specified.
 MODEL = os.environ.get("RESOLVELOOP_MODEL", "gpt-5-nano")
 USE_LLM = os.environ.get("RESOLVELOOP_USE_LLM", "0") == "1"
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 
 # Smallest AI configuration for voice layer
 SMALLEST_API_KEY = os.environ.get("SMALLEST_API_KEY", "")

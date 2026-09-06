@@ -1,52 +1,6 @@
 {
   "customer_memory": {},
-  "case_memory": {
-    "VOICE-1788670029": {
-      "route": {
-        "route_level": 1,
-        "plan": "General inquiry routed to L1 Basic Support.",
-        "routing_source": "heuristic",
-        "learning_applied": false,
-        "learning_reason": null
-      },
-      "solve": {
-        "actions": [
-          "fetch_profile",
-          "open_ticket"
-        ],
-        "resolution": {
-          "resolved": true,
-          "ticket": "T-CUST1-VOICE-1788670029",
-          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team for review.",
-          "order_data": null,
-          "payment_data": null,
-          "refund_data": null,
-          "kb_hits": 0,
-          "final_agent_level": 1
-        },
-        "escalated": false,
-        "escalation_reason": null
-      },
-      "score": {
-        "score": 90,
-        "details": {
-          "score_breakdown": {
-            "resolution_quality": 50,
-            "tool_efficiency": 20,
-            "first_contact_resolution": 15,
-            "route_appropriateness": 5
-          },
-          "metrics": {
-            "route_level": 1,
-            "tools_used": 2,
-            "escalated": false,
-            "resolved": true
-          }
-        }
-      },
-      "timestamp": 1788670029.3680162
-    }
-  },
+  "case_memory": {},
   "procedural_memory": {},
   "failure_memory": []
 }

@@ -26,7 +26,7 @@ class SmallestAIVoiceClient:
         pulse_url: Optional[str] = None,
         lightning_url: Optional[str] = None,
     ):
-        self.api_key = api_key or os.environ.get("SMALLEST_API_KEY") or SMALLEST_API_KEY
+        self.api_key = api_key if api_key is not None else (os.environ.get("SMALLEST_API_KEY") or SMALLEST_API_KEY)
         self.pulse_url = pulse_url or SMALLEST_PULSE_URL
         self.lightning_url = lightning_url or SMALLEST_LIGHTNING_URL
         VOICE_DIR.mkdir(parents=True, exist_ok=True)
@@ -87,16 +87,21 @@ class SmallestAIVoiceClient:
                 self.pulse_url,
                 headers=headers,
                 data=audio_bytes,
-                params={"model": model},
+                params={"model": model, "language": "en"},
                 timeout=30,
             )
 
             if response.status_code == 200:
                 data = response.json()
-                text = data.get("text") or data.get("transcript") or data.get("data", {}).get("text", "")
+                text = (
+                    data.get("transcription")
+                    or data.get("text")
+                    or data.get("transcript")
+                    or data.get("data", {}).get("text", "")
+                )
                 return {
                     "success": True,
-                    "text": text.strip(),
+                    "text": str(text).strip(),
                     "provider": "smallest_ai_pulse",
                     "raw_response": data,
                     "error": None,
