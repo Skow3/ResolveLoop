@@ -122,7 +122,22 @@ CREATE TABLE IF NOT EXISTS cases (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
--- 8. Agent Runs
+-- 8. Case Interactions (Speaker turns, transcript, audio references)
+CREATE TABLE IF NOT EXISTS case_interactions (
+    id VARCHAR(64) PRIMARY KEY,
+    case_id VARCHAR(64) NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    speaker VARCHAR(32) NOT NULL, -- customer, orchestrator, specialist
+    agent_id VARCHAR(64),
+    agent_tier INTEGER DEFAULT 0,
+    transcript TEXT NOT NULL,
+    audio_url VARCHAR(255),
+    feedback_rating VARCHAR(16),
+    feedback_reason VARCHAR(255),
+    latency_ms NUMERIC(10, 2) DEFAULT 0.00,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 9. Agent Runs
 CREATE TABLE IF NOT EXISTS agent_runs (
     id VARCHAR(64) PRIMARY KEY,
     case_id VARCHAR(64) NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
@@ -182,12 +197,17 @@ CREATE TABLE IF NOT EXISTS experiences (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
--- 12. Learned Policies (Synthesized rules)
+-- 13. Learned Policies & Human Guidance (Synthesized rules & human proposals)
 CREATE TABLE IF NOT EXISTS learned_policies (
     id VARCHAR(64) PRIMARY KEY,
     organization_id VARCHAR(64) NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     policy_id VARCHAR(64) REFERENCES policies(id) ON DELETE SET NULL,
     domain VARCHAR(64) NOT NULL,
+    trigger_pattern VARCHAR(255),
+    recommended_tier INTEGER DEFAULT 2,
+    action TEXT,
+    rationale TEXT,
+    created_by VARCHAR(128) DEFAULT 'Human Supervisor',
     previous_version VARCHAR(32),
     new_version VARCHAR(32),
     change_summary TEXT,
@@ -227,6 +247,7 @@ CREATE INDEX IF NOT EXISTS idx_cases_domain_status ON cases(organization_id, dom
 CREATE INDEX IF NOT EXISTS idx_tool_calls_case ON tool_calls(case_id);
 CREATE INDEX IF NOT EXISTS idx_experiences_domain ON experiences(organization_id, domain);
 CREATE INDEX IF NOT EXISTS idx_feedback_case ON feedback(case_id);
+CREATE INDEX IF NOT EXISTS idx_interactions_case ON case_interactions(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_audit_case ON audit_events(case_id, created_at);
 """
 
@@ -307,6 +328,19 @@ class Database:
             with self.get_connection() as conn:
                 cur = conn.cursor()
                 cur.execute(SCHEMA_SQL)
+                migrations = [
+                    "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS trigger_pattern VARCHAR(255);",
+                    "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS recommended_tier INTEGER DEFAULT 2;",
+                    "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS action TEXT;",
+                    "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS rationale TEXT;",
+                    "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS created_by VARCHAR(128) DEFAULT 'Human Supervisor';",
+                    "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS approval_status VARCHAR(32) DEFAULT 'approved';",
+                ]
+                for m in migrations:
+                    try:
+                        cur.execute(m)
+                    except Exception:
+                        pass
                 conn.commit()
             logger.info("PostgreSQL schema successfully initialized.")
         else:

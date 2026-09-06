@@ -1987,7 +1987,7 @@
         "resolution": {
           "resolved": true,
           "domain": "general_finance",
-          "ticket": "MX-925721",
+          "ticket": "MX-408444",
           "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
           "evidence": [],
           "acting_agent": "Orchestrator (Call Director)",
@@ -2012,10 +2012,10 @@
             "escalated": false,
             "resolved": true
           },
-          "llm_verdict": "Efficient Level-1 handling with no escalation; the case was resolved successfully, appropriate for a low-priority, basic informational inquiry."
+          "llm_verdict": "Efficiently resolved at Level 1 with no escalation or tools used, appropriate for a straightforward identity and product information inquiry."
         }
       },
-      "timestamp": 1788687456.9243243
+      "timestamp": 1788694086.1987998
     },
     "TEST-CASE-B": {
       "route": {
@@ -2037,7 +2037,7 @@
         "specialist_speech": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
         "specialist_role": "Basic Finance Triage Specialist",
         "handoff_context": {
-          "handoff_id": "hnd_e90a1703",
+          "handoff_id": "hnd_66a39451",
           "case_id": "TEST-CASE-B",
           "customer": {
             "id": "cust1",
@@ -2112,12 +2112,12 @@
           "recommended_next_action": "Provide invoice INV-4471 balance and payment status",
           "routing_confidence": 0.94,
           "resolution_confidence": 0.95,
-          "timestamp": 1788687459.5227897
+          "timestamp": 1788694090.1999083
         },
         "resolution": {
           "resolved": true,
           "domain": "accounts_receivable",
-          "ticket": "MX-F0C22F",
+          "ticket": "MX-85242D",
           "response_text": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself. ... Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
           "orchestrator_speech": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself.",
           "specialist_speech": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
@@ -2151,15 +2151,15 @@
             "escalated": false,
             "resolved": true
           },
-          "llm_verdict": "Resolved: The status of invoice INV-4471 was retrieved successfully using L2 routing with get_customer and get_invoice; no escalation was required."
+          "llm_verdict": "Resolution successful at L2, with appropriate use of get_invoice (and get_customer as needed) to confirm INV-4471 status; no escalation required."
         }
       },
-      "timestamp": 1788687464.694524
+      "timestamp": 1788694097.0855525
     },
     "TEST-CASE-C": {
       "route": {
         "route_level": 2,
-        "plan": "level: 2; plan: Conduct contextual investigation to reconcile Acme's short payment against the relevant invoice by verifying remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare corrections or customer communication; escalate to Level 3 if unresolved.",
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile Acme's short payment against the invoice, verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare correction or customer communication; escalate to Level 3 if unresolved.",
         "routing_source": "llm",
         "learning_applied": true,
         "learning_reason": "Adapted route to L2 based on past similar case 'TEST_SEQ_01'",
@@ -2179,7 +2179,7 @@
         "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
         "specialist_role": "Accounts Receivable Specialist",
         "handoff_context": {
-          "handoff_id": "hnd_9120f870",
+          "handoff_id": "hnd_42aa1f4d",
           "case_id": "TEST-CASE-C",
           "customer": {
             "id": "cust1",
@@ -2298,12 +2298,12 @@
           "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
           "routing_confidence": 0.94,
           "resolution_confidence": 0.95,
-          "timestamp": 1788687469.736092
+          "timestamp": 1788694101.3766243
         },
         "resolution": {
           "resolved": true,
           "domain": "accounts_receivable",
-          "ticket": "MX-A8DCB2",
+          "ticket": "MX-95E0EA",
           "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
           "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
           "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
@@ -2338,10 +2338,10 @@
             "escalated": false,
             "resolved": true
           },
-          "llm_verdict": "Efficient and thorough resolution without escalation, using the cited data tools to diagnose and explain the short payment to the customer."
+          "llm_verdict": "Effective L2 resolution: no escalation, with appropriate use of data sources (customer, invoice, payment, history, and policy version) to diagnose and resolve the short payment issue."
         }
       },
-      "timestamp": 1788687475.6444724
+      "timestamp": 1788694107.3601794
     },
     "TEST-CASE-D": {
       "route": {
@@ -2363,7 +2363,7 @@
         "specialist_speech": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
         "specialist_role": "Executive Controller & Risk Authority",
         "handoff_context": {
-          "handoff_id": "hnd_42758f58",
+          "handoff_id": "hnd_38363711",
           "case_id": "TEST-CASE-D",
           "customer": {
             "id": "cust1",
@@ -2434,12 +2434,12 @@
           "recommended_next_action": "Escalate audit dossier to corporate Controller and CFO for human authorization",
           "routing_confidence": 0.94,
           "resolution_confidence": 0.95,
-          "timestamp": 1788687478.5953817
+          "timestamp": 1788694111.7441401
         },
         "resolution": {
           "resolved": true,
           "domain": "accounts_receivable",
-          "ticket": "MX-98B082",
+          "ticket": "MX-1FE925",
           "response_text": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself. ... Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
           "orchestrator_speech": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself.",
           "specialist_speech": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
@@ -2473,15 +2473,15 @@
             "escalated": true,
             "resolved": true
           },
-          "llm_verdict": "Appropriate escalation for a high-value transaction with policy ambiguity, data-driven handling, and a resolved outcome, but the underlying policy ambiguity should be clarified and updated."
+          "llm_verdict": "Escalation and use of tools were appropriate for a high-value override under ambiguous policy terms; the case was resolved with validated policy version, but the underlying ambiguity remains and warrants formal policy clarification and risk-control updates."
         }
       },
-      "timestamp": 1788687486.065538
+      "timestamp": 1788694118.9974146
     },
     "TEST-CASE-G": {
       "route": {
         "route_level": 2,
-        "plan": "level: 2; plan: Conduct contextual investigation to reconcile Acme's short payment against the relevant invoice; verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare correction or customer communication; escalate to Level 3 if unresolved.",
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile the short payment against the relevant invoice: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
         "routing_source": "llm",
         "learning_applied": true,
         "learning_reason": "Adapted route to L2 based on past similar case 'TEST_SEQ_01'",
@@ -2498,7 +2498,7 @@
         "resolution": {
           "resolved": true,
           "domain": "general_finance",
-          "ticket": "MX-FALLBACK-D2AB18",
+          "ticket": "MX-FALLBACK-100A03",
           "response_text": "I experienced a brief delay connecting with our specialist, but I am staying on the line with you. I've noted your request and our finance operations team is actively looking into it. How else may I assist you in the meantime?",
           "evidence": [
             "Handoff Failover Safe Mode Active"
@@ -2526,10 +2526,10 @@
             "escalated": false,
             "resolved": true
           },
-          "llm_verdict": "Resolved at Level 2 without escalation, reflecting appropriate and timely handling of a medium-priority payment-short issue."
+          "llm_verdict": "Resolved at Level 2 without escalation; appropriate handling for a medium-priority payment-short issue, but ensure root-cause and preventive actions are documented."
         }
       },
-      "timestamp": 1788687516.8484719
+      "timestamp": 1788694153.0783443
     },
     "VOICE-1788687582": {
       "route": {
@@ -2780,6 +2780,1570 @@
         }
       },
       "timestamp": 1788691310.037712
+    },
+    "VOICE-1788692337": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile cust1's short remittance against the relevant invoice: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST_SEQ_01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_c5304e61",
+          "case_id": "VOICE-1788692337",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was payment remittance plugged as short?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788692341.4836466
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-6FD49C",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 2 without escalation, leveraging comprehensive data checks (invoice, payment, customer history, policy version) to address the remittance short, indicating a satisfactory outcome."
+        }
+      },
+      "timestamp": 1788692348.277299
+    },
+    "VOICE-1788692457": {
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to acknowledge the greeting and offer access to FAQ/Knowledge Base for any basic questions.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "handoff_required": false,
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788692457",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Positive outcome: the case was resolved at L1 with no escalation, using fetch_profile and open_ticket effectively, and the customer's \"Oh, that's great.\" indicates satisfaction."
+        }
+      },
+      "timestamp": 1788692468.4977922
+    },
+    "VOICE-1788693680": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-3FA6A4",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 1 with no escalation, aligning with medium priority, though the lack of tools used suggests minimal engagement and warrants a follow-up to confirm customer satisfaction."
+        }
+      },
+      "timestamp": 1788693686.6776795
+    },
+    "MX-1788693983": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile the short payment on INV-4471 for Acme Corp: verify remittance details, payment allocation, any credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'MX-1788680364'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_917f374b",
+          "case_id": "MX-1788693983",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "I noticed a $200 discrepancy on invoice INV-4471 for Acme Corp. Can you check why we were short paid?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788693990.9265466
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-488E15",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient, data-driven investigation using multiple tools with no escalation, and resolution achieved; ensure the root cause and any adjustment are clearly documented."
+        }
+      },
+      "timestamp": 1788693999.485599
+    },
+    "MX-1788694054": {
+      "route": {
+        "route_level": 4,
+        "plan": "level: 4; plan: Escalate to Policy/Risk (L4) for a formal policy review on the contract modification revenue adjustment for the Q3 enterprise subscription; perform cross-system policy checks, document rationale, obtain necessary approvals, and prepare customer communication.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Executive Guidance applied: 'contract modification revenue adjustment' -> L3 (Contract modifications under ASC 606 require L3 Accounting Authority inspection of milestone schedules)",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_finance_records"
+        ],
+        "acting_agent": "L1 Basic Finance Triage Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires querying our customer ledger and ERP system in NetSuite, so I'm bringing in our Finance Operations specialist. I'll pass along what you've told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I'll verify your financial records in NetSuite ERP. All active financial records have been verified against our corporate ledger and remain in good standing.",
+        "specialist_role": "Basic Finance Triage Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_da33d774",
+          "case_id": "MX-1788694054",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "We need a contract modification revenue adjustment on our Q3 enterprise subscription.",
+          "conversation_summary": "Inquiry regarding records_query in general_finance",
+          "detected_domain": "general_finance",
+          "issue_type": "records_query",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l1_triage",
+            "name": "Finance Triage Specialist",
+            "tier": 1
+          },
+          "reason_for_handoff": "Domain general_finance and issue records_query require Basic Finance Triage Specialist tool authority",
+          "information_already_collected": [],
+          "entities_already_identified": {},
+          "tools_already_used": [
+            "get_customer",
+            "search_finance_records"
+          ],
+          "relevant_finance_records": [],
+          "relevant_policy": null,
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Query customer ledger and report account health",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788694059.6886764
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-C64B5A",
+          "response_text": "I've got the details. This requires querying our customer ledger and ERP system in NetSuite, so I'm bringing in our Finance Operations specialist. I'll pass along what you've told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I'll verify your financial records in NetSuite ERP. All active financial records have been verified against our corporate ledger and remain in good standing.",
+          "orchestrator_speech": "I've got the details. This requires querying our customer ledger and ERP system in NetSuite, so I'm bringing in our Finance Operations specialist. I'll pass along what you've told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I'll verify your financial records in NetSuite ERP. All active financial records have been verified against our corporate ledger and remain in good standing.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I'll verify your financial records in NetSuite ERP.",
+          "specialist_role": "Basic Finance Triage Specialist",
+          "acting_agent": "L1 Basic Finance Triage Specialist",
+          "evidence": [
+            "NetSuite ERP",
+            "Customer Ledger"
+          ],
+          "final_agent_level": 1,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 4,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient resolution at Level 4 with no escalation, successfully addressing the contract modification and revenue adjustment by leveraging customer and finance records."
+        }
+      },
+      "timestamp": 1788694065.8958828
+    },
+    "VOICE-1788694235": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-63AAA9",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Positive: resolved at Level 1 without escalation, indicating efficient handling for a medium-priority issue; however, the lack of tool usage and documented steps reduces traceability."
+        }
+      },
+      "timestamp": 1788694242.0372133
+    },
+    "TEST-E2E-1788694290": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_d6f87011",
+          "case_id": "TEST-E2E-1788694290",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Our payment was short by $250 for invoice INV-4471 under 2/10 Net 30.",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788694296.671139
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-4E6230",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 2 without escalation; the $250 shortfall on invoice INV-4471 was investigated and addressed using the appropriate data sources in line with policy."
+        }
+      },
+      "timestamp": 1788694303.555444
+    },
+    "TEST-E2E-1788694321": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Contextual investigation to reconcile PMT-8821 with INV-4471 by verifying remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-E2E-1788694290'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_510741e5",
+          "case_id": "TEST-E2E-1788694321",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Our payment was short by $250 for invoice INV-4471 under 2/10 Net 30.",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788694324.8965352
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-9A1DDA",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 2 without escalation; the $250 short payment discrepancy on invoice INV-4471 was identified and corrected using standard invoice, payment, and policy data."
+        }
+      },
+      "timestamp": 1788694332.765664
+    },
+    "TEST-E2E-1788694368": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Contextual investigation to reconcile INV-4471 with PMT-8821 by verifying remittance details, payment allocation, and any credits/discounts/fees, plus terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare a correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-E2E-1788694290'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_aee92c86",
+          "case_id": "TEST-E2E-1788694368",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Our payment was short by $250 for invoice INV-4471 under 2/10 Net 30.",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788694374.3216205
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-76CB72",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at L2 without escalation; the $250 short payment on invoice INV-4471 under 2/10 Net 30 was correctly identified and reconciled, indicating effective resolution."
+        }
+      },
+      "timestamp": 1788694382.7947395
+    },
+    "TEST-E2E-1788694499": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Contextual investigation to reconcile PMT-8821 with INV-4471 by verifying remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-E2E-1788694290'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_8516ff36",
+          "case_id": "TEST-E2E-1788694499",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Our payment was short by $250 for invoice INV-4471 under 2/10 Net 30.",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788694504.5742853
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-E73BEB",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient L2 handling with no escalation; the $250 shortfall on INV-4471 was resolved through validation of the customer, invoice, and payment records."
+        }
+      },
+      "timestamp": 1788694512.8104312
+    },
+    "TEST-E2E-1788694586": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Contextual investigation to reconcile PMT-8821 with INV-4471 by verifying remittance details and allocations, identifying root cause (partial payment, misapplied funds, or deductions), and preparing correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-E2E-1788694290'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_bc51050c",
+          "case_id": "TEST-E2E-1788694586",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Our payment was short by $250 for invoice INV-4471 under 2/10 Net 30.",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788694592.781297
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-57A14D",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient L2 resolution: verified the underpayment against invoice INV-4471 using customer history and policy context, and resolved the discrepancy without escalation."
+        }
+      },
+      "timestamp": 1788694600.9153442
     }
   },
   "procedural_memory": {
@@ -2834,6 +4398,27 @@
       "initial_route": 4,
       "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
       "timestamp": 1788687486.0670288
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788693081.4743474
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788693567.0012527
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788694119.009015
     }
   ]
 }

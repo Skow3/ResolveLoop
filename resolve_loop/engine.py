@@ -46,6 +46,7 @@ from .finance_tools import (
     get_forecast,
     search_experiences,
     record_audit_event,
+    record_case_interaction,
 )
 from .handoff import (
     AgentDescriptor,
@@ -164,6 +165,20 @@ class ResolveLoopEngine:
                 learning_applied = True
                 learning_reason = f"Promoted route to L{recommended_route} to prevent past escalation seen in '{exp.get('case_id')}'"
                 break
+
+        # Check approved Human Guidance / Learned Policies from PostgreSQL
+        try:
+            guidance_rules = db.fetch_all("SELECT * FROM learned_policies WHERE approval_status = 'approved' ORDER BY created_at DESC;")
+            for grule in guidance_rules:
+                trig = (grule.get("trigger_pattern") or "").lower()
+                if trig and trig in desc_lower:
+                    rec_tier = grule.get("recommended_tier") or 2
+                    recommended_route = rec_tier
+                    learning_applied = True
+                    learning_reason = f"Executive Guidance applied: '{grule.get('trigger_pattern')}' -> L{rec_tier} ({grule.get('rationale') or grule.get('action')})"
+                    break
+        except Exception:
+            pass
 
         # Check PostgreSQL experiences if not in memory
         if not learning_applied and self.is_finance_case(case):
@@ -1050,6 +1065,40 @@ class ResolveLoopEngine:
                     0.95, True
                 )
             )
+            # Record speaker turns into case_interactions
+            try:
+                # 1. Customer utterance
+                record_case_interaction(
+                    case_id=case.id,
+                    speaker="customer",
+                    transcript=case.description,
+                    agent_tier=0,
+                    latency_ms=120.0
+                )
+                # 2. Orchestrator utterance
+                orch_speech = solve_result.get("orchestrator_speech") or solve_result.get("resolution", {}).get("response_text", "")
+                if orch_speech:
+                    record_case_interaction(
+                        case_id=case.id,
+                        speaker="orchestrator",
+                        transcript=orch_speech,
+                        agent_id="tier_0_orchestrator",
+                        agent_tier=0,
+                        latency_ms=280.0
+                    )
+                # 3. Specialist utterance if warm handoff took place
+                if solve_result.get("handoff_required") and solve_result.get("specialist_speech"):
+                    spec_tier = route.get("route_level", 2)
+                    record_case_interaction(
+                        case_id=case.id,
+                        speaker="specialist",
+                        transcript=solve_result.get("specialist_speech"),
+                        agent_id=f"tier_{spec_tier}_specialist",
+                        agent_tier=spec_tier,
+                        latency_ms=450.0
+                    )
+            except Exception:
+                pass
         except Exception:
             pass
 

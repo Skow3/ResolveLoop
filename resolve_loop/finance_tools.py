@@ -6,9 +6,12 @@ and logs tool executions to `tool_calls` and `audit_events` for complete auditab
 import time
 import json
 import uuid
+import logging
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
 from .db import db
+
+logger = logging.getLogger("maximor.finance")
 
 def log_tool_call(
     case_id: Optional[str],
@@ -384,4 +387,91 @@ def record_audit_event(case_id: Optional[str], action: str, details: Dict[str, A
         )
     except Exception:
         pass
+
+
+def record_case_interaction(
+    case_id: str,
+    speaker: str,
+    transcript: str,
+    agent_id: Optional[str] = None,
+    agent_tier: int = 0,
+    audio_url: Optional[str] = None,
+    feedback_rating: Optional[str] = None,
+    feedback_reason: Optional[str] = None,
+    latency_ms: float = 0.0
+) -> Dict[str, Any]:
+    """Record a speaker turn / interaction for Customer Executive supervision."""
+    inter_id = f"int_{uuid.uuid4().hex[:12]}"
+    try:
+        db.execute(
+            """INSERT INTO case_interactions (id, case_id, speaker, agent_id, agent_tier, transcript, audio_url, feedback_rating, feedback_reason, latency_ms)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
+            (
+                inter_id, case_id, speaker, agent_id or f"tier_{agent_tier}",
+                agent_tier, transcript, audio_url, feedback_rating, feedback_reason, latency_ms
+            )
+        )
+        return {"id": inter_id, "case_id": case_id, "status": "recorded"}
+    except Exception as e:
+        logger.warning(f"Failed to record case interaction: {e}")
+        return {"id": inter_id, "error": str(e)}
+
+
+def add_human_guidance(
+    domain: str,
+    trigger_pattern: str,
+    recommended_tier: int,
+    action: str,
+    rationale: str,
+    created_by: str = "Customer Executive",
+    approval_status: str = "approved"
+) -> Dict[str, Any]:
+    """Add structured human guidance / policy proposal for the AI workforce."""
+    guidance_id = f"pol_h_{uuid.uuid4().hex[:10]}"
+    try:
+        db.execute(
+            """INSERT INTO learned_policies 
+               (id, organization_id, domain, trigger_pattern, recommended_tier, action, rationale, created_by, approval_status, confidence)
+               VALUES (%s, 'org_apex', %s, %s, %s, %s, %s, %s, %s, 0.98);""",
+            (guidance_id, domain, trigger_pattern, recommended_tier, action, rationale, created_by, approval_status)
+        )
+        record_audit_event(
+            case_id=None,
+            action="HUMAN_GUIDANCE_ADDED",
+            details={
+                "guidance_id": guidance_id,
+                "trigger_pattern": trigger_pattern,
+                "recommended_tier": recommended_tier,
+                "action": action,
+                "rationale": rationale,
+                "created_by": created_by,
+                "status": approval_status
+            },
+            actor_type="human_supervisor",
+            actor_id=created_by
+        )
+        return {"id": guidance_id, "success": True, "approval_status": approval_status}
+    except Exception as e:
+        logger.error(f"Failed to save human guidance: {e}")
+        return {"error": str(e), "success": False}
+
+
+def approve_human_guidance(guidance_id: str, approver: str = "Customer Executive") -> Dict[str, Any]:
+    """Approve a proposed human guidance policy."""
+    try:
+        db.execute(
+            "UPDATE learned_policies SET approval_status = 'approved' WHERE id = %s;",
+            (guidance_id,)
+        )
+        record_audit_event(
+            case_id=None,
+            action="HUMAN_GUIDANCE_APPROVED",
+            details={"guidance_id": guidance_id, "approved_by": approver},
+            actor_type="human_supervisor",
+            actor_id=approver
+        )
+        return {"id": guidance_id, "success": True, "approval_status": "approved"}
+    except Exception as e:
+        return {"error": str(e), "success": False}
+
 

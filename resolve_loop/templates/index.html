@@ -70,22 +70,28 @@
 
       <!-- Navigation Tabs -->
       <nav class="flex items-center space-x-1 sm:space-x-2">
-        <button id="nav-landing" onclick="switchView('landing')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-semibold transition-all text-indigo-400 bg-indigo-950/40 border border-indigo-800/40">
-          <span class="flex items-center space-x-1.5">
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>Overview</span>
-          </span>
-        </button>
         <button id="nav-demo" onclick="switchView('demo')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-semibold transition-all dark:text-slate-300 text-slate-600 hover:text-indigo-500 dark:hover:bg-slate-800/60 hover:bg-slate-100">
           <span class="flex items-center space-x-1.5">
             <i data-lucide="phone-call" class="w-4 h-4"></i>
             <span>Customer Call</span>
           </span>
         </button>
-        <button id="nav-crm" onclick="switchView('crm')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-semibold transition-all dark:text-slate-300 text-slate-600 hover:text-indigo-500 dark:hover:bg-slate-800/60 hover:bg-slate-100">
+        <button id="nav-finance" onclick="switchView('finance')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-semibold transition-all dark:text-slate-300 text-slate-600 hover:text-indigo-500 dark:hover:bg-slate-800/60 hover:bg-slate-100">
           <span class="flex items-center space-x-1.5">
-            <i data-lucide="building" class="w-4 h-4"></i>
-            <span>Finance Ops CRM</span>
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+            <span>Finance Ops</span>
+          </span>
+        </button>
+        <button id="nav-executive" onclick="switchView('executive')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-semibold transition-all dark:text-slate-300 text-slate-600 hover:text-indigo-500 dark:hover:bg-slate-800/60 hover:bg-slate-100">
+          <span class="flex items-center space-x-1.5">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Customer Executive</span>
+          </span>
+        </button>
+        <button id="nav-landing" onclick="switchView('landing')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-semibold transition-all text-indigo-400 bg-indigo-950/40 border border-indigo-800/40">
+          <span class="flex items-center space-x-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Overview</span>
           </span>
         </button>
       </nav>
@@ -479,121 +485,280 @@
     </section>
 
     <!-- ==================== 3. FINANCE OPERATIONS CRM PAGE ==================== -->
-    <section id="view-crm" class="view-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- ==================== WORKSPACE 1: FINANCE OPS ==================== -->
+    <section id="view-finance" class="view-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
-      <!-- CRM Header -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b dark:border-slate-800 border-slate-200">
+      <!-- Finance Ops Header & Context Bar -->
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-4 border-b dark:border-slate-800 border-slate-200">
         <div>
-          <h2 class="text-2xl font-black dark:text-white text-slate-900 tracking-tight">Finance Operations & Ledger Intelligence</h2>
-          <p class="dark:text-slate-400 text-slate-500 text-sm mt-0.5">PostgreSQL-backed enterprise finance entities, policies, audit trails, and learning memory</p>
+          <div class="flex items-center space-x-3">
+            <h2 class="text-2xl font-black dark:text-white text-slate-900 tracking-tight">Finance Ops</h2>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold dark:bg-emerald-950 bg-emerald-100 dark:text-emerald-400 text-emerald-800 border dark:border-emerald-800/80 border-emerald-300 flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Ledger Synced &bull; NetSuite &bull; Stripe &bull; Brex</span>
+            </span>
+          </div>
+          <p class="dark:text-slate-400 text-slate-500 text-sm mt-0.5">Financial operations, ledger intelligence, and enterprise customer context</p>
         </div>
-        <div class="flex items-center space-x-2">
-          <button onclick="triggerBenchmarkModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold flex items-center space-x-2 shadow-lg shadow-indigo-600/30">
-            <i data-lucide="trending-up" class="w-4 h-4"></i>
-            <span>Run Learning Benchmark</span>
-          </button>
-          <button onclick="fetchCrmData()" class="p-2 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 hover:text-indigo-500 shadow-sm">
+
+        <!-- Global Filters: Organization/Customer Selector & Time Range -->
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <!-- Org / Customer Selector -->
+          <div class="flex-1 md:flex-initial">
+            <select id="fin-org-selector" onchange="onFinanceOrgChange(this.value)" class="w-full md:w-64 dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-200 text-slate-800 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 font-semibold shadow-sm">
+              <option value="all">All Organizations (Consolidated)</option>
+              <option value="org_apex" selected>Apex Global Technologies (Healthy)</option>
+              <option value="cust1">Acme Corp &bull; AR &bull; Healthy</option>
+              <option value="cust2">Byte Foods &bull; AP &bull; In Review</option>
+              <option value="cust3">CloudScale Ltd &bull; AR &bull; Past Due</option>
+            </select>
+          </div>
+
+          <!-- Time Range -->
+          <select id="fin-time-range" onchange="loadFinanceRecords(0)" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 font-semibold shadow-sm">
+            <option value="30d">Last 30 Days</option>
+            <option value="qtd">Quarter to Date</option>
+            <option value="ytd">Year to Date</option>
+            <option value="all" selected>All Fiscal Periods</option>
+          </select>
+
+          <!-- Refresh -->
+          <button onclick="loadFinanceOverview(); loadFinanceRecords(0);" class="p-2 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 hover:text-indigo-500 shadow-sm" title="Refresh Finance Data">
             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
 
-      <!-- Top KPI Stat Counters -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="glass-panel p-5 rounded-2xl dark:border-slate-800 border-slate-200">
-          <span class="text-xs dark:text-slate-400 text-slate-500 font-medium">Enterprise Organizations</span>
-          <div class="mt-2 flex items-baseline justify-between">
-            <span id="stat-orgs" class="text-2xl font-black dark:text-white text-slate-900">3</span>
-            <span class="text-xs text-indigo-400 font-semibold font-mono">PostgreSQL</span>
+      <!-- Financial Snapshot (5 High-Signal Metrics) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mb-8">
+        <!-- 1. Cash Position -->
+        <div onclick="filterByDomain('cash')" class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 cursor-pointer transition-all hover:scale-[1.01]">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Cash Position</span>
+            <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
           </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="fin-kpi-cash" class="text-xl font-black dark:text-white text-slate-900">$18.45M</span>
+            <span id="fin-kpi-yield" class="text-[10px] font-mono text-emerald-400 font-bold">5.12% Yield</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Brex MM + SVB Checking</span>
         </div>
-        <div class="glass-panel p-5 rounded-2xl dark:border-slate-800 border-slate-200">
-          <span class="text-xs dark:text-slate-400 text-slate-500 font-medium">Finance Systems Synced</span>
-          <div class="mt-2 flex items-baseline justify-between">
-            <span id="stat-systems" class="text-2xl font-black dark:text-white text-slate-900">5</span>
-            <span class="text-xs text-emerald-400 font-semibold font-mono">100% Online</span>
+
+        <!-- 2. 13-Week Runway -->
+        <div onclick="filterByDomain('cash')" class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 cursor-pointer transition-all hover:scale-[1.01]">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Runway</span>
+            <i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i>
           </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="fin-kpi-runway" class="text-xl font-black dark:text-white text-slate-900">28.4 Mos</span>
+            <span class="text-[10px] font-mono text-indigo-400 font-bold">Burn: $650k</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Target > 18 Mos &bull; Healthy</span>
         </div>
-        <div class="glass-panel p-5 rounded-2xl dark:border-slate-800 border-slate-200">
-          <span class="text-xs dark:text-slate-400 text-slate-500 font-medium">Authoritative Policies</span>
-          <div class="mt-2 flex items-baseline justify-between">
-            <span id="stat-policies" class="text-2xl font-black dark:text-white text-slate-900">5</span>
-            <span class="text-xs text-purple-400 font-semibold font-mono">Versioned</span>
+
+        <!-- 3. Outstanding AR -->
+        <div onclick="filterByDomain('ar')" class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 cursor-pointer transition-all hover:scale-[1.01]">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Outstanding AR</span>
+            <i data-lucide="arrow-down-left" class="w-4 h-4 text-blue-400"></i>
           </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="fin-kpi-outstanding-ar" class="text-xl font-black dark:text-white text-slate-900">$5,050.00</span>
+            <span id="fin-kpi-open-inv" class="text-[10px] font-mono text-blue-400 font-bold">2 Open</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">DSO 31 Days &bull; Low Risk</span>
         </div>
-        <div class="glass-panel p-5 rounded-2xl dark:border-slate-800 border-slate-200">
-          <span class="text-xs dark:text-slate-400 text-slate-500 font-medium">Episodic Experiences Stored</span>
-          <div class="mt-2 flex items-baseline justify-between">
-            <span id="stat-experiences" class="text-2xl font-black dark:text-white text-slate-900">--</span>
-            <span class="text-xs text-emerald-400 font-semibold font-mono">Active Loop</span>
+
+        <!-- 4. Overdue AR -->
+        <div onclick="filterByDomain('ar'); filterByStatus('overdue');" class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 cursor-pointer transition-all hover:scale-[1.01]">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Overdue AR</span>
+            <i data-lucide="alert-circle" class="w-4 h-4 text-amber-400"></i>
           </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="fin-kpi-overdue-ar" class="text-xl font-black text-amber-400">$4,800.00</span>
+            <span class="text-[10px] font-mono text-amber-400 font-bold">INV-4471</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Tolerance check pending</span>
+        </div>
+
+        <!-- 5. Deferred Revenue -->
+        <div onclick="filterByDomain('revenue')" class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 cursor-pointer transition-all hover:scale-[1.01]">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Deferred Revenue</span>
+            <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="fin-kpi-deferred-rev" class="text-xl font-black dark:text-white text-slate-900">$135,000</span>
+            <span class="text-[10px] font-mono text-purple-400 font-bold">ASC 606</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Schedules Active &bull; REV-REC-01</span>
         </div>
       </div>
 
-      <!-- Tabbed CRM Tables: Customers, Systems, Policies, Records, Audit Events -->
+      <!-- Domain Selection Filter Pills -->
+      <div class="flex flex-wrap items-center gap-2 mb-6 pb-2 border-b dark:border-slate-800/60 border-slate-200">
+        <button onclick="filterByDomain('all')" id="fin-pill-all" class="fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/80 transition-all">All Domains</button>
+        <button onclick="filterByDomain('ar')" id="fin-pill-ar" class="fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-semibold dark:text-slate-300 text-slate-600 hover:dark:bg-slate-800 hover:bg-slate-100 transition-all">Accounts Receivable</button>
+        <button onclick="filterByDomain('ap')" id="fin-pill-ap" class="fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-semibold dark:text-slate-300 text-slate-600 hover:dark:bg-slate-800 hover:bg-slate-100 transition-all">Accounts Payable</button>
+        <button onclick="filterByDomain('cash')" id="fin-pill-cash" class="fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-semibold dark:text-slate-300 text-slate-600 hover:dark:bg-slate-800 hover:bg-slate-100 transition-all">Cash & Treasury</button>
+        <button onclick="filterByDomain('revenue')" id="fin-pill-revenue" class="fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-semibold dark:text-slate-300 text-slate-600 hover:dark:bg-slate-800 hover:bg-slate-100 transition-all">Revenue Schedules</button>
+        <button onclick="filterByDomain('close')" id="fin-pill-close" class="fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-semibold dark:text-slate-300 text-slate-600 hover:dark:bg-slate-800 hover:bg-slate-100 transition-all">Financial Close & JEs</button>
+      </div>
+
+      <!-- Main Layout: Left = Filterable Transactions Table (8 cols), Right = Activity & System Feeds (4 cols) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Left Column: Customers & Systems (6 cols) -->
-        <div class="lg:col-span-6 space-y-6">
+        <!-- Transactions Table (8 cols) -->
+        <div class="lg:col-span-8 flex flex-col space-y-4">
+          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl flex-1 flex flex-col">
+            
+            <!-- Table Header Bar: Search & Sub-filters -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+              <div>
+                <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
+                  <i data-lucide="receipt" class="w-4 h-4 text-indigo-400"></i>
+                  <span>Transactions & Ledger Records</span>
+                </h3>
+                <p class="text-[11px] dark:text-slate-400 text-slate-500">Live indexed records with line-level origin explanations</p>
+              </div>
 
-          <!-- Customer Accounts -->
-          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
-                <i data-lucide="users" class="w-4 h-4 text-indigo-400"></i>
-                <span>Client & Customer Directory</span>
-              </h3>
-              <span class="text-xs dark:text-slate-500 text-slate-400">Live Profiles</span>
+              <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <!-- Search Input -->
+                <div class="relative flex-1 sm:w-48">
+                  <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400"></i>
+                  <input id="fin-search-input" oninput="onFinanceSearch(this.value)" type="text" placeholder="Search ref or entity..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                </div>
+
+                <!-- Record Type Filter -->
+                <select id="fin-type-filter" onchange="loadFinanceRecords(0)" class="dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-slate-300 text-slate-700 text-xs rounded-xl px-2.5 py-1.5 focus:ring-2 focus:ring-indigo-500 font-medium">
+                  <option value="all">All Types</option>
+                  <option value="invoice">Invoices</option>
+                  <option value="payment">Payments</option>
+                  <option value="bill">Bills</option>
+                  <option value="journal_entry">Journal Entries</option>
+                  <option value="revenue_schedule">Revenue Schedules</option>
+                </select>
+              </div>
             </div>
-            <div id="crm-customers-list" class="space-y-3 max-h-72 overflow-y-auto pr-1">
-              <div class="p-3 text-xs text-slate-500 italic">Loading customer records from PostgreSQL...</div>
+
+            <!-- Transactions Table -->
+            <div class="overflow-x-auto flex-1">
+              <table class="w-full text-xs text-left">
+                <thead>
+                  <tr class="dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider text-[10px] border-b dark:border-slate-800 border-slate-200 pb-2">
+                    <th class="py-2.5 px-3">Date</th>
+                    <th class="py-2.5 px-3">Type</th>
+                    <th class="py-2.5 px-3">Reference ID</th>
+                    <th class="py-2.5 px-3">Entity / Counterparty</th>
+                    <th class="py-2.5 px-3 text-right">Amount</th>
+                    <th class="py-2.5 px-3">Status</th>
+                    <th class="py-2.5 px-3">System</th>
+                    <th class="py-2.5 px-3 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="fin-records-tbody" class="divide-y dark:divide-slate-800/60 divide-slate-100 font-mono">
+                  <tr>
+                    <td colspan="8" class="py-8 text-center text-slate-500 italic font-sans">
+                      <div class="w-6 h-6 mx-auto border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+                      Loading financial records from PostgreSQL...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
+            <!-- Table Pagination Bar -->
+            <div class="flex items-center justify-between pt-4 mt-4 border-t dark:border-slate-800 border-slate-200 text-xs">
+              <span id="fin-pagination-info" class="text-slate-500 font-medium">Showing 0 of 0 records</span>
+              <div class="flex items-center space-x-2">
+                <button id="fin-btn-prev" onclick="changeFinancePage(-1)" class="px-3 py-1 rounded-lg border dark:border-slate-800 border-slate-200 dark:text-slate-400 text-slate-600 disabled:opacity-40" disabled>Previous</button>
+                <span id="fin-page-num" class="font-bold dark:text-white text-slate-900">1</span>
+                <button id="fin-btn-next" onclick="changeFinancePage(1)" class="px-3 py-1 rounded-lg border dark:border-slate-800 border-slate-200 dark:text-slate-400 text-slate-600 disabled:opacity-40" disabled>Next</button>
+              </div>
+            </div>
+
           </div>
-
-          <!-- Connected Finance Systems -->
-          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
-                <i data-lucide="server" class="w-4 h-4 text-purple-400"></i>
-                <span>Connected Finance Systems</span>
-              </h3>
-              <span class="text-xs dark:text-slate-500 text-slate-400">Integrations</span>
-            </div>
-            <div id="crm-systems-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-              <div class="p-3 text-xs text-slate-500 italic">Loading systems...</div>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Right Column: Audit Trail & Policies (6 cols) -->
-        <div class="lg:col-span-6 space-y-6">
+        <!-- Right Panels: Activity Feed & Policies (4 cols) -->
+        <div class="lg:col-span-4 flex flex-col space-y-6">
 
-          <!-- Real-Time Audit Trail -->
-          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
-                <i data-lucide="file-text" class="w-4 h-4 text-emerald-400"></i>
-                <span>Compliance Audit Trail Journal</span>
+          <!-- Recent Financial Activity Feed -->
+          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b dark:border-slate-800 border-slate-200">
+              <h3 class="text-xs font-black dark:text-white text-slate-900 uppercase tracking-wider flex items-center space-x-2">
+                <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Recent Financial Activity</span>
               </h3>
-              <span class="text-xs dark:text-slate-500 text-slate-400 font-mono">Immutable</span>
+              <span class="text-[10px] text-emerald-400 font-mono font-bold">Real-Time Sync</span>
             </div>
-            <div id="crm-audit-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1 font-mono text-xs">
-              <div class="p-3 text-xs text-slate-500 italic font-sans">Loading audit events...</div>
+            <div id="fin-activity-feed" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+              <div class="p-3 text-xs text-slate-500 italic">Streaming live ledger updates...</div>
             </div>
           </div>
 
-          <!-- Active Finance Policies -->
-          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
-                <i data-lucide="book-marked" class="w-4 h-4 text-amber-400"></i>
-                <span>Authoritative Finance Controls & Policies</span>
+          <!-- Connected Financial Systems Health -->
+          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b dark:border-slate-800 border-slate-200">
+              <h3 class="text-xs font-black dark:text-white text-slate-900 uppercase tracking-wider flex items-center space-x-2">
+                <i data-lucide="server" class="w-3.5 h-3.5 text-purple-400"></i>
+                <span>Connected Finance Connectors</span>
               </h3>
-              <span class="text-xs dark:text-slate-500 text-slate-400">Corporate Governance</span>
+              <span class="text-[10px] text-purple-400 font-mono font-bold">5 Online</span>
             </div>
-            <div id="crm-policies-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-              <div class="p-3 text-xs text-slate-500 italic">Loading policies...</div>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800/80 border-slate-200 flex items-center justify-between">
+                <div>
+                  <div class="font-bold dark:text-white text-slate-900">NetSuite ERP</div>
+                  <div class="text-[10px] text-slate-500">GL, AR, AP, Invoices &bull; Latency 42ms</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">Connected</span>
+              </div>
+              <div class="p-2.5 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800/80 border-slate-200 flex items-center justify-between">
+                <div>
+                  <div class="font-bold dark:text-white text-slate-900">Stripe Billing</div>
+                  <div class="text-[10px] text-slate-500">Subscription & Remittances &bull; Webhook Active</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">Live</span>
+              </div>
+              <div class="p-2.5 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800/80 border-slate-200 flex items-center justify-between">
+                <div>
+                  <div class="font-bold dark:text-white text-slate-900">Brex Treasury</div>
+                  <div class="text-[10px] text-slate-500">Operating & Money Market &bull; Yield 5.12%</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">Live</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Corporate Governance Policies -->
+          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b dark:border-slate-800 border-slate-200">
+              <h3 class="text-xs font-black dark:text-white text-slate-900 uppercase tracking-wider flex items-center space-x-2">
+                <i data-lucide="shield" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>Corporate Governance Controls</span>
+              </h3>
+              <span class="text-[10px] text-amber-400 font-mono font-bold">SOX &bull; GAAP</span>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800/80 border-slate-200">
+                <div class="flex items-center justify-between font-bold dark:text-white text-slate-900">
+                  <span class="text-indigo-400 font-mono">SHORT-PAY-01</span>
+                  <span class="text-[10px] text-slate-500 font-mono">v2.1</span>
+                </div>
+                <p class="text-[11px] font-semibold dark:text-slate-300 text-slate-700 mt-0.5">Invoice Discrepancy & Tolerance Policy</p>
+                <p class="text-[10px] dark:text-slate-500 text-slate-400 mt-1">Auto-resolves discrepancies up to $500 with ledger verification.</p>
+              </div>
+              <div class="p-2.5 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800/80 border-slate-200">
+                <div class="flex items-center justify-between font-bold dark:text-white text-slate-900">
+                  <span class="text-indigo-400 font-mono">ESC-400</span>
+                  <span class="text-[10px] text-slate-500 font-mono">v1.2</span>
+                </div>
+                <p class="text-[11px] font-semibold dark:text-slate-300 text-slate-700 mt-0.5">Threshold & Exception Escalation Protocol</p>
+                <p class="text-[10px] dark:text-slate-500 text-slate-400 mt-1">Directs items >$10k or high-risk deductions to human controller.</p>
+              </div>
             </div>
           </div>
 
@@ -602,6 +767,319 @@
       </div>
 
     </section>
+
+    <!-- ==================== WORKSPACE 2: CUSTOMER EXECUTIVE ==================== -->
+    <section id="view-executive" class="view-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Customer Executive Header & Filter Bar -->
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-4 border-b dark:border-slate-800 border-slate-200">
+        <div>
+          <div class="flex items-center space-x-3">
+            <h2 class="text-2xl font-black dark:text-white text-slate-900 tracking-tight">Customer Executive</h2>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold dark:bg-purple-950 bg-purple-100 dark:text-purple-400 text-purple-800 border dark:border-purple-800/80 border-purple-300 flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+              <span>Workforce Supervision &bull; Continuous Learning</span>
+            </span>
+          </div>
+          <p class="dark:text-slate-400 text-slate-500 text-sm mt-0.5">Customer relationship intelligence, conversational audits, and continuous AI learning</p>
+        </div>
+
+        <!-- Executive Filters -->
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <!-- Customer Filter -->
+          <select id="exec-customer-filter" onchange="loadExecutiveInteractions(0)" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 font-semibold shadow-sm">
+            <option value="all">All Customers</option>
+            <option value="cust1">Alice Morgan (Apex Global)</option>
+            <option value="cust2">Bob Jenkins (Lumina Commerce)</option>
+            <option value="cust3">Charlie Davis (Meridian Health)</option>
+          </select>
+
+          <!-- Agent Tier Filter -->
+          <select id="exec-agent-filter" onchange="loadExecutiveInteractions(0)" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 font-semibold shadow-sm">
+            <option value="all">All Agent Tiers</option>
+            <option value="0">Orchestrator (Call Director)</option>
+            <option value="1">L1 Triage</option>
+            <option value="2">L2 AR/AP Specialist</option>
+            <option value="3">L3 Accounting Authority</option>
+            <option value="4">L4 Executive Controller</option>
+          </select>
+
+          <!-- Feedback Rating Filter -->
+          <select id="exec-feedback-filter" onchange="loadExecutiveInteractions(0)" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 font-semibold shadow-sm">
+            <option value="all">All Outcomes</option>
+            <option value="positive">👍 Positive Feedback</option>
+            <option value="negative">⚠️ Needs Review / Escalated</option>
+          </select>
+
+          <!-- Refresh -->
+          <button onclick="loadExecutiveOverview(); loadExecutiveInteractions(0); loadExecutiveLearning();" class="p-2 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 hover:text-indigo-500 shadow-sm" title="Refresh Workforce Status">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Compact Interaction Summary KPIs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mb-8">
+        <div class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200">
+          <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Customer Connections</span>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="exec-kpi-connections" class="text-xl font-black dark:text-white text-slate-900">87</span>
+            <span class="text-[10px] font-mono text-indigo-400 font-bold">100% Ingested</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Voice STT + Text Fallback</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200">
+          <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">First-Contact Resolution</span>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="exec-kpi-resolution" class="text-xl font-black text-emerald-400">94.1%</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">+6.2% DoD</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Resolved without escalation</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200">
+          <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Escalation Queue</span>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="exec-kpi-escalations" class="text-xl font-black dark:text-white text-slate-900">3.9%</span>
+            <span id="exec-kpi-queue" class="text-[10px] font-mono text-amber-400 font-bold">2 Pending Review</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Assigned to Controller</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200">
+          <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Customer Sentiment</span>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span id="exec-kpi-sentiment" class="text-xl font-black text-emerald-400">92.4%</span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">👍 48 / 👎 3</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Verified post-call ratings</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl dark:border-slate-800 border-slate-200">
+          <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider">Avg Resolution Time</span>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span class="text-xl font-black dark:text-white text-slate-900">1.4s</span>
+            <span class="text-[10px] font-mono text-indigo-400 font-bold">380ms Audio</span>
+          </div>
+          <span class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 block">Sub-second warm handoff</span>
+        </div>
+      </div>
+
+      <!-- Live AI Workforce Tiers Status (5 Agent Cards) -->
+      <div class="mb-8">
+        <h3 class="text-xs font-black dark:text-white text-slate-900 uppercase tracking-wider mb-3 flex items-center space-x-2">
+          <i data-lucide="cpu" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>AI Workforce Active Tiers &bull; Real-Time Specialization</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <!-- Tier 0 -->
+          <div class="p-3.5 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold dark:text-white text-slate-900">Orchestrator</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-400 border border-indigo-800">Tier 0</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Call Director & Triage</p>
+            <div class="mt-2 flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Online &bull; Direct Answer</span>
+            </div>
+          </div>
+
+          <!-- Tier 1 -->
+          <div class="p-3.5 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold dark:text-white text-slate-900">Finance Triage</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-950 text-blue-400 border border-blue-800">Tier 1</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">NetSuite Lookups & KB</p>
+            <div class="mt-2 flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>Online &bull; Read-Only</span>
+            </div>
+          </div>
+
+          <!-- Tier 2 -->
+          <div class="p-3.5 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold dark:text-white text-slate-900">AR/AP Specialist</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950 text-purple-400 border border-purple-800">Tier 2</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Short Pay & Deductions</p>
+            <div class="mt-2 flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>Online &bull; SHORT-PAY-01</span>
+            </div>
+          </div>
+
+          <!-- Tier 3 -->
+          <div class="p-3.5 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold dark:text-white text-slate-900">Accounting Auth</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800">Tier 3</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Budget Flux & Accruals</p>
+            <div class="mt-2 flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>Online &bull; Multi-System</span>
+            </div>
+          </div>
+
+          <!-- Tier 4 -->
+          <div class="p-3.5 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-800 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold dark:text-white text-slate-900">Exec Controller</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-950 text-red-400 border border-red-800">Tier 4</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Policy ESC-400 & Signoff</p>
+            <div class="mt-2 flex items-center space-x-1.5 text-[10px] text-indigo-400 font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+              <span>Standby &bull; Controller Review</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid: Recent Customer Interactions (Primary Feed) -->
+      <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl mb-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+          <div>
+            <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
+              <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i>
+              <span>Recent Customer Interactions & Handoffs</span>
+            </h3>
+            <p class="text-[11px] dark:text-slate-400 text-slate-500">Full auditable trace of every caller conversation, handoff sequence, and confirmed outcome</p>
+          </div>
+
+          <!-- Search filter for interactions -->
+          <div class="relative w-full sm:w-64">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400"></i>
+            <input id="exec-search-input" oninput="onExecutiveSearch(this.value)" type="text" placeholder="Filter interactions..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+          </div>
+        </div>
+
+        <!-- Interactions Feed List -->
+        <div id="exec-interactions-feed" class="space-y-3">
+          <div class="p-8 text-center text-slate-500 italic">
+            <div class="w-6 h-6 mx-auto border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+            Loading customer interactions from PostgreSQL...
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between pt-4 mt-4 border-t dark:border-slate-800 border-slate-200 text-xs">
+          <span id="exec-pagination-info" class="text-slate-500 font-medium">Showing 0 interactions</span>
+          <div class="flex items-center space-x-2">
+            <button id="exec-btn-prev" onclick="changeExecutivePage(-1)" class="px-3 py-1 rounded-lg border dark:border-slate-800 border-slate-200 dark:text-slate-400 text-slate-600 disabled:opacity-40" disabled>Previous</button>
+            <span id="exec-page-num" class="font-bold dark:text-white text-slate-900">1</span>
+            <button id="exec-btn-next" onclick="changeExecutivePage(1)" class="px-3 py-1 rounded-lg border dark:border-slate-800 border-slate-200 dark:text-slate-400 text-slate-600 disabled:opacity-40" disabled>Next</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-Column Learning & Human Guidance Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left: WHAT DID THE MODEL LEARN? (6 cols) -->
+        <div class="lg:col-span-6 flex flex-col space-y-4">
+          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl flex-1">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+              <div>
+                <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
+                  <i data-lucide="brain" class="w-4 h-4 text-purple-400"></i>
+                  <span>What Did The Model Learn?</span>
+                </h3>
+                <p class="text-[11px] dark:text-slate-400 text-slate-500">Persisted episodic experiences extracted from closed-loop reflections</p>
+              </div>
+              <span id="exec-learning-count" class="text-xs font-bold font-mono px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">Active</span>
+            </div>
+
+            <!-- Experiences Grid -->
+            <div id="exec-experiences-grid" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+              <div class="p-4 text-xs text-slate-500 italic">Querying episodic memory store...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: HUMAN GUIDANCE (6 cols) -->
+        <div class="lg:col-span-6 flex flex-col space-y-4">
+          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-xl flex-1">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+              <div>
+                <h3 class="text-sm font-black dark:text-white text-slate-900 flex items-center space-x-2">
+                  <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+                  <span>Human Guidance & Policy Injection</span>
+                </h3>
+                <p class="text-[11px] dark:text-slate-400 text-slate-500">Supervisor overrides and structured instructions guiding the AI workforce</p>
+              </div>
+              <span class="text-xs font-bold font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">Controller</span>
+            </div>
+
+            <!-- Submission Form -->
+            <form id="form-human-guidance" onsubmit="submitHumanGuidance(event)" class="space-y-3 mb-6 p-4 rounded-2xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[10px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 block mb-1">When Pattern Occurs</label>
+                  <input id="guidance-trigger" type="text" required placeholder="e.g., partial payments under $500" class="w-full text-xs px-3 py-1.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 font-medium">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 block mb-1">Domain</label>
+                  <select id="guidance-domain" class="w-full text-xs px-3 py-1.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 font-semibold">
+                    <option value="accounts_receivable">Accounts Receivable</option>
+                    <option value="accounts_payable">Accounts Payable</option>
+                    <option value="cash_treasury">Cash & Treasury</option>
+                    <option value="revenue_billing">Revenue & Billing</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[10px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 block mb-1">Prefer Agent Tier</label>
+                  <select id="guidance-tier" class="w-full text-xs px-3 py-1.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 font-semibold">
+                    <option value="1">Tier 1: Finance Triage</option>
+                    <option value="2" selected>Tier 2: AR / AP Specialist</option>
+                    <option value="3">Tier 3: Accounting Authority</option>
+                    <option value="4">Tier 4: Executive Controller</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 block mb-1">Target Action</label>
+                  <input id="guidance-action" type="text" required placeholder="e.g., Auto-apply SHORT-PAY-01 tolerance" class="w-full text-xs px-3 py-1.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 font-medium">
+                </div>
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 block mb-1">Supervisor Rationale</label>
+                <textarea id="guidance-rationale" rows="2" required placeholder="e.g., High-value enterprise account with verified contract discount history." class="w-full text-xs px-3 py-1.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-700 border-slate-300 dark:text-white text-slate-900 font-medium"></textarea>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <span id="guidance-status-msg" class="text-xs text-emerald-400 font-semibold"></span>
+                <button type="submit" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center space-x-1.5">
+                  <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                  <span>Save Human Guidance</span>
+                </button>
+              </div>
+            </form>
+
+            <!-- Active Guidance Rules Table -->
+            <div class="space-y-2">
+              <h4 class="text-[11px] font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider">Active & Proposed Rules</h4>
+              <div id="exec-guidance-table" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                <div class="p-3 text-xs text-slate-500 italic">Loading guidance rules...</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Legacy CRM View Anchor (for compatibility) -->
+    <div id="view-crm" class="hidden"></div>
 
   </main>
 
@@ -625,6 +1103,157 @@
       </div>
 
       <div id="benchmark-results" class="hidden space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- ==================== FINANCE RECORD DETAIL DRAWER ==================== -->
+  <div id="drawer-record-detail" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeRecordDrawer()"></div>
+    <div class="absolute inset-y-0 right-0 max-w-xl w-full glass-panel shadow-2xl p-6 overflow-y-auto border-l dark:border-slate-800 border-slate-200">
+      
+      <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+        <div>
+          <span id="drawer-record-type" class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-indigo-950 text-indigo-400 border border-indigo-800">Invoice</span>
+          <h3 id="drawer-record-title" class="text-lg font-black dark:text-white text-slate-900 mt-1">INV-4471</h3>
+          <p id="drawer-record-subtitle" class="text-xs dark:text-slate-400 text-slate-500">Acme Corp &bull; Synchronized from NetSuite ERP</p>
+        </div>
+        <button onclick="closeRecordDrawer()" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-6 text-xs">
+        
+        <!-- Snapshot Numbers -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/90 bg-slate-50 border dark:border-slate-800 border-slate-200 grid grid-cols-2 gap-4">
+          <div>
+            <span class="text-[10px] dark:text-slate-500 text-slate-400 uppercase font-bold block">Gross Amount</span>
+            <span id="drawer-record-amount" class="text-xl font-black font-mono text-emerald-400">$5,000.00</span>
+          </div>
+          <div>
+            <span class="text-[10px] dark:text-slate-500 text-slate-400 uppercase font-bold block">Current Status</span>
+            <span id="drawer-record-status" class="inline-block px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-amber-950 text-amber-400 border border-amber-800 mt-1">Short Payment</span>
+          </div>
+        </div>
+
+        <!-- Section: Where Did This Number Come From? -->
+        <div class="p-4 rounded-2xl dark:bg-indigo-950/30 bg-indigo-50/50 border dark:border-indigo-900/60 border-indigo-200">
+          <h4 class="font-bold text-indigo-400 flex items-center space-x-1.5 mb-1.5">
+            <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+            <span>Where did this number come from?</span>
+          </h4>
+          <p id="drawer-origin-text" class="dark:text-slate-300 text-slate-700 leading-relaxed font-medium">
+            Synchronized from NetSuite ERP billing schedule via webhook API. Originates from Master Services Agreement #MSA-2025-09.
+          </p>
+        </div>
+
+        <!-- Section: Linked Financial Records Chain -->
+        <div>
+          <h4 class="font-bold dark:text-white text-slate-900 uppercase tracking-wider text-[11px] mb-2 flex items-center space-x-1.5">
+            <i data-lucide="link" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>Linked Records Chain (Invoice &bull; Payment &bull; Adjustments)</span>
+          </h4>
+          <div id="drawer-related-records" class="space-y-2">
+            <div class="p-3 text-slate-500 italic">No linked records found.</div>
+          </div>
+        </div>
+
+        <!-- Section: Governing Policy Controls -->
+        <div>
+          <h4 class="font-bold dark:text-white text-slate-900 uppercase tracking-wider text-[11px] mb-2 flex items-center space-x-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Governing Policy & Tolerances</span>
+          </h4>
+          <div id="drawer-policy-card" class="p-3.5 rounded-2xl dark:bg-slate-900/90 bg-slate-50 border dark:border-slate-800 border-slate-200">
+            <div class="font-bold text-indigo-400 font-mono">SHORT-PAY-01</div>
+            <p class="font-semibold dark:text-slate-300 text-slate-700 mt-0.5">Invoice Discrepancy & Tolerance Policy</p>
+            <p class="text-[11px] dark:text-slate-400 text-slate-500 mt-1">Discrepancies ≤ $500 permitted for fast reconciliation if customer has >90 days prompt payment history.</p>
+          </div>
+        </div>
+
+        <!-- Section: Compliance Audit Trail -->
+        <div>
+          <h4 class="font-bold dark:text-white text-slate-900 uppercase tracking-wider text-[11px] mb-2 flex items-center space-x-1.5">
+            <i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Immutable Compliance Journal</span>
+          </h4>
+          <div id="drawer-audit-list" class="space-y-2 font-mono text-[11px] max-h-48 overflow-y-auto pr-1">
+            <div class="p-2 text-slate-500 italic font-sans">No audit events recorded for this reference.</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== CUSTOMER CONVERSATION & HANDOFF MODAL ==================== -->
+  <div id="modal-interaction-detail" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-panel max-w-3xl w-full rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-2xl max-h-[90vh] flex flex-col">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+        <div>
+          <div class="flex items-center space-x-2">
+            <h3 id="modal-inter-case-id" class="text-lg font-black dark:text-white text-slate-900">MX-1042</h3>
+            <span id="modal-inter-status-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">Resolved</span>
+          </div>
+          <p id="modal-inter-subtitle" class="text-xs dark:text-slate-400 text-slate-500 mt-0.5">Alice Morgan &bull; Apex Global Technologies &bull; Voice Call</p>
+        </div>
+        <button onclick="closeInteractionDetail()" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-5 text-xs pr-1">
+        
+        <!-- Audio Playback Bar if voice call -->
+        <div id="modal-inter-audio-container" class="hidden p-3 rounded-2xl dark:bg-slate-900 bg-slate-50 border dark:border-slate-800 border-slate-200 flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <i data-lucide="play-circle" class="w-5 h-5 text-indigo-400"></i>
+            <div>
+              <span class="font-bold dark:text-white text-slate-900 block">Voice Call Audio Playback</span>
+              <span class="text-[10px] text-slate-500">Synthesized via Smallest AI Lightning TTS (Female British Indian Voice)</span>
+            </div>
+          </div>
+          <audio id="modal-inter-audio-player" controls class="h-8 max-w-xs"></audio>
+        </div>
+
+        <!-- Speaker Turns (Full Pulse STT Transcript) -->
+        <div>
+          <h4 class="font-bold dark:text-white text-slate-900 uppercase tracking-wider text-[11px] mb-3 flex items-center space-x-1.5">
+            <i data-lucide="mic" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>Conversational Turn-By-Turn Transcript</span>
+          </h4>
+          <div id="modal-inter-transcript" class="space-y-3">
+            <!-- Rendered turns -->
+          </div>
+        </div>
+
+        <!-- Multi-Agent Warm Handoff Timeline -->
+        <div>
+          <h4 class="font-bold dark:text-white text-slate-900 uppercase tracking-wider text-[11px] mb-3 flex items-center space-x-1.5">
+            <i data-lucide="git-commit" class="w-3.5 h-3.5 text-purple-400"></i>
+            <span>Multi-Agent Warm Handoff Timeline</span>
+          </h4>
+          <div id="modal-inter-timeline" class="space-y-2.5 p-4 rounded-2xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200">
+            <!-- Timeline steps -->
+          </div>
+        </div>
+
+        <!-- Feedback & Satisfaction -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 flex items-center justify-between">
+          <div>
+            <span class="font-bold dark:text-white text-slate-900 block">Customer Feedback</span>
+            <span id="modal-inter-feedback-reason" class="text-[11px] text-slate-400">Saved 45 min investigating short-payment deduction.</span>
+          </div>
+          <div id="modal-inter-rating-badge" class="text-sm font-bold text-emerald-400">
+            👍 Positive
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 
@@ -679,6 +1308,7 @@
 
     // View Routing
     function switchView(viewName) {
+      if (viewName === 'crm') viewName = 'finance';
       currentView = viewName;
       document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
       const target = document.getElementById(`view-${viewName}`);
@@ -693,8 +1323,13 @@
       }
 
       window.location.hash = viewName;
-      if (viewName === 'crm') {
-        fetchCrmData();
+      if (viewName === 'finance') {
+        loadFinanceOverview();
+        loadFinanceRecords(0);
+      } else if (viewName === 'executive') {
+        loadExecutiveOverview();
+        loadExecutiveInteractions(0);
+        loadExecutiveLearning();
       }
       lucide.createIcons();
     }
@@ -1298,84 +1933,629 @@
       `;
     }
 
-    // ==================== CRM DATA FETCHING ====================
-    async function fetchCrmData() {
+    // ==================== WORKSPACE 1: FINANCE OPS LOGIC ====================
+    let finCurrentOrg = 'all';
+    let finCurrentDomain = 'all';
+    let finCurrentType = 'all';
+    let finCurrentStatus = 'all';
+    let finSearchQuery = '';
+    let finCurrentPage = 0;
+    const FIN_PAGE_SIZE = 15;
+
+    async function loadFinanceOverview(orgId = finCurrentOrg) {
       try {
-        const res = await fetch('/api/crm/data');
+        const res = await fetch(`/api/finance/overview?org_id=${orgId}`);
         const data = await res.json();
+        
+        // 1. Snapshot KPIs
+        const snap = data.snapshot || {};
+        if (snap.cash_position !== undefined) {
+          const cashM = (snap.cash_position / 1000000).toFixed(2);
+          document.getElementById('fin-kpi-cash').innerText = `$${cashM}M`;
+        }
+        if (snap.money_market_yield) {
+          document.getElementById('fin-kpi-yield').innerText = `${snap.money_market_yield} Yield`;
+        }
+        if (snap.runway_months !== undefined) {
+          document.getElementById('fin-kpi-runway').innerText = `${snap.runway_months} Mos`;
+        }
+        if (snap.outstanding_ar !== undefined) {
+          document.getElementById('fin-kpi-outstanding-ar').innerText = `$${Number(snap.outstanding_ar).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+        if (snap.open_invoices_count !== undefined) {
+          document.getElementById('fin-kpi-open-inv').innerText = `${snap.open_invoices_count} Open`;
+        }
+        if (snap.overdue_ar !== undefined) {
+          document.getElementById('fin-kpi-overdue-ar').innerText = `$${Number(snap.overdue_ar).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+        if (snap.deferred_revenue !== undefined) {
+          document.getElementById('fin-kpi-deferred-rev').innerText = `$${Number(snap.deferred_revenue).toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+        }
 
-        // 1. Customers List
-        const custList = document.getElementById('crm-customers-list');
-        custList.innerHTML = '';
-        (data.customers || []).forEach(c => {
-          const card = document.createElement('div');
-          card.className = 'p-3 rounded-xl dark:bg-slate-900 bg-slate-50 border dark:border-slate-800 border-slate-200 hover:border-indigo-500 transition text-xs';
-          card.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="font-bold dark:text-white text-slate-900">${c.name}</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-900/40 text-indigo-400 border border-indigo-700/40 uppercase">${c.account_status || 'Active'}</span>
-            </div>
-            <p class="dark:text-slate-400 text-slate-500 text-[11px] mt-0.5">${c.role || 'Finance Contact'} &bull; ${c.email}</p>
-          `;
-          custList.appendChild(card);
-        });
+        // 2. Activity Feed
+        const feed = document.getElementById('fin-activity-feed');
+        feed.innerHTML = '';
+        const acts = data.recent_activity || [];
+        if (acts.length === 0) {
+          feed.innerHTML = '<div class="p-3 text-xs text-slate-500 italic">No recent activity for this organization.</div>';
+        } else {
+          acts.forEach(a => {
+            const row = document.createElement('div');
+            row.className = 'p-2.5 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200 flex items-center justify-between text-xs hover:border-indigo-500/40 cursor-pointer transition';
+            row.onclick = () => openRecordDrawer(a.external_id || a.id);
+            
+            const isCredit = ['payment', 'cash_balance'].includes(a.record_type);
+            const amtColor = isCredit ? 'text-emerald-400' : 'text-slate-200';
+            const amtSign = isCredit ? '+' : '';
 
-        // 2. Finance Systems
-        const sysList = document.getElementById('crm-systems-list');
-        sysList.innerHTML = '';
-        (data.finance_systems || []).forEach(s => {
-          const card = document.createElement('div');
-          card.className = 'p-2.5 rounded-xl dark:bg-slate-900 bg-slate-50 border dark:border-slate-800 border-slate-200 flex items-center justify-between text-xs';
-          card.innerHTML = `
-            <div>
-              <span class="font-bold dark:text-white text-slate-900">${s.name}</span>
-              <span class="text-[10px] dark:text-slate-500 text-slate-400 block">${s.system_type} (${s.provider})</span>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">SYNCED</span>
-          `;
-          sysList.appendChild(card);
-        });
+            row.innerHTML = `
+              <div class="flex items-center space-x-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="${getRecordIcon(a.record_type)}" class="w-3.5 h-3.5 text-indigo-400"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="font-bold dark:text-white text-slate-900 truncate">${a.external_id} &bull; ${a.entity_name}</div>
+                  <div class="text-[10px] text-slate-500 font-mono">${a.transaction_date || 'Recent'} &bull; ${a.record_type.replace('_', ' ')}</div>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0 ml-2">
+                <div class="font-bold font-mono ${amtColor}">${amtSign}$${Number(a.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold uppercase ${getStatusBadgeClass(a.status)}">${a.status}</span>
+              </div>
+            `;
+            feed.appendChild(row);
+          });
+        }
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Finance overview error:", err);
+      }
+    }
 
-        // 3. Audit Journal
-        const audList = document.getElementById('crm-audit-list');
-        audList.innerHTML = '';
-        (data.audit_events || []).forEach(a => {
-          const row = document.createElement('div');
-          row.className = 'p-2 rounded dark:bg-slate-900/60 bg-slate-100 border dark:border-slate-800 border-slate-200';
-          row.innerHTML = `
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="text-indigo-400 font-bold">${a.action}</span>
-              <span class="dark:text-slate-500 text-slate-400 text-[10px]">${a.created_at ? a.created_at.slice(11, 19) : 'Just now'}</span>
-            </div>
-            <div class="text-[10px] dark:text-slate-400 text-slate-500 mt-0.5 truncate">${JSON.stringify(a.details)}</div>
-          `;
-          audList.appendChild(row);
-        });
+    function getRecordIcon(type) {
+      if (type === 'invoice') return 'file-text';
+      if (type === 'payment') return 'check-circle-2';
+      if (type === 'bill') return 'receipt';
+      if (type === 'journal_entry') return 'book-open';
+      if (type === 'revenue_schedule') return 'pie-chart';
+      return 'credit-card';
+    }
 
-        // 4. Policies
-        const polList = document.getElementById('crm-policies-list');
-        polList.innerHTML = '';
-        (data.policies || []).forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'p-2.5 rounded-xl dark:bg-slate-900 bg-slate-50 border dark:border-slate-800 border-slate-200 text-xs';
-          card.innerHTML = `
-            <div class="flex items-center justify-between font-bold dark:text-white text-slate-900">
-              <span class="text-indigo-400">${p.policy_code}</span>
-              <span class="text-[10px] font-mono dark:text-slate-400 text-slate-500">${p.version || 'v1.0'}</span>
-            </div>
-            <p class="text-[11px] font-semibold dark:text-slate-300 text-slate-700 mt-0.5">${p.name}</p>
-            <p class="text-[10px] dark:text-slate-500 text-slate-400 mt-1 line-clamp-2">${p.description}</p>
-          `;
-          polList.appendChild(card);
-        });
+    function getStatusBadgeClass(status) {
+      const s = (status || '').toLowerCase();
+      if (s === 'paid' || s === 'matched' || s === 'posted') return 'bg-emerald-950 text-emerald-400 border border-emerald-800';
+      if (s === 'partial' || s === 'open' || s === 'pending') return 'bg-amber-950 text-amber-400 border border-amber-800';
+      if (s === 'overdue' || s === 'disputed' || s === 'failed') return 'bg-red-950 text-red-400 border border-red-800';
+      return 'bg-slate-800 text-slate-300';
+    }
 
-        // 5. Stat Counter
-        document.getElementById('stat-experiences').innerText = (data.experiences || []).length;
+    async function loadFinanceRecords(page = 0) {
+      finCurrentPage = page;
+      const typeSel = document.getElementById('fin-type-filter');
+      if (typeSel) finCurrentType = typeSel.value;
+      
+      const tbody = document.getElementById('fin-records-tbody');
+      tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500 italic"><div class="w-6 h-6 mx-auto border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>Loading records...</td></tr>`;
+
+      try {
+        const offset = page * FIN_PAGE_SIZE;
+        const url = `/api/finance/records?domain=${finCurrentDomain}&type=${finCurrentType}&status=${finCurrentStatus}&org_id=${finCurrentOrg}&q=${encodeURIComponent(finSearchQuery)}&limit=${FIN_PAGE_SIZE}&offset=${offset}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const records = data.records || [];
+        const total = data.total || 0;
+
+        tbody.innerHTML = '';
+        if (records.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500 italic">No financial records matched criteria.</td></tr>`;
+        } else {
+          records.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.className = "hover:dark:bg-slate-900/60 hover:bg-slate-50 transition cursor-pointer";
+            tr.onclick = () => openRecordDrawer(r.external_id || r.id);
+
+            const isCredit = ['payment', 'cash_balance'].includes(r.record_type);
+            const amtColor = isCredit ? 'text-emerald-400' : 'text-slate-200';
+
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 dark:text-slate-400 text-slate-500 font-mono text-[11px]">${r.transaction_date || '-'}</td>
+              <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700 font-mono">${r.record_type.replace('_', ' ')}</span></td>
+              <td class="py-2.5 px-3 font-bold text-indigo-400 font-mono">${r.external_id}</td>
+              <td class="py-2.5 px-3 dark:text-white text-slate-900 font-sans font-semibold">${r.entity_name || r.org_name || '-'}</td>
+              <td class="py-2.5 px-3 text-right font-bold font-mono ${amtColor}">$${Number(r.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+              <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase font-mono ${getStatusBadgeClass(r.status)}">${r.status}</span></td>
+              <td class="py-2.5 px-3 dark:text-slate-400 text-slate-500 text-[11px] font-sans">${r.system_name || 'ERP'}</td>
+              <td class="py-2.5 px-3 text-center">
+                <button onclick="event.stopPropagation(); openRecordDrawer('${r.external_id || r.id}');" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 hover:bg-indigo-900">Inspect</button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        const start = total > 0 ? (offset + 1) : 0;
+        const end = Math.min(offset + FIN_PAGE_SIZE, total);
+        document.getElementById('fin-pagination-info').innerText = `Showing ${start}-${end} of ${total} records`;
+        document.getElementById('fin-page-num').innerText = (page + 1);
+        document.getElementById('fin-btn-prev').disabled = (page === 0);
+        document.getElementById('fin-btn-next').disabled = !data.has_more;
 
         lucide.createIcons();
       } catch (err) {
-        console.error("CRM fetch error:", err);
+        console.error("Finance records error:", err);
       }
+    }
+
+    function changeFinancePage(delta) {
+      loadFinanceRecords(Math.max(0, finCurrentPage + delta));
+    }
+
+    function onFinanceOrgChange(val) {
+      finCurrentOrg = val;
+      loadFinanceOverview(val);
+      loadFinanceRecords(0);
+    }
+
+    function filterByDomain(domain) {
+      finCurrentDomain = domain;
+      document.querySelectorAll('.fin-domain-pill').forEach(b => {
+        b.className = "fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-semibold dark:text-slate-300 text-slate-600 hover:dark:bg-slate-800 hover:bg-slate-100 transition-all";
+      });
+      const activePill = document.getElementById(`fin-pill-${domain}`);
+      if (activePill) {
+        activePill.className = "fin-domain-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/80 transition-all";
+      }
+      loadFinanceRecords(0);
+    }
+
+    function filterByStatus(status) {
+      finCurrentStatus = status;
+      loadFinanceRecords(0);
+    }
+
+    let finSearchTimer = null;
+    function onFinanceSearch(q) {
+      finSearchQuery = q;
+      clearTimeout(finSearchTimer);
+      finSearchTimer = setTimeout(() => {
+        loadFinanceRecords(0);
+      }, 250);
+    }
+
+    async function openRecordDrawer(refOrId) {
+      const drawer = document.getElementById('drawer-record-detail');
+      drawer.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/finance/record/${refOrId}`);
+        const data = await res.json();
+        const rec = data.record || {};
+
+        document.getElementById('drawer-record-type').innerText = rec.record_type || 'Record';
+        document.getElementById('drawer-record-title').innerText = rec.external_id || refOrId;
+        document.getElementById('drawer-record-subtitle').innerText = `${rec.entity_name || 'Enterprise'} &bull; ${rec.system_name || 'ERP'}`;
+        document.getElementById('drawer-record-amount').innerText = `$${Number(rec.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        
+        const stBadge = document.getElementById('drawer-record-status');
+        stBadge.innerText = rec.status || 'Active';
+        stBadge.className = `inline-block px-2 py-0.5 rounded text-[10px] font-bold font-mono ${getStatusBadgeClass(rec.status)}`;
+
+        document.getElementById('drawer-origin-text').innerText = data.origin_explanation || "Synchronized from financial system.";
+
+        const relContainer = document.getElementById('drawer-related-records');
+        relContainer.innerHTML = '';
+        const related = data.related_records || [];
+        if (related.length === 0) {
+          relContainer.innerHTML = '<div class="p-3 text-slate-500 italic">No linked transaction records in ledger chain.</div>';
+        } else {
+          related.forEach(rel => {
+            const rcard = document.createElement('div');
+            rcard.className = 'p-3 rounded-xl dark:bg-slate-900 bg-slate-50 border dark:border-slate-800 border-slate-200 flex items-center justify-between';
+            rcard.innerHTML = `
+              <div>
+                <span class="text-indigo-400 font-bold font-mono">${rel.external_id}</span>
+                <span class="text-[10px] text-slate-500 block uppercase font-mono">${rel.record_type} &bull; ${rel.transaction_date || ''}</span>
+              </div>
+              <div class="text-right">
+                <span class="font-bold font-mono dark:text-white text-slate-900">$${Number(rel.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span class="block text-[9px] font-mono ${getStatusBadgeClass(rel.status)}">${rel.status}</span>
+              </div>
+            `;
+            relContainer.appendChild(rcard);
+          });
+        }
+
+        const polCard = document.getElementById('drawer-policy-card');
+        const pol = data.policy;
+        if (pol) {
+          polCard.innerHTML = `
+            <div class="font-bold text-indigo-400 font-mono">${pol.policy_code} (v${pol.version || '1.0'})</div>
+            <p class="font-semibold dark:text-slate-300 text-slate-700 mt-0.5">${pol.name}</p>
+            <p class="text-[11px] dark:text-slate-400 text-slate-500 mt-1">${pol.description}</p>
+          `;
+        } else {
+          polCard.innerHTML = `<div class="text-slate-500 italic">Standard GAAP compliance controls apply.</div>`;
+        }
+
+        const audList = document.getElementById('drawer-audit-list');
+        audList.innerHTML = '';
+        const auds = data.audit_events || [];
+        if (auds.length === 0) {
+          audList.innerHTML = '<div class="p-2 text-slate-500 italic font-sans">No audit events logged.</div>';
+        } else {
+          auds.forEach(a => {
+            const it = document.createElement('div');
+            it.className = 'p-2 rounded dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200';
+            it.innerHTML = `
+              <div class="flex items-center justify-between text-indigo-400 font-bold text-[10px]">
+                <span>${a.action}</span>
+                <span class="text-slate-500">${a.created_at ? a.created_at.slice(11, 19) : ''}</span>
+              </div>
+              <div class="text-[10px] text-slate-400 mt-0.5 truncate">${JSON.stringify(a.details || {})}</div>
+            `;
+            audList.appendChild(it);
+          });
+        }
+
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Error opening record drawer:", err);
+      }
+    }
+
+    function closeRecordDrawer() {
+      document.getElementById('drawer-record-detail').classList.add('hidden');
+    }
+
+    // ==================== WORKSPACE 2: CUSTOMER EXECUTIVE LOGIC ====================
+    let execCurrentPage = 0;
+    const EXEC_PAGE_SIZE = 10;
+    let execSearchQuery = '';
+
+    async function loadExecutiveOverview() {
+      try {
+        const res = await fetch('/api/executive/overview');
+        const data = await res.json();
+        const k = data.kpis || {};
+
+        document.getElementById('exec-kpi-connections').innerText = k.total_cases || 87;
+        document.getElementById('exec-kpi-resolution').innerText = `${k.resolution_rate || 94.1}%`;
+        document.getElementById('exec-kpi-escalations').innerText = `${k.escalation_rate || 3.9}%`;
+        document.getElementById('exec-kpi-queue').innerText = `${k.human_review_queue || 2} Pending Review`;
+        document.getElementById('exec-kpi-sentiment').innerText = `${k.avg_score || 92.4}%`;
+      } catch (err) {
+        console.error("Executive overview error:", err);
+      }
+    }
+
+    async function loadExecutiveInteractions(page = 0) {
+      execCurrentPage = page;
+      const custFilter = document.getElementById('exec-customer-filter').value;
+      const tierFilter = document.getElementById('exec-agent-filter').value;
+      const feedFilter = document.getElementById('exec-feedback-filter').value;
+
+      const feed = document.getElementById('exec-interactions-feed');
+      feed.innerHTML = `<div class="p-8 text-center text-slate-500 italic"><div class="w-6 h-6 mx-auto border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>Loading customer interactions...</div>`;
+
+      try {
+        const offset = page * EXEC_PAGE_SIZE;
+        const url = `/api/executive/interactions?customer_id=${custFilter}&tier=${tierFilter}&rating=${feedFilter}&q=${encodeURIComponent(execSearchQuery)}&limit=${EXEC_PAGE_SIZE}&offset=${offset}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const interactions = data.interactions || [];
+        const total = data.total || 0;
+
+        feed.innerHTML = '';
+        if (interactions.length === 0) {
+          feed.innerHTML = '<div class="p-8 text-center text-slate-500 italic">No customer interactions found matching criteria.</div>';
+        } else {
+          interactions.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 transition cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+            card.onclick = () => openInteractionDetail(item.case_id);
+
+            const isResolved = (item.status || '').toLowerCase() === 'resolved';
+            const statusClass = isResolved ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800';
+
+            const fb = item.feedback_rating;
+            let fbBadge = `<span class="text-slate-500 font-mono text-[10px]">No feedback</span>`;
+            if (fb === 'positive') {
+              fbBadge = `<span class="text-emerald-400 font-bold flex items-center space-x-1"><span>👍</span><span>Positive (${item.feedback_reason ? item.feedback_reason.slice(0, 25) : 'Approved'})</span></span>`;
+            } else if (fb === 'negative') {
+              fbBadge = `<span class="text-red-400 font-bold flex items-center space-x-1"><span>⚠️</span><span>Needs Review</span></span>`;
+            }
+
+            card.innerHTML = `
+              <div class="flex items-start space-x-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                  ${(item.customer_name || 'C').slice(0, 2).toUpperCase()}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center space-x-2">
+                    <span class="font-bold dark:text-white text-slate-900 text-sm">${item.customer_name || 'Enterprise Customer'}</span>
+                    <span class="text-[10px] text-slate-500">&bull; ${item.org_name || 'Apex Global'}</span>
+                    <span class="text-[10px] font-mono dark:text-slate-400 text-slate-500">${item.created_at ? item.created_at.slice(11, 16) : 'Recent'}</span>
+                  </div>
+                  <p class="dark:text-slate-300 text-slate-700 text-xs font-medium mt-1 line-clamp-1">"${item.description || item.title}"</p>
+                  <div class="flex flex-wrap items-center gap-2 mt-2">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 flex items-center space-x-1">
+                      <i data-lucide="git-merge" class="w-3 h-3"></i>
+                      <span>${item.agent_path || 'Orchestrator → Specialist'}</span>
+                    </span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase font-mono ${statusClass}">${item.status || 'Resolved'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto flex-shrink-0">
+                <div class="text-xs">${fbBadge}</div>
+                <button onclick="event.stopPropagation(); openInteractionDetail('${item.case_id}');" class="mt-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center space-x-1">
+                  <span>View Transcript</span>
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            `;
+            feed.appendChild(card);
+          });
+        }
+
+        const start = total > 0 ? (offset + 1) : 0;
+        const end = Math.min(offset + EXEC_PAGE_SIZE, total);
+        document.getElementById('exec-pagination-info').innerText = `Showing ${start}-${end} of ${total} interactions`;
+        document.getElementById('exec-page-num').innerText = (page + 1);
+        document.getElementById('exec-btn-prev').disabled = (page === 0);
+        document.getElementById('exec-btn-next').disabled = !data.has_more;
+
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Executive interactions error:", err);
+      }
+    }
+
+    function changeExecutivePage(delta) {
+      loadExecutiveInteractions(Math.max(0, execCurrentPage + delta));
+    }
+
+    let execSearchTimer = null;
+    function onExecutiveSearch(q) {
+      execSearchQuery = q;
+      clearTimeout(execSearchTimer);
+      execSearchTimer = setTimeout(() => {
+        loadExecutiveInteractions(0);
+      }, 250);
+    }
+
+    async function openInteractionDetail(caseId) {
+      const modal = document.getElementById('modal-interaction-detail');
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/executive/interaction/${caseId}`);
+        const data = await res.json();
+        const c = data.case || {};
+
+        document.getElementById('modal-inter-case-id').innerText = c.id || caseId;
+        const stBadge = document.getElementById('modal-inter-status-badge');
+        stBadge.innerText = c.status || 'Resolved';
+        stBadge.className = `text-[10px] px-2 py-0.5 rounded-full font-bold uppercase font-mono ${getStatusBadgeClass(c.status)}`;
+
+        document.getElementById('modal-inter-subtitle').innerText = `${c.customer_name || 'Alice Morgan'} &bull; ${c.org_name || 'Apex Global'} &bull; Priority: ${c.priority || 'Medium'}`;
+
+        const audioContainer = document.getElementById('modal-inter-audio-container');
+        const audioPlayer = document.getElementById('modal-inter-audio-player');
+        const audioTurn = (data.turns || []).find(t => t.audio_url);
+        if (audioTurn && audioTurn.audio_url) {
+          audioContainer.classList.remove('hidden');
+          audioPlayer.src = audioTurn.audio_url;
+        } else {
+          audioContainer.classList.add('hidden');
+          audioPlayer.src = '';
+        }
+
+        const tContainer = document.getElementById('modal-inter-transcript');
+        tContainer.innerHTML = '';
+        const turns = data.turns || [];
+        if (turns.length === 0) {
+          tContainer.innerHTML = `
+            <div class="p-3 rounded-2xl dark:bg-slate-900 bg-slate-100 border dark:border-slate-800 border-slate-200">
+              <span class="text-[10px] font-bold text-indigo-400 block mb-1">Customer (Pulse STT)</span>
+              <p class="dark:text-white text-slate-900">${c.description || 'Customer inquiry'}</p>
+            </div>
+            <div class="p-3 rounded-2xl dark:bg-indigo-950/40 bg-indigo-50 border dark:border-indigo-800/80 border-indigo-200">
+              <span class="text-[10px] font-bold text-purple-400 block mb-1">Specialist Resolution</span>
+              <p class="dark:text-white text-slate-900">${c.resolution ? (JSON.parse(c.resolution).response_text || 'Case resolved') : 'Case processed successfully.'}</p>
+            </div>
+          `;
+        } else {
+          turns.forEach(t => {
+            const isCust = t.speaker === 'customer';
+            const box = document.createElement('div');
+            box.className = isCust 
+              ? 'p-3 rounded-2xl dark:bg-slate-900 bg-slate-100 border dark:border-slate-800 border-slate-200' 
+              : 'p-3 rounded-2xl dark:bg-indigo-950/40 bg-indigo-50 border dark:border-indigo-800/80 border-indigo-200';
+            
+            const speakerLabel = isCust 
+              ? '<span class="text-indigo-400 font-bold">Caller / Customer</span> &bull; <span class="text-[10px] text-slate-500 font-mono">Smallest AI Pulse STT</span>' 
+              : (t.speaker === 'orchestrator' ? '<span class="text-purple-400 font-bold">Orchestrator (Call Director &bull; Tier 0)</span>' : `<span class="text-emerald-400 font-bold">Specialist (Tier ${t.agent_tier || 2})</span>`);
+
+            box.innerHTML = `
+              <div class="text-[10px] mb-1 flex items-center justify-between">
+                <div>${speakerLabel}</div>
+                <div class="text-slate-500 font-mono text-[10px]">${t.latency_ms ? t.latency_ms + 'ms' : ''}</div>
+              </div>
+              <p class="dark:text-white text-slate-900 font-medium leading-relaxed">${t.transcript}</p>
+            `;
+            tContainer.appendChild(box);
+          });
+        }
+
+        const timeContainer = document.getElementById('modal-inter-timeline');
+        timeContainer.innerHTML = '';
+        (data.timeline || []).forEach((step, idx) => {
+          const sRow = document.createElement('div');
+          sRow.className = 'flex items-start space-x-3 text-xs';
+          sRow.innerHTML = `
+            <div class="w-6 h-6 rounded-full bg-indigo-950 border border-indigo-700 flex items-center justify-center font-mono font-bold text-indigo-300 text-[10px] flex-shrink-0">
+              ${idx + 1}
+            </div>
+            <div>
+              <div class="font-bold dark:text-white text-slate-900 flex items-center space-x-2">
+                <span>${step.step}</span>
+                <span class="text-[10px] text-indigo-400 font-mono font-normal">(${step.actor})</span>
+                ${step.confidence ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 font-mono font-bold">${Math.round(step.confidence * 100)}% Conf</span>` : ''}
+              </div>
+              <p class="text-[11px] dark:text-slate-400 text-slate-600 mt-0.5">${step.summary}</p>
+            </div>
+          `;
+          timeContainer.appendChild(sRow);
+        });
+
+        const fbRating = c.feedback_rating;
+        const fbBadge = document.getElementById('modal-inter-rating-badge');
+        if (fbRating === 'positive') {
+          fbBadge.innerHTML = '👍 Positive';
+          fbBadge.className = 'text-sm font-bold text-emerald-400';
+          document.getElementById('modal-inter-feedback-reason').innerText = c.feedback_reason || "Customer approved resolution.";
+        } else if (fbRating === 'negative') {
+          fbBadge.innerHTML = '⚠️ Flagged for Review';
+          fbBadge.className = 'text-sm font-bold text-red-400';
+          document.getElementById('modal-inter-feedback-reason').innerText = c.feedback_reason || "Customer marked discrepancy.";
+        } else {
+          fbBadge.innerHTML = 'No rating';
+          fbBadge.className = 'text-sm font-bold text-slate-500';
+          document.getElementById('modal-inter-feedback-reason').innerText = "Feedback pending.";
+        }
+
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Error loading interaction detail:", err);
+      }
+    }
+
+    function closeInteractionDetail() {
+      document.getElementById('modal-interaction-detail').classList.add('hidden');
+      const audioPlayer = document.getElementById('modal-inter-audio-player');
+      if (audioPlayer) audioPlayer.pause();
+    }
+
+    async function loadExecutiveLearning() {
+      try {
+        const res = await fetch('/api/executive/learning');
+        const data = await res.json();
+
+        const expGrid = document.getElementById('exec-experiences-grid');
+        expGrid.innerHTML = '';
+        const exps = data.experiences || [];
+        document.getElementById('exec-learning-count').innerText = `${exps.length} Experiences`;
+
+        if (exps.length === 0) {
+          expGrid.innerHTML = '<div class="p-4 text-xs text-slate-500 italic">No learned pattern yet.</div>';
+        } else {
+          exps.forEach(e => {
+            const card = document.createElement('div');
+            card.className = 'p-3.5 rounded-2xl dark:bg-slate-900/90 bg-slate-50 border dark:border-slate-800 border-slate-200 text-xs space-y-1.5';
+            card.innerHTML = `
+              <div class="flex items-center justify-between">
+                <span class="text-indigo-400 font-bold font-mono uppercase text-[10px]">${(e.domain || 'finance').replace('_', ' ')}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-800 font-bold">${Math.round((e.confidence || 0.95) * 100)}% Confidence</span>
+              </div>
+              <p class="font-bold dark:text-white text-slate-900">Situation: <span class="font-normal text-slate-300">${e.situation}</span></p>
+              ${e.what_worked ? `<p class="text-[11px] text-emerald-400"><b>What worked:</b> ${e.what_worked}</p>` : ''}
+              ${e.what_failed ? `<p class="text-[11px] text-red-400"><b>What failed:</b> ${e.what_failed}</p>` : ''}
+              <div class="p-2 rounded-xl dark:bg-purple-950/30 bg-purple-50 border dark:border-purple-900/60 border-purple-200 text-[11px] dark:text-purple-300 text-purple-900 font-medium">
+                <b>Lesson:</b> ${e.lesson}
+              </div>
+            `;
+            expGrid.appendChild(card);
+          });
+        }
+
+        const gTable = document.getElementById('exec-guidance-table');
+        gTable.innerHTML = '';
+        const guides = data.guidance || [];
+        if (guides.length === 0) {
+          gTable.innerHTML = '<div class="p-3 text-xs text-slate-500 italic">No human guidance rules active yet. Add one above!</div>';
+        } else {
+          guides.forEach(g => {
+            const isApproved = g.approval_status === 'approved';
+            const gRow = document.createElement('div');
+            gRow.className = 'p-3 rounded-xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200 flex items-start justify-between gap-3 text-xs';
+            gRow.innerHTML = `
+              <div class="min-w-0">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-indigo-400 font-mono text-[11px]">${g.trigger_pattern}</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-indigo-950 text-indigo-300">Tier ${g.recommended_tier || 2}</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${isApproved ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">${g.approval_status}</span>
+                </div>
+                <p class="dark:text-slate-300 text-slate-700 font-semibold text-[11px] mt-1">${g.action}</p>
+                <p class="text-[10px] text-slate-500 mt-0.5 italic">Rationale: ${g.rationale || 'Executive override'}</p>
+              </div>
+              <div class="flex-shrink-0">
+                ${!isApproved ? `<button onclick="approveGuidance('${g.id}')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 hover:bg-emerald-900">Approve</button>` : `<span class="text-emerald-400 font-bold text-xs"><i data-lucide="check" class="w-4 h-4"></i></span>`}
+              </div>
+            `;
+            gTable.appendChild(gRow);
+          });
+        }
+
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Executive learning error:", err);
+      }
+    }
+
+    async function submitHumanGuidance(e) {
+      e.preventDefault();
+      const trigger = document.getElementById('guidance-trigger').value.trim();
+      const domain = document.getElementById('guidance-domain').value;
+      const tier = parseInt(document.getElementById('guidance-tier').value);
+      const action = document.getElementById('guidance-action').value.trim();
+      const rationale = document.getElementById('guidance-rationale').value.trim();
+
+      const statusMsg = document.getElementById('guidance-status-msg');
+      statusMsg.innerText = "Saving guidance rule...";
+
+      try {
+        const res = await fetch('/api/executive/guidance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trigger_pattern: trigger,
+            domain: domain,
+            recommended_tier: tier,
+            action: action,
+            rationale: rationale,
+            created_by: 'Customer Executive',
+            approval_status: 'approved'
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          statusMsg.innerText = "✓ Guidance saved & active in model routing!";
+          document.getElementById('form-human-guidance').reset();
+          loadExecutiveLearning();
+          setTimeout(() => { statusMsg.innerText = ""; }, 4000);
+        } else {
+          statusMsg.innerText = "Error: " + (data.error || "Failed to save");
+        }
+      } catch (err) {
+        statusMsg.innerText = "Network error: " + err.message;
+      }
+    }
+
+    async function approveGuidance(guidanceId) {
+      try {
+        await fetch(`/api/executive/guidance/${guidanceId}/approve`, { method: 'POST' });
+        loadExecutiveLearning();
+      } catch (err) {
+        console.error("Error approving guidance:", err);
+      }
+    }
+
+    // Backwards-compatible shim for existing tests
+    async function fetchCrmData() {
+      await loadFinanceOverview();
+      await loadFinanceRecords(0);
     }
 
     // ==================== BENCHMARK MODAL ====================
