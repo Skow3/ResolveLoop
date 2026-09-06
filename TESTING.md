@@ -156,3 +156,36 @@ Both **P0 critical paths** are operating at full capacity:
 1. The **Experience-Driven Learning Loop** is validated using live OpenAI `gpt-5-nano` completions and procedural memory persistence.
 2. The **Smallest AI Voice Pipeline** is validated with live Pulse STT transcription and Lightning TTS speech synthesis.
 3. The **Text Fallback Mode** guarantees fault tolerance if network or voice credentials are disrupted.
+
+---
+
+## 4. Maximor AI Finance Operations & Database Verification
+
+### TC-07: PostgreSQL Database Schema & Synthetic Seeds
+* **Objective**: Confirm that all 14 tables in `maximor_finance` are created with foreign keys, indexes, and JSONB columns, and populated with realistic synthetic finance scenarios.
+* **Command Executed**: `python -m resolve_loop.seeds`
+* **Result**: **PASS**
+  * `organizations`: 3 enterprise tenants (Apex Global, Meridian Health, Lumina Commerce).
+  * `finance_systems`: 5 connected systems (NetSuite ERP, Stripe, Salesforce, JPMC Treasury, Workday).
+  * `finance_records`: 10 records across AR (invoices, short payments), AP (vendor bills, AWS hosting flux), Close (accruals, journal entries), and Cash (13-week runway).
+  * `policies`: 5 versioned controls (`SHORT-PAY-01`, `REV-REC-01`, `AP-MATCH-01`, `ACCRUE-01`, `ESC-400`).
+
+### TC-08: Database-Backed Finance Tools & Short-Payment Resolution
+* **Objective**: Verify that finance tools (`get_customer`, `get_invoice`, `get_payment`, `get_bill`, `search_policy`, `get_cash_position`) query live PostgreSQL records and resolve short payment disputes under policy `SHORT-PAY-01`.
+* **Command Executed**: `python -m unittest tests/test_finance_ops.py`
+* **Result**: **PASS (4/4 tests)**
+  * Identified $250 early discount on `INV-4471` remitted via `PMT-8821`.
+  * L1 detected lack of discount authorization and auto-escalated to L2.
+  * L2 verified payment date within 10 days under 2/10 Net 30 terms and approved $250 credit.
+
+### TC-09: Hands-Free Voice Greeting & REST Endpoints
+* **Objective**: Validate `POST /api/voice/greet` dynamically synthesizes spoken greeting via Smallest AI Lightning TTS: *"Thanks for calling Maximor AI. Hi Alice Morgan, how can I help you today?"*.
+* **Result**: **PASS (HTTP 200)** — Audio generated at 24kHz mono PCM WAV and streamed seamlessly to browser.
+
+### TC-10: Thumbs Up / Down Feedback Integration
+* **Objective**: Confirm `POST /api/feedback` stores ratings in `feedback` table, updates experience confidence weights, and creates immutable audit events without interrupting hands-free audio.
+* **Result**: **PASS (HTTP 200)** — Feedback recorded, confidence updated, audit event logged.
+
+### Comprehensive Test Suite Status
+* **Full Suite**: `python -m unittest discover tests`
+* **Result**: **Ran 11 tests in 100.7s — OK (All 11 Passing)**

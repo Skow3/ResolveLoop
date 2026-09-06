@@ -1,3 +1,665 @@
 {
-  "experiences": []
+  "experiences": [
+    {
+      "case_id": "VOICE-1788676603",
+      "description": "Hello from our hackathon agent",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to handle the greeting and provide access to the FAQ/Knowledge Base for any basic questions.",
+        "routing_source": "llm",
+        "learning_applied": false,
+        "learning_reason": null
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788676603",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team for review.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 2,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Efficient L1 resolution with no escalation, appropriately utilizing fetch_profile and open_ticket for a medium-priority hackathon inquiry."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788676603",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar L1, medium-priority hackathon inquiries, prioritize quick, profile-informed actions and ticket creation as the default path, escalating only when profile data or tool outputs indicate an unresolved issue."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788676612.6082222
+    },
+    {
+      "case_id": "MX-1788680364",
+      "description": "Why was our payment PMT-8821 short on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, any credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-AE4F52",
+          "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at L2 without escalation; the short payment PMT-8821 on INV-4471 was investigated using invoice, payment, customer, and policy data and the issue was successfully closed."
+      },
+      "reflection": {
+        "case_id": "MX-1788680364",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: For payment-discrepancy inquiries, route to L2 with an integrated toolkit (invoice, payment, customer history, policy/version lookups) so cross-data verification can close cases without escalation."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788680375.8098927
+    },
+    {
+      "case_id": "VOICE-1788680548",
+      "description": "Hello from our hackathon agent",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to handle the greeting and provide access to the FAQ/Knowledge Base for any basic questions.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788680548",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 2,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Effective L1 handling with quick profile fetch and ticket creation, resolving without escalation and meeting medium-priority expectations."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788680548",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar cases, consistently route to L1 with a lightweight toolset that prioritizes rapid profile retrieval and immediate ticket creation, and only escalate when contextual gaps or insufficient resolution quality signal the need for higher-level routing."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788680557.082715
+    },
+    {
+      "case_id": "TEST-FIN-01",
+      "description": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, any credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'MX-1788680364'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-20A15E",
+          "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at L2 with no escalation; the team\u2019s use of available tools effectively identified and addressed the $250 payment short on INV-4471."
+      },
+      "reflection": {
+        "case_id": "TEST-FIN-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: Maintain L2 routing for routine payment discrepancies that can be reconciled with invoice, payment, and customer-history checks using the full toolkit (get_invoice, get_payment, get_customer, get_customer_history, search_policy, get_policy_version), and escalate to L3 only when reconciliation fails or policy interpretation is required."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788680648.1294367
+    },
+    {
+      "case_id": "TEST-FIN-01",
+      "description": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, allocation, credits/fees/discounts, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-674C0D",
+          "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved satisfactorily: L2 utilized the appropriate retrieval tools (invoice, payment, customer history) to identify the $250 discrepancy on INV-4471 and closed without escalation; recommend capturing root cause and preventive measures in case notes for future prevention."
+      },
+      "reflection": {
+        "case_id": "TEST-FIN-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: For similar short-payment discrepancies, route primarily at L2 and start with a data-rich toolset (invoice, payment, customer history) to quickly pinpoint the delta, and automatically capture root-cause and preventive notes to prevent recurrence."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 2,
+            "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, any credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+            "routing_source": "llm",
+            "learning_applied": true,
+            "learning_reason": "Adapted route to L2 based on past similar case 'MX-1788680364'",
+            "confidence": 0.94
+          },
+          "solve": {
+            "actions": [
+              "get_customer",
+              "search_policy",
+              "get_invoice",
+              "get_payment",
+              "get_customer_history",
+              "get_policy_version"
+            ],
+            "resolution": {
+              "resolved": true,
+              "domain": "accounts_receivable",
+              "ticket": "MX-20A15E",
+              "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "evidence": [
+                "INV-4471 ($12,500)",
+                "PMT-8821 ($12,250)",
+                "SHORT-PAY-01 v2.1",
+                "2/10 Net 30 Terms Verified"
+              ],
+              "final_agent_level": 2,
+              "confidence": 0.94
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 2,
+                "tools_used": 6,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Resolved at L2 with no escalation; the team\u2019s use of available tools effectively identified and addressed the $250 payment short on INV-4471."
+            }
+          },
+          "timestamp": 1788680648.1291265
+        }
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788680753.4008324
+    },
+    {
+      "case_id": "TEST-FIN-01",
+      "description": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Reconcile PMT-8821 against INV-4471 (remittance, allocation, credits/fees, terms history), identify root cause, and prepare correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-B940C5",
+          "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Efficient L2 handling with appropriate tool usage to verify the short payment against the invoice; no escalation and resolution achieved, though the root cause and preventive actions should be documented for future reference."
+      },
+      "reflection": {
+        "case_id": "TEST-FIN-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: Adopt adaptive routing for similar discrepancies: immediately route to L2 for end-to-end reconciliation (invoice, payment, customer history, policy version) with automated checks to pinpoint root causes while avoiding unnecessary escalations and documenting preventive actions."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 2,
+            "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, allocation, credits/fees/discounts, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+            "routing_source": "llm",
+            "learning_applied": true,
+            "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+            "confidence": 0.94
+          },
+          "solve": {
+            "actions": [
+              "get_customer",
+              "search_policy",
+              "get_invoice",
+              "get_payment",
+              "get_customer_history",
+              "get_policy_version"
+            ],
+            "resolution": {
+              "resolved": true,
+              "domain": "accounts_receivable",
+              "ticket": "MX-674C0D",
+              "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "evidence": [
+                "INV-4471 ($12,500)",
+                "PMT-8821 ($12,250)",
+                "SHORT-PAY-01 v2.1",
+                "2/10 Net 30 Terms Verified"
+              ],
+              "final_agent_level": 2,
+              "confidence": 0.94
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 2,
+                "tools_used": 6,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Resolved satisfactorily: L2 utilized the appropriate retrieval tools (invoice, payment, customer history) to identify the $250 discrepancy on INV-4471 and closed without escalation; recommend capturing root cause and preventive measures in case notes for future prevention."
+            }
+          },
+          "timestamp": 1788680753.400431
+        }
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788680777.9477131
+    },
+    {
+      "case_id": "VOICE-1788680855",
+      "description": "Hello from our hackathon agent",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to handle the greeting and provide access to the FAQ/Knowledge Base for any basic questions.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788680855",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 2,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Positive outcome: resolved at Level 1 without escalation, with appropriate use of fetch_profile and open_ticket to address the hackathon inquiry."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788680855",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Strategically, keep similar hackathon inquiries at Level 1 when possible and default to a lightweight toolset (start with fetch_profile to verify context, then open_ticket to resolve or triage) to maximize first-contact resolution, escalating only when profile data is incomplete or the issue requires specialized handling."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788680864.1098764
+    }
+  ]
 }

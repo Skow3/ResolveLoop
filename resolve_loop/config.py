@@ -39,8 +39,12 @@ SMALLEST_API_KEY = os.environ.get("SMALLEST_API_KEY", "")
 SMALLEST_PULSE_URL = os.environ.get("SMALLEST_PULSE_URL", "https://waves-api.smallest.ai/api/v1/pulse/get_text")
 SMALLEST_LIGHTNING_URL = os.environ.get("SMALLEST_LIGHTNING_URL", "https://api.smallest.ai/waves/v1/lightning-v3.1/get_speech")
 
+# PostgreSQL Database URL for Maximor Finance
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql:///maximor_finance")
+
 # Timeouts (in seconds) for simulated runtime
 TIMEOUT_SECONDS = int(os.environ.get("RESOLVELOOP_TIMEOUT", 60))
+
 
 def ensure_data_files():
     # Create empty JSON files if they don't exist

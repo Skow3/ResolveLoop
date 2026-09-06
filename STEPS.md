@@ -159,3 +159,31 @@ OK
 * **`data/experiences.json`**: Accumulated memory records with descriptions, routing levels, tool traces, scores, and reflections.
 * **`data/memories.json`**: Persistent memory store containing `customer_memory`, `case_memory`, `procedural_memory`, and `failure_memory`.
 * **`data/voice_responses/`**: Synthesized audio responses produced by Smallest AI Lightning TTS.
+
+---
+
+## 8. Maximor Finance Database Setup & Seeding
+
+1. Ensure PostgreSQL is active and `DATABASE_URL` is configured in `.env`:
+   ```env
+   DATABASE_URL=postgresql:///maximor_finance
+   ```
+2. Populate the 14 relational tables with synthetic finance records across Revenue, Cash, AR, AP, and Close:
+   ```bash
+   python -m resolve_loop.seeds
+   ```
+3. Run the complete automated test suite (11 unit tests):
+   ```bash
+   python -m unittest discover tests
+   ```
+4. Start the Maximor AI web application:
+   ```bash
+   python -m resolve_loop.main --web --port 5000
+   ```
+5. In the web interface:
+   - Toggle Dark/Light mode using the top-right button.
+   - Select caller **Alice Morgan** and click the large central **CALL** button.
+   - Listen to the Smallest AI greeting: *"Thanks for calling Maximor AI. Hi Alice Morgan, how can I help you today?"*.
+   - Speak hands-free (or click prompt: *"Why was our payment PMT-8821 short on invoice INV-4471?"*).
+   - Review the L1 -> L2 auto-escalation, policy `SHORT-PAY-01` discount validation, and synthesized response.
+   - Click the 👍 Thumbs Up button to record feedback and update experience confidence!
