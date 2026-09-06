@@ -2681,6 +2681,105 @@
         }
       },
       "timestamp": 1788689554.805326
+    },
+    "VOICE-1788691266": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-952C55",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 1 without escalation for a medium-priority inquiry, indicating a proper close but with minimal troubleshooting and no documented tool-based steps."
+        }
+      },
+      "timestamp": 1788691273.5575056
+    },
+    "VOICE-1788691297": {
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's current balance and financial state from the billing/CRM systems and present it with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788681321'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "handoff_required": false,
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788691297",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient L1 handling: retrieved profile data and opened a ticket with no escalation, and the case was resolved, appropriate for a medium-priority inquiry."
+        }
+      },
+      "timestamp": 1788691310.037712
     }
   },
   "procedural_memory": {

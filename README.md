@@ -4,7 +4,9 @@ Maximor AI (powered by ResolveLoop) is an experience-driven multi-agent workforc
 
 > *"Maximor AI pairs an L1–L4 tiered finance workforce with PostgreSQL episodic memory and Smallest AI voice streaming. Every reconciliation and audit trail makes the next resolution faster."*
 
-📚 **System Flows Documentation:** For comprehensive end-to-end documentation of every workflow, state machine, and data lifecycle in the system, see [**FLOWS.md**](FLOWS.md).
+📚 **System Documentation & Guides:**
+- [**FLOWS.md**](FLOWS.md): Comprehensive end-to-end documentation of every workflow, state machine, and data lifecycle in the system.
+- [**OPERATIONS.md**](OPERATIONS.md): Detailed agent task matrix, authority tiers (L1–L4), tool permissions, and domain example questions.
 
 ---
 
