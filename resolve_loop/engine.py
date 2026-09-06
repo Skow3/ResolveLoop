@@ -284,7 +284,8 @@ class ResolveLoopEngine:
         self,
         case: Case,
         route: Dict[str, Any],
-        similar_experiences: Optional[List[Dict[str, Any]]] = None
+        similar_experiences: Optional[List[Dict[str, Any]]] = None,
+        override_strategy: Optional[AgentStrategy] = None
     ) -> Dict[str, Any]:
         """Execute tiered agent logic with tool invocation, warm handoff, and resolution synthesis."""
         route_level = route.get("route_level", 1)
@@ -384,7 +385,7 @@ class ResolveLoopEngine:
                 agent_run_id = f"run_{uuid.uuid4().hex[:12]}"
                 target_domain = getattr(case, "domain", "accounts_receivable")
                 receiving_agent = AGENT_L2_AR if route_level == 2 else (AGENT_L3_ACCOUNTING if route_level == 3 else (AGENT_L4_EXECUTIVE if route_level == 4 else AGENT_L1_TRIAGE))
-                active_strategy = strategy_registry.get_active_strategy(agent_id=receiving_agent.id, tier=route_level, domain=target_domain)
+                active_strategy = override_strategy or strategy_registry.get_active_strategy(agent_id=receiving_agent.id, tier=route_level, domain=target_domain)
                 set_case_execution_context(case.id, agent_id=receiving_agent.id, strategy_version=active_strategy.version, agent_run_id=agent_run_id)
 
                 cust = get_customer(case.customer_id, case_id=case.id)
@@ -495,7 +496,10 @@ class ResolveLoopEngine:
                     )
 
                     # Dynamic tool execution sequence guided by active_strategy
-                    tool_order = [t for t in (active_strategy.preferred_tool_order or ["get_invoice", "get_payment", "get_customer_history", "get_policy_version"]) if t != "get_customer"]
+                    tool_order = [
+                        t for t in (active_strategy.preferred_tool_order or ["get_invoice", "get_payment", "get_customer_history", "get_policy_version"])
+                        if t != "get_customer" and (not active_strategy.preferred_tools or t in active_strategy.preferred_tools)
+                    ]
                     for tool_name in tool_order:
                         if tool_name == "get_invoice":
                             invoice_data = get_invoice("INV-4471", case_id=case.id)

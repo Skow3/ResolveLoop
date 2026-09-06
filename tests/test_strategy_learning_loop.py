@@ -40,7 +40,14 @@ class TestStrategyLearningLoop(unittest.TestCase):
         cls.client = app.test_client()
 
     def setUp(self):
-        # Reset registry to baseline defaults before each test
+        db.execute("UPDATE agent_strategies SET status = 'ACTIVE' WHERE id = 'strat_l2_ar_v0';")
+        db.execute("UPDATE agent_strategies SET status = 'CANDIDATE' WHERE id = 'strat_l2_ar_v1';")
+        strategy_registry._load_defaults()
+        strategy_registry._sync_with_db()
+
+    def tearDown(self):
+        db.execute("UPDATE agent_strategies SET status = 'ACTIVE' WHERE id = 'strat_l2_ar_v0';")
+        db.execute("UPDATE agent_strategies SET status = 'CANDIDATE' WHERE id = 'strat_l2_ar_v1';")
         strategy_registry._load_defaults()
         strategy_registry._sync_with_db()
 

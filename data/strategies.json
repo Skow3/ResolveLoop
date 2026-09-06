@@ -47,7 +47,7 @@
         "zero_repetition"
       ],
       "strategy_instructions": "Welcome caller warmly. Accurately detect domain and entity identifiers. Package structured handoff context and perform seamless warm transfer without repeating questions.",
-      "created_at": 1788708053.909165,
+      "created_at": 1788711893.453519,
       "metadata": {},
       "configuration": {
         "goal": "Front-door intent detection, natural greeting, customer recognition, conversational FAQs, and warm handoff dispatch.",
@@ -139,10 +139,10 @@
         "factual_accuracy"
       ],
       "strategy_instructions": "Query NetSuite ERP for the requested invoice. Provide balance, status (e.g. Overdue, Partially Paid), and due date directly to caller. Do not attempt to authorize credits or discounts.",
-      "created_at": 1788708053.9091234,
+      "created_at": 1788711893.4534872,
       "metadata": {
         "promoted_by": "supervisor",
-        "promoted_at": 1788708054.008077,
+        "promoted_at": 1788711893.5496922,
         "promotion_notes": ""
       },
       "configuration": {
@@ -243,7 +243,7 @@
         "calculation_accuracy"
       ],
       "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms.",
-      "created_at": 1788708053.9091384,
+      "created_at": 1788711893.4534988,
       "metadata": {},
       "configuration": {
         "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
@@ -346,7 +346,7 @@
         "auditability"
       ],
       "strategy_instructions": "1. Retrieve vendor bill from accounts payable. 2. Query month-end general ledger for corresponding accrual journal entries. 3. Cross-reference operational usage drivers (e.g. Datadog GPU inference compute) to substantiate variance.",
-      "created_at": 1788708053.9091456,
+      "created_at": 1788711893.4535046,
       "metadata": {},
       "configuration": {
         "goal": "Reconcile multi-system GL variances, cloud hosting budget flux, and general ledger accrual entries.",
@@ -443,7 +443,7 @@
         "clarity"
       ],
       "strategy_instructions": "Query live JPMorgan Chase treasury feed for operating checking and treasury money market balances. Report aggregate liquidity and 13-week runway model.",
-      "created_at": 1788708053.9091535,
+      "created_at": 1788711893.4535093,
       "metadata": {},
       "configuration": {
         "goal": "Extract real-time treasury balances, cash positions, and 13-week operating runway forecasts.",
@@ -541,7 +541,7 @@
         "regulatory_compliance"
       ],
       "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow.",
-      "created_at": 1788708053.9091594,
+      "created_at": 1788711893.4535146,
       "metadata": {},
       "configuration": {
         "goal": "Prepare comprehensive audit dossiers for human CFO signoff under policy ESC-400 and handle material overrides.",
@@ -598,7 +598,7 @@
       "version": "v1",
       "name": "Accounts Receivable Specialist Strategy",
       "status": "CANDIDATE",
-      "source_or_reason": "Reduce excessive tool overhead: Agent invoked 5 tools, exceeding standard operational efficiency threshold (1-3 tools).",
+      "source_or_reason": "Provide complete audit evidence: Short payment investigation missing required financial documents: get_payment.",
       "parent_strategy_id": "strat_l2_ar_v0",
       "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
       "routing_signals": [
@@ -611,9 +611,9 @@
         "pmt-8821"
       ],
       "preferred_tools": [
-        "get_customer",
         "get_invoice",
-        "get_payment"
+        "get_payment",
+        "get_policy_version"
       ],
       "preferred_tool_order": [
         "get_customer",
@@ -643,11 +643,8 @@
         "calculation_accuracy"
       ],
       "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms.",
-      "created_at": 1788708065.6650681,
-      "metadata": {
-        "evolution_rationale": "Reduce excessive tool overhead: Agent invoked 5 tools, exceeding standard operational efficiency threshold (1-3 tools).",
-        "evolved_from": "v0"
-      },
+      "created_at": 1788711893.4535239,
+      "metadata": {},
       "configuration": {
         "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
         "routing_signals": [
@@ -660,9 +657,9 @@
           "pmt-8821"
         ],
         "preferred_tools": [
-          "get_customer",
           "get_invoice",
-          "get_payment"
+          "get_payment",
+          "get_policy_version"
         ],
         "preferred_tool_order": [
           "get_customer",
@@ -744,15 +741,15 @@
         "factual_accuracy"
       ],
       "strategy_instructions": "API test candidate instructions",
-      "created_at": 1788708053.9113307,
+      "created_at": 1788711893.4567268,
       "metadata": {
         "evolution_rationale": "API automated test candidate",
         "evolved_from": "v0",
         "promoted_by": "api_test_suite",
-        "promoted_at": 1788708053.9391809,
+        "promoted_at": 1788711893.4863386,
         "promotion_notes": "Promoted via automated test",
         "rejected_by": "api_test_suite",
-        "rejected_at": 1788708053.9801555,
+        "rejected_at": 1788711893.522462,
         "rejection_reason": "Test rejection"
       },
       "configuration": {
@@ -846,7 +843,7 @@
         "regulatory_compliance"
       ],
       "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow.",
-      "created_at": 1788708053.9091876,
+      "created_at": 1788711893.4535372,
       "metadata": {},
       "configuration": {
         "goal": "Prepare comprehensive audit dossiers for human CFO signoff under policy ESC-400 and handle material overrides.",
@@ -887,6 +884,103 @@
           "regulatory_compliance"
         ],
         "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow."
+      }
+    },
+    {
+      "strategy_id": "strat_l2_ar_v2",
+      "agent_id": "agent_l2_ar",
+      "agent_tier": 2,
+      "domain": "accounts_receivable",
+      "version": "v2",
+      "name": "Accounts Receivable Specialist Strategy",
+      "status": "ARCHIVED",
+      "source_or_reason": "Approved performance enhancement.",
+      "parent_strategy_id": "strat_l2_ar_v1",
+      "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
+      "routing_signals": [
+        "short payment",
+        "short-pay",
+        "discount",
+        "2/10",
+        "net 30",
+        "difference",
+        "pmt-8821"
+      ],
+      "preferred_tools": [
+        "get_invoice",
+        "get_payment",
+        "get_policy_version"
+      ],
+      "preferred_tool_order": [
+        "get_invoice",
+        "get_payment",
+        "get_policy_version"
+      ],
+      "escalation_rules": [
+        "Escalate to L4 Executive Controller if short payment variance exceeds $50,000.",
+        "Escalate to L4 if customer claims discount outside of the 10-calendar-day settlement window.",
+        "Escalate only after required financial evidence (invoice + payment + policy) has been verified."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "short_payment",
+          "terms",
+          "2_10_net_30"
+        ],
+        "domains": [
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "policy_compliance",
+        "resolution_quality",
+        "calculation_accuracy"
+      ],
+      "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms.",
+      "created_at": 1788711893.4535432,
+      "metadata": {},
+      "configuration": {
+        "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
+        "routing_signals": [
+          "short payment",
+          "short-pay",
+          "discount",
+          "2/10",
+          "net 30",
+          "difference",
+          "pmt-8821"
+        ],
+        "preferred_tools": [
+          "get_invoice",
+          "get_payment",
+          "get_policy_version"
+        ],
+        "preferred_tool_order": [
+          "get_invoice",
+          "get_payment",
+          "get_policy_version"
+        ],
+        "escalation_rules": [
+          "Escalate to L4 Executive Controller if short payment variance exceeds $50,000.",
+          "Escalate to L4 if customer claims discount outside of the 10-calendar-day settlement window.",
+          "Escalate only after required financial evidence (invoice + payment + policy) has been verified."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "short_payment",
+            "terms",
+            "2_10_net_30"
+          ],
+          "domains": [
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "policy_compliance",
+          "resolution_quality",
+          "calculation_accuracy"
+        ],
+        "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms."
       }
     }
   ]
