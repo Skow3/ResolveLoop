@@ -509,9 +509,12 @@ cd ResolveLoop
 python3 -m venv venv
 source venv/bin/activate
 pip install -e .
+```bash
+# Copy example environment configuration
+cp .env.example .env
 ```
 
-Create a `.env` file in the project root:
+Configure your API keys and database URL in `.env`:
 ```ini
 OPENAI_API_KEY=your_openai_api_key
 RESOLVELOOP_MODEL=gpt-5-nano
