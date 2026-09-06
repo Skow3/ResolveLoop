@@ -1,0 +1,25 @@
+{
+  "cases": [
+    {
+      "id": "C1",
+      "customer_id": "cust1",
+      "description": "Where is my order?",
+      "priority": "low",
+      "metadata": {}
+    },
+    {
+      "id": "C2",
+      "customer_id": "cust2",
+      "description": "I want to cancel my order.",
+      "priority": "low",
+      "metadata": {}
+    },
+    {
+      "id": "C3",
+      "customer_id": "cust1",
+      "description": "My refund hasn't arrived.",
+      "priority": "medium",
+      "metadata": {}
+    }
+  ]
+}

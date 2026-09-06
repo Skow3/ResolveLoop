@@ -1,0 +1,2 @@
+typing-extensions
+"""This repo uses a self-contained mock runtime; dependencies kept minimal."""

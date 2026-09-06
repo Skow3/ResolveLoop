@@ -1,0 +1,6 @@
+# Environment files
+.env
+.env.local
+
+# Python caches
+# Data files generated at runtime (keep in repo for MVP demo initial state)
