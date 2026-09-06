@@ -47,6 +47,141 @@
     }
     .dark .bg-app { background-color: #030712; color: #f8fafc; }
     .light .bg-app { background-color: #f8fafc; color: #0f172a; }
+
+    /* ==================== LIVING VOICE ORB STYLES ==================== */
+    @keyframes orb-morph {
+      0%, 100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      }
+      33% {
+        border-radius: 53% 47% 59% 41% / 46% 56% 44% 54%;
+      }
+      66% {
+        border-radius: 44% 56% 42% 58% / 58% 41% 59% 42%;
+      }
+    }
+    @keyframes orb-rotate-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes orb-breathe-gentle {
+      0%, 100% { transform: scale(1.0); }
+      50% { transform: scale(1.035); }
+    }
+    @keyframes halo-pulse {
+      0%, 100% { transform: scale(1.0); opacity: 0.38; }
+      50% { transform: scale(1.12); opacity: 0.62; }
+    }
+
+    /* Voice Orb Core Container */
+    .voice-orb-core {
+      background: radial-gradient(circle at 35% 30%, #a5b4fc 0%, #6366f1 35%, #4338ca 68%, #1e1b4b 100%);
+      animation: orb-morph 9s ease-in-out infinite, orb-breathe-gentle 4s ease-in-out infinite;
+      box-shadow: 0 0 45px rgba(99, 102, 241, 0.4), inset 0 0 25px rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, filter 0.3s ease;
+      will-change: transform, border-radius;
+    }
+
+    .light .voice-orb-core {
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #c7d2fe 32%, #818cf8 68%, #4f46e5 100%);
+      box-shadow: 0 10px 40px rgba(79, 70, 229, 0.28), inset 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Outer Halo Layer */
+    .orb-halo {
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.28) 0%, rgba(168, 85, 247, 0.12) 50%, transparent 75%);
+      filter: blur(18px);
+      transform: scale(1.25);
+      animation: halo-pulse 5s ease-in-out infinite;
+      transition: transform 0.2s ease, opacity 0.3s ease;
+    }
+
+    /* Ambient Canvas Backlight */
+    .ambient-glow {
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(147, 51, 234, 0.05) 50%, transparent 75%);
+      filter: blur(40px);
+    }
+    .light .ambient-glow {
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(147, 51, 234, 0.03) 50%, transparent 75%);
+      filter: blur(35px);
+    }
+
+    /* Inner Shifting Fluid Texture */
+    .orb-inner-fluid {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(99, 102, 241, 0.1) 50%, rgba(0, 0, 0, 0.35) 100%);
+      animation: orb-rotate-slow 20s linear infinite;
+      mix-blend-mode: overlay;
+    }
+
+    /* Orb States */
+    .orb-state-connecting .voice-orb-core, .voice-orb-core.orb-state-connecting {
+      animation: orb-morph 4s ease-in-out infinite, orb-breathe-gentle 1.8s ease-in-out infinite;
+      box-shadow: 0 0 60px rgba(99, 102, 241, 0.6);
+    }
+    .orb-state-connecting .orb-halo, .orb-halo.orb-state-connecting {
+      animation: halo-pulse 2s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(168, 85, 247, 0.2) 50%, transparent 75%);
+    }
+
+    .orb-state-listening .voice-orb-core, .voice-orb-core.orb-state-listening {
+      box-shadow: 0 0 55px rgba(99, 102, 241, 0.55), inset 0 0 25px rgba(255, 255, 255, 0.3);
+    }
+    .orb-state-listening .orb-halo, .orb-halo.orb-state-listening {
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(168, 85, 247, 0.18) 50%, transparent 75%);
+    }
+
+    .orb-state-thinking .voice-orb-core, .voice-orb-core.orb-state-thinking {
+      animation: orb-morph 6s ease-in-out infinite, orb-rotate-slow 12s linear infinite;
+      filter: hue-rotate(25deg);
+      box-shadow: 0 0 50px rgba(168, 85, 247, 0.5);
+    }
+    .orb-state-thinking .orb-halo, .orb-halo.orb-state-thinking {
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(217, 70, 239, 0.18) 50%, transparent 75%);
+    }
+
+    .orb-state-speaking .voice-orb-core, .voice-orb-core.orb-state-speaking {
+      animation: orb-morph 4.5s ease-in-out infinite, orb-breathe-gentle 2.2s ease-in-out infinite;
+      filter: brightness(1.12) saturate(1.2);
+      box-shadow: 0 0 65px rgba(99, 102, 241, 0.65), inset 0 0 35px rgba(255, 255, 255, 0.4);
+    }
+    .orb-state-speaking .orb-halo, .orb-halo.orb-state-speaking {
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(139, 92, 246, 0.22) 50%, transparent 75%);
+    }
+
+    .orb-state-handoff .voice-orb-core, .voice-orb-core.orb-state-handoff {
+      animation: orb-morph 3s ease-in-out infinite;
+      filter: hue-rotate(45deg) brightness(1.15);
+      box-shadow: 0 0 75px rgba(139, 92, 246, 0.7);
+    }
+    .orb-state-handoff .orb-halo, .orb-halo.orb-state-handoff {
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.5) 0%, rgba(59, 130, 246, 0.25) 50%, transparent 75%);
+    }
+
+    .orb-state-ended .voice-orb-core, .voice-orb-core.orb-state-ended {
+      animation: none;
+      filter: grayscale(0.3) opacity(0.85);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+    }
+    .orb-state-ended .orb-halo, .orb-halo.orb-state-ended {
+      opacity: 0.15;
+    }
+
+    .orb-state-error .voice-orb-core, .voice-orb-core.orb-state-error {
+      animation: none;
+      filter: hue-rotate(300deg) opacity(0.9);
+      box-shadow: 0 0 35px rgba(244, 63, 94, 0.4);
+    }
+    .orb-state-error .orb-halo, .orb-halo.orb-state-error {
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.4) 0%, rgba(225, 29, 72, 0.15) 50%, transparent 75%);
+    }
+
+    /* Accessibility: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .voice-orb-core, .orb-halo, .ambient-glow, .orb-inner-fluid {
+        animation: none !important;
+        transition: opacity 0.3s ease, transform 0.3s ease !important;
+      }
+    }
   </style>
 </head>
 <body class="h-full flex flex-col font-sans antialiased bg-app selection:bg-indigo-500 selection:text-white transition-colors duration-200">
@@ -181,305 +316,156 @@
       </div>
     </section>
 
-    <!-- ==================== 2. CUSTOMER CALL STATION (PRIMARY DEMO) ==================== -->
-    <section id="view-demo" class="view-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- ==================== 2. CUSTOMER CALL STATION (PREMIUM AI VOICE WORKSPACE) ==================== -->
+    <section id="view-demo" class="view-content hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col min-h-[calc(100vh-6rem)] justify-between">
       
-      <!-- Top Call Station Status Bar -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b dark:border-slate-800 border-slate-200">
-        <div>
-          <div class="flex items-center space-x-3">
-            <h2 class="text-2xl font-black dark:text-white text-slate-900 tracking-tight">Customer Call Station</h2>
-            <span id="call-status-pill" class="px-2.5 py-0.5 rounded-full text-xs font-bold dark:bg-emerald-950 bg-emerald-100 dark:text-emerald-400 text-emerald-800 border dark:border-emerald-800/80 border-emerald-300 flex items-center space-x-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span id="call-status-text">Standby (Click Call to Start)</span>
-            </span>
+      <!-- Top Call Station Status & Utility Bar -->
+      <div class="flex items-center justify-between gap-3 pb-3.5 border-b dark:border-slate-800/80 border-slate-200">
+        <!-- Left: Workspace Identity & Live State -->
+        <div class="flex items-center space-x-2.5">
+          <span class="text-[11px] font-black uppercase tracking-wider dark:text-slate-400 text-slate-500">Customer Call</span>
+          <span class="text-slate-500">&bull;</span>
+          <div class="flex items-center space-x-2">
+            <span id="active-agent-heading" class="text-xs font-bold dark:text-slate-200 text-slate-800">Maximor AI / Orchestrator</span>
+            <span id="active-agent-tier-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700">L0</span>
           </div>
-          <p class="dark:text-slate-400 text-slate-500 text-sm mt-0.5">Hands-free live simulated support call via Smallest AI Pulse STT + Lightning TTS & OpenAI gpt-5-nano</p>
         </div>
 
-        <!-- Caller Identity Card -->
-        <div class="flex items-center space-x-3 dark:bg-slate-900 bg-white p-2.5 rounded-2xl border dark:border-slate-800 border-slate-200 shadow-sm">
-          <div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">
-            <i data-lucide="user" class="w-4 h-4"></i>
-          </div>
-          <div>
-            <span class="text-[10px] dark:text-slate-500 text-slate-400 font-bold uppercase tracking-wider block">Caller Profile:</span>
-            <select id="select-customer" onchange="onCustomerChange()" class="dark:bg-slate-950 bg-slate-50 border dark:border-slate-700 border-slate-300 dark:text-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1 focus:ring-2 focus:ring-indigo-500 font-semibold">
-              <option value="cust1" selected>Alice Morgan (Apex Global - $1,200k LTV)</option>
-              <option value="cust2">Bob Jenkins (Lumina Commerce - $150k LTV)</option>
-              <option value="cust3">Charlie Davis (Meridian Health - $15,000k LTV)</option>
+        <!-- Right: Caller Selector + Secondary Drawers Trigger -->
+        <div class="flex items-center space-x-2">
+          <!-- Caller Profile Selector -->
+          <div class="relative">
+            <select id="select-customer" onchange="onCustomerChange()" class="dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 text-xs rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 font-semibold shadow-sm pr-7 cursor-pointer appearance-none">
+              <option value="cust1" selected>Alice Morgan (Apex Global)</option>
+              <option value="cust2">Bob Jenkins (Lumina Commerce)</option>
+              <option value="cust3">Charlie Davis (Meridian Health)</option>
             </select>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
           </div>
+
+          <!-- Secondary Drawers Buttons -->
+          <button onclick="openDrawer('drawer-conversation')" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 text-xs font-semibold dark:text-slate-300 text-slate-700 hover:text-indigo-400 shadow-sm transition" title="View Full Conversation">
+            <i data-lucide="message-square" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span class="hidden sm:inline">Conversation</span>
+            <span id="transcript-count-badge" class="text-[10px] px-1.5 py-0.2 rounded-full dark:bg-indigo-950 bg-indigo-100 text-indigo-400 font-bold ml-1">0</span>
+          </button>
+
+          <button onclick="openDrawer('drawer-call-details')" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 text-xs font-semibold dark:text-slate-300 text-slate-700 hover:text-indigo-400 shadow-sm transition" title="Inspect Call Routing & Details">
+            <i data-lucide="cpu" class="w-3.5 h-3.5 text-purple-400"></i>
+            <span class="hidden sm:inline">Details</span>
+          </button>
+
+          <button onclick="openDrawer('drawer-dev-tools')" class="p-1.5 rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 text-slate-400 hover:text-indigo-400 shadow-sm transition" title="Developer & Demo Controls">
+            <i data-lucide="sliders" class="w-4 h-4"></i>
+          </button>
         </div>
       </div>
 
-      <!-- ==================== PRE-CALL MINIMALIST HERO (Initially Visible) ==================== -->
-      <div id="pre-call-container" class="my-8 max-w-xl mx-auto text-center">
-        <div class="glass-panel p-8 sm:p-12 rounded-3xl dark:border-slate-800 border-slate-200 shadow-2xl relative overflow-hidden">
-          
-          <!-- Customer Avatar & Badge -->
-          <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-indigo-600 to-purple-600 mx-auto flex items-center justify-center text-white shadow-xl shadow-indigo-500/30 mb-6">
-            <i data-lucide="building-2" class="w-10 h-10"></i>
-          </div>
+      <!-- Center Call Canvas (Sublime Breathing Room) -->
+      <div class="my-auto py-6 sm:py-10 flex flex-col items-center justify-center text-center relative">
+        
+        <!-- Soft Radial Ambient Glow (GPU Layer) -->
+        <div id="orb-ambient-glow" class="ambient-glow absolute w-72 h-72 sm:w-88 sm:h-88 rounded-full pointer-events-none transition-all duration-700"></div>
 
-          <h3 id="precall-caller-name" class="text-2xl font-black dark:text-white text-slate-900">Alice Morgan</h3>
-          <p id="precall-caller-role" class="text-xs dark:text-indigo-400 text-indigo-600 font-bold mt-1">Finance Director &bull; Apex Global Technologies</p>
-          <div class="mt-2 inline-flex items-center space-x-2 text-[11px] dark:text-slate-400 text-slate-500">
-            <span>Account: <b class="font-mono dark:text-slate-300 text-slate-700">MAX-8821</b></span>
-            <span>&bull;</span>
-            <span class="text-emerald-500 font-semibold">Good Standing</span>
-          </div>
+        <!-- Subtle Caller Identity -->
+        <div id="caller-identity-badge" class="mb-4 inline-flex items-center space-x-2 text-xs font-medium dark:text-slate-400 text-slate-500 transition-opacity duration-300">
+          <i data-lucide="building" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span id="precall-caller-name" class="font-bold dark:text-slate-200 text-slate-800">Alice Morgan</span>
+          <span>&bull;</span>
+          <span id="precall-caller-role">Finance Director, Apex Global Technologies</span>
+        </div>
 
-          <!-- Large Glowing CALL Button with Breathing Aura -->
-          <div class="my-10 relative flex items-center justify-center">
-            <div class="absolute inset-0 w-36 h-36 mx-auto rounded-full bg-indigo-500/20 pulse-ring"></div>
-            <div class="absolute inset-0 w-28 h-28 mx-auto rounded-full bg-purple-500/30 pulse-ring" style="animation-delay: 0.8s;"></div>
+        <!-- The Central Voice Orb -->
+        <div id="orb-stage-wrapper" class="relative flex items-center justify-center my-3">
+          <!-- Dynamic Halo Glow Layer -->
+          <div id="orb-halo" class="orb-halo absolute inset-0 rounded-full pointer-events-none"></div>
+
+          <!-- Interactive Fluid Orb Sphere -->
+          <div id="voice-orb" role="button" tabindex="0" aria-label="Voice Orb - Click to Start Hands-Free Call" onclick="handleOrbClick()" onkeydown="handleOrbKeydown(event)" class="voice-orb-core relative z-10 w-36 h-36 sm:w-44 sm:h-44 rounded-full cursor-pointer select-none transition-transform duration-200 flex items-center justify-center focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/50">
+            <!-- Shifting highlights & inner fluid core -->
+            <div id="orb-inner-fluid" class="orb-inner-fluid absolute inset-1 rounded-full pointer-events-none"></div>
             
-            <button id="btn-start-call" onclick="startCustomerCall()" class="relative z-10 w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-purple-500 text-white flex flex-col items-center justify-center shadow-2xl shadow-indigo-600/50 transition-all transform hover:scale-105 active:scale-95 focus:outline-none cursor-pointer">
-              <i data-lucide="phone" class="w-9 h-9"></i>
-              <span class="text-[10px] font-black uppercase tracking-wider mt-1">CALL</span>
+            <!-- Center Minimal Icon (Discreet, soft) -->
+            <div id="orb-center-icon" class="relative z-20 text-white/90 transition-all duration-300 transform">
+              <i id="orb-icon-glyph" data-lucide="mic" class="w-8 h-8 sm:w-9 sm:h-9"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time State Title & Subtitle -->
+        <div class="mt-5 space-y-1">
+          <h3 id="voice-status-title" class="text-xl sm:text-2xl font-black dark:text-white text-slate-900 tracking-tight transition-all duration-300">
+            Ready to talk
+          </h3>
+          <p id="voice-status-subtitle" class="text-xs sm:text-sm font-medium dark:text-slate-400 text-slate-500 max-w-sm mx-auto transition-all duration-300">
+            Click orb or button to start hands-free voice call
+          </p>
+        </div>
+
+        <!-- Floating Live Caption Pill (Current Spoken Turn) -->
+        <div id="live-caption-card" class="mt-4 max-w-lg w-full p-3.5 rounded-2xl dark:bg-slate-900/85 bg-white/95 border dark:border-slate-800 border-slate-200/80 shadow-lg backdrop-blur-md hidden transition-all duration-300 text-left">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <span id="live-caption-speaker" class="text-[10px] font-bold uppercase tracking-wider text-indigo-400 block mb-0.5">Maximor AI</span>
+              <p id="live-caption-text" class="text-xs sm:text-sm dark:text-slate-200 text-slate-800 leading-relaxed font-medium"></p>
+            </div>
+            <div id="live-caption-feedback" class="flex items-center space-x-1 flex-shrink-0 pt-0.5">
+              <span class="text-[10px] text-slate-500 font-semibold mr-1">Helpful?</span>
+              <button onclick="submitLiveCaptionFeedback('positive')" title="Helpful" class="p-1 rounded-lg hover:bg-emerald-950/60 text-slate-400 hover:text-emerald-400 transition"><i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i></button>
+              <button onclick="submitLiveCaptionFeedback('negative')" title="Not helpful" class="p-1 rounded-lg hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 transition"><i data-lucide="thumbs-down" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary Controls Bar -->
+        <div class="mt-6 flex items-center justify-center space-x-3">
+          <!-- Standby Start Button -->
+          <button id="btn-start-call" onclick="startCustomerCall()" class="px-7 py-3 rounded-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-indigo-500/25 transition-all transform hover:scale-105 active:scale-95 flex items-center space-x-2">
+            <i data-lucide="phone-call" class="w-4 h-4"></i>
+            <span>Start Voice Call</span>
+          </button>
+
+          <!-- In-Call Controls (Timer, Mute, Hang Up) -->
+          <div id="in-call-controls" class="hidden flex items-center space-x-3">
+            <!-- Hands-Free Call Timer -->
+            <div class="flex items-center space-x-2 px-3.5 py-2 rounded-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 text-xs font-mono font-bold dark:text-slate-300 text-slate-700 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="call-timer">00:00</span>
+            </div>
+
+            <!-- Mic Mute Toggle -->
+            <button id="btn-mic-toggle" onclick="toggleMicMute()" aria-label="Toggle microphone mute" class="w-10 h-10 rounded-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 hover:text-indigo-400 flex items-center justify-center shadow-sm transition" title="Mute/Unmute Mic">
+              <i id="mic-toggle-icon" data-lucide="mic" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Hang Up Pill -->
+            <button id="btn-hang-up" onclick="endCustomerCall()" class="px-5 py-2 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-lg shadow-rose-600/30 transition transform hover:scale-105 active:scale-95">
+              <i data-lucide="phone-off" class="w-3.5 h-3.5"></i>
+              <span>End Call</span>
             </button>
           </div>
 
-          <p class="dark:text-slate-300 text-slate-700 font-semibold text-sm">Click CALL to start hands-free voice session</p>
-          <p class="dark:text-slate-500 text-slate-400 text-xs mt-1">Smallest AI Lightning TTS greets you &bull; Pulse STT listens continuously</p>
+          <!-- Call Ended Summary & Quick Actions -->
+          <div id="call-ended-summary" class="hidden flex flex-col sm:flex-row items-center gap-3">
+            <div class="px-4 py-2 rounded-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 text-xs font-medium dark:text-slate-300 text-slate-700 shadow-sm">
+              <span>Call ended &bull; </span><span id="ended-duration" class="font-mono font-bold text-indigo-400">00:00</span><span> &bull; Saved to Customer Executive</span>
+            </div>
+            <button onclick="resetCallToStandby()" class="px-5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">Start New Call</button>
+            <button onclick="openDrawer('drawer-conversation')" class="px-4 py-2 rounded-full dark:bg-slate-800 bg-slate-100 dark:text-slate-200 text-slate-800 text-xs font-semibold hover:bg-slate-700 transition">View Conversation</button>
+          </div>
         </div>
+
       </div>
 
-      <!-- ==================== IN-CALL WORKSTATION (Revealed on Call Start) ==================== -->
-      <div id="in-call-container" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- Left Column: Interactive Call Station (7 cols) -->
-        <div class="lg:col-span-7 flex flex-col space-y-4">
-
-          <div class="glass-panel rounded-3xl p-6 dark:border-slate-800 border-slate-200 shadow-2xl relative overflow-hidden">
-            
-            <!-- Call Header: Connected to User + Timer + End Call -->
-            <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-950/60 border border-indigo-700/60 flex items-center justify-center text-indigo-400">
-                  <i data-lucide="headset" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <div class="flex items-center space-x-2">
-                    <h3 id="active-agent-heading" class="dark:text-white text-slate-900 font-bold text-sm">Connected to Orchestrator</h3>
-                    <span id="active-agent-tier-badge" class="text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-950 text-indigo-400 border border-indigo-800">Tier 0</span>
-                  </div>
-                  <p id="in-call-customer-info" class="text-xs dark:text-slate-400 text-slate-500">Active Call with Alice Morgan (cust1)</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-3">
-                <div class="text-right">
-                  <span id="call-timer" class="font-mono text-sm font-bold text-indigo-500">00:00</span>
-                  <p class="text-[10px] dark:text-slate-500 text-slate-400 uppercase tracking-wider">Hands-Free</p>
-                </div>
-                <button onclick="endCustomerCall()" class="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-lg shadow-red-600/30 transition">
-                  <i data-lucide="phone-off" class="w-3.5 h-3.5"></i>
-                  <span>Hang Up</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Voice Activity & Waveform Visualizer -->
-            <div class="my-4 py-6 flex flex-col items-center justify-center rounded-2xl dark:bg-slate-950/80 bg-slate-100 border dark:border-slate-800 border-slate-200 relative">
-              
-              <!-- Listening Visualizer Orb -->
-              <div class="relative flex items-center justify-center mb-3">
-                <div id="listening-wave-ring" class="hidden absolute inset-0 w-24 h-24 rounded-full bg-indigo-500/30 pulse-ring"></div>
-                <div id="speaking-wave-ring" class="hidden absolute inset-0 w-28 h-28 rounded-full bg-emerald-500/30 pulse-ring"></div>
-                <div id="voice-indicator-orb" class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-xl transition-all">
-                  <i id="voice-orb-icon" data-lucide="mic" class="w-7 h-7"></i>
-                </div>
-              </div>
-
-              <!-- Real-time Instruction & Status -->
-              <p id="voice-status-title" class="dark:text-slate-200 text-slate-800 font-bold text-sm">Listening Hands-Free...</p>
-              <p id="voice-status-subtitle" class="dark:text-slate-400 text-slate-500 text-xs mt-0.5">Speak naturally. Trailing silence (~2s) auto-submits your request.</p>
-
-              <!-- Upload Fallback audio -->
-              <div class="mt-4 flex items-center space-x-2">
-                <input type="file" id="input-audio-file" accept="audio/*" class="hidden" onchange="uploadCustomAudio(event)">
-                <button onclick="document.getElementById('input-audio-file').click()" class="text-[11px] dark:text-slate-400 text-slate-600 hover:text-indigo-500 flex items-center space-x-1 px-2.5 py-1 rounded dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-300">
-                  <i data-lucide="upload" class="w-3 h-3"></i>
-                  <span>Upload Audio</span>
-                </button>
-                <button onclick="runPreloadedWav()" class="text-[11px] text-indigo-400 hover:text-indigo-300 flex items-center space-x-1 px-2.5 py-1 rounded dark:bg-indigo-950/60 bg-indigo-50 border dark:border-indigo-800/60 border-indigo-200 font-semibold">
-                  <i data-lucide="file-audio" class="w-3 h-3"></i>
-                  <span>Test with test.wav</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Quick Click Finance Scenarios -->
-            <div class="mb-4">
-              <label class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider block mb-2">Simulate Real Finance Operations Inquiries:</label>
-              <div class="flex flex-wrap gap-2">
-                <button onclick="sendQuickPrompt('Why was our payment PMT-8821 short by $250 on invoice INV-4471?')" class="px-2.5 py-1.5 rounded-lg text-xs dark:bg-slate-900 bg-white dark:hover:bg-slate-800 hover:bg-slate-50 dark:text-slate-300 text-slate-700 border dark:border-slate-800 border-slate-300 transition text-left">
-                  💳 "Why was PMT-8821 short by $250 on INV-4471?"
-                </button>
-                <button onclick="sendQuickPrompt('What caused the 18% variance on AWS hosting bill BILL-7701?')" class="px-2.5 py-1.5 rounded-lg text-xs dark:bg-slate-900 bg-white dark:hover:bg-slate-800 hover:bg-slate-50 dark:text-slate-300 text-slate-700 border dark:border-slate-800 border-slate-300 transition text-left">
-                  ☁️ "AWS bill variance on BILL-7701"
-                </button>
-                <button onclick="sendQuickPrompt('What is our current treasury cash position and 13-week runway?')" class="px-2.5 py-1.5 rounded-lg text-xs dark:bg-slate-900 bg-white dark:hover:bg-slate-800 hover:bg-slate-50 dark:text-slate-300 text-slate-700 border dark:border-slate-800 border-slate-300 transition text-left">
-                  🏦 "What is our cash position & runway?"
-                </button>
-                <button onclick="sendQuickPrompt('Check overdue status of invoice INV-4472 for Nexus Logistics.')" class="px-2.5 py-1.5 rounded-lg text-xs dark:bg-slate-900 bg-white dark:hover:bg-slate-800 hover:bg-slate-50 dark:text-slate-300 text-slate-700 border dark:border-slate-800 border-slate-300 transition text-left">
-                  📋 "Check overdue status on INV-4472"
-                </button>
-              </div>
-            </div>
-
-            <!-- Live Speech Audio Player Card -->
-            <div id="tts-audio-card" class="hidden mb-4 p-3.5 rounded-xl dark:bg-purple-950/40 bg-purple-50 border dark:border-purple-800/50 border-purple-200">
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center space-x-2">
-                  <i data-lucide="volume-2" class="w-4 h-4 text-purple-400"></i>
-                  <span class="text-xs font-bold dark:text-purple-200 text-purple-900">Smallest AI Lightning TTS Spoken Response</span>
-                </div>
-                <span class="text-[10px] text-purple-500 font-mono font-bold">24kHz WAV</span>
-              </div>
-              <audio id="tts-audio-player" controls class="w-full h-8 rounded dark:bg-slate-950 bg-white"></audio>
-            </div>
-
-            <!-- Text Fallback Input Bar -->
-            <form onsubmit="handleTextSubmit(event)" class="mt-2 flex items-center space-x-2">
-              <input type="text" id="text-chat-input" placeholder="Type a finance query (e.g. Why was invoice INV-4471 short?)..." class="flex-1 dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-300 rounded-xl px-4 py-2.5 text-sm dark:text-slate-200 text-slate-800 focus:outline-none focus:border-indigo-500 placeholder:text-slate-400">
-              <button type="submit" id="btn-send-text" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center space-x-1.5 transition shadow">
-                <span>Send</span>
-                <i data-lucide="send" class="w-4 h-4"></i>
-              </button>
-            </form>
-
-          </div>
-
-          <!-- Dialogue Transcript Feed with Inline Thumbs Up / Down Feedback -->
-          <div class="glass-panel rounded-3xl p-5 dark:border-slate-800 border-slate-200">
-            <div class="flex items-center justify-between pb-3 mb-3 border-b dark:border-slate-800 border-slate-200">
-              <h4 class="text-xs font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 flex items-center space-x-2">
-                <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i>
-                <span>Conversation Transcript & Feedback</span>
-              </h4>
-              <button onclick="clearTranscript()" class="text-[11px] dark:text-slate-500 text-slate-400 hover:text-indigo-400">Clear</button>
-            </div>
-            <div id="transcript-feed" class="space-y-3 max-h-72 overflow-y-auto pr-1 text-sm">
-              <div class="p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 text-slate-400 text-xs italic">
-                Awaiting start of call...
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Right Column: Live Orchestrator Inspector (The AI Finance Brain HUD) (5 cols) -->
-        <div class="lg:col-span-5 flex flex-col space-y-4">
-
-          <!-- Active Tier Badge -->
-          <div class="glass-panel rounded-3xl p-5 dark:border-slate-800 border-slate-200">
-            <div class="flex items-center justify-between mb-4">
-              <h4 class="text-xs font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 flex items-center space-x-2">
-                <i data-lucide="cpu" class="w-4 h-4 text-indigo-400"></i>
-                <span>Active Routing & Agent Tier</span>
-              </h4>
-              <span id="route-source-badge" class="text-[10px] px-2 py-0.5 rounded font-bold dark:bg-slate-900 bg-slate-100 dark:text-slate-400 text-slate-600 border dark:border-slate-800 border-slate-300">STANDBY</span>
-            </div>
-
-            <!-- Tier Cards -->
-            <div class="grid grid-cols-2 gap-2">
-              <div id="tier-card-1" class="tier-card p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 transition-all opacity-40">
-                <div class="text-[10px] font-bold text-blue-400 uppercase">Tier 1</div>
-                <div class="text-xs font-bold dark:text-white text-slate-900">L1 Basic Finance Triage</div>
-              </div>
-              <div id="tier-card-2" class="tier-card p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 transition-all opacity-40">
-                <div class="text-[10px] font-bold text-indigo-400 uppercase">Tier 2</div>
-                <div class="text-xs font-bold dark:text-white text-slate-900">L2 Contextual Investigation</div>
-              </div>
-              <div id="tier-card-3" class="tier-card p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 transition-all opacity-40">
-                <div class="text-[10px] font-bold text-purple-400 uppercase">Tier 3</div>
-                <div class="text-xs font-bold dark:text-white text-slate-900">L3 Multi-System Authority</div>
-              </div>
-              <div id="tier-card-4" class="tier-card p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 transition-all opacity-40">
-                <div class="text-[10px] font-bold text-rose-400 uppercase">Tier 4</div>
-                <div class="text-xs font-bold dark:text-white text-slate-900">L4 Executive Escalation</div>
-              </div>
-            </div>
-
-            <!-- Escalation Notice (if triggered) -->
-            <div id="escalation-alert-box" class="hidden mt-3 p-2.5 rounded-xl dark:bg-amber-950/60 bg-amber-50 border dark:border-amber-800/80 border-amber-300 dark:text-amber-300 text-amber-800 text-xs flex items-start space-x-2">
-              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
-              <div>
-                <span class="font-bold">Auto-Escalation Activated:</span>
-                <p id="escalation-alert-text" class="mt-0.5 text-[11px] dark:text-amber-200/90 text-amber-900"></p>
-              </div>
-            </div>
-
-            <!-- Agent Plan & Thought Process -->
-            <div class="mt-4 pt-4 border-t dark:border-slate-800 border-slate-200">
-              <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider block mb-1">Router Thought & Plan:</span>
-              <p id="inspector-plan" class="text-xs dark:text-slate-300 text-slate-700 leading-relaxed dark:bg-slate-950 bg-slate-50 p-2.5 rounded-lg border dark:border-slate-800/80 border-slate-300 font-mono">
-                Awaiting incoming call...
-              </p>
-            </div>
-          </div>
-
-          <!-- Tools In Action & Evidence Pack -->
-          <div class="glass-panel rounded-3xl p-5 dark:border-slate-800 border-slate-200">
-            <h4 class="text-xs font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 mb-3 flex items-center space-x-2">
-              <i data-lucide="database" class="w-4 h-4 text-purple-400"></i>
-              <span>PostgreSQL Tools Invoked</span>
-            </h4>
-            <div id="tools-pill-container" class="flex flex-wrap gap-2 mb-4">
-              <span class="text-xs text-slate-500 italic">No tools invoked yet.</span>
-            </div>
-
-            <div class="pt-3 border-t dark:border-slate-800 border-slate-200">
-              <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider block mb-2">Verified Financial Evidence:</span>
-              <div id="evidence-container" class="flex flex-wrap gap-1.5">
-                <span class="text-xs text-slate-500 italic">Evidence dossier will appear post-resolution.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Evaluator & Memory Reflection -->
-          <div class="glass-panel rounded-3xl p-5 dark:border-slate-800 border-slate-200">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 flex items-center space-x-2">
-                <i data-lucide="award" class="w-4 h-4 text-emerald-400"></i>
-                <span>Evaluation & Memory Reflection</span>
-              </h4>
-              <span id="score-badge" class="text-sm font-black text-emerald-400 font-mono">--/100</span>
-            </div>
-
-            <div class="space-y-2 text-xs">
-              <div>
-                <div class="flex justify-between dark:text-slate-400 text-slate-500 mb-1">
-                  <span>Resolution Quality:</span>
-                  <span id="score-quality" class="font-bold dark:text-slate-200 text-slate-800">--</span>
-                </div>
-                <div class="w-full h-1.5 rounded-full dark:bg-slate-800 bg-slate-200 overflow-hidden">
-                  <div id="bar-quality" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 0%"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between dark:text-slate-400 text-slate-500 mb-1">
-                  <span>Tool Economy:</span>
-                  <span id="score-tools" class="font-bold dark:text-slate-200 text-slate-800">--</span>
-                </div>
-                <div class="w-full h-1.5 rounded-full dark:bg-slate-800 bg-slate-200 overflow-hidden">
-                  <div id="bar-tools" class="h-full bg-indigo-500 rounded-full transition-all" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-t dark:border-slate-800 border-slate-200">
-              <span class="text-[11px] dark:text-slate-400 text-slate-500 font-bold uppercase tracking-wider block mb-1">Synthesized Reflection Lesson:</span>
-              <p id="inspector-reflection" class="text-xs dark:text-indigo-300 text-indigo-700 italic dark:bg-slate-950 bg-slate-50 p-2.5 rounded-lg border dark:border-slate-800/80 border-slate-300">
-                Reflection will formulate lessons post-call to improve future routing.
-              </p>
-            </div>
-          </div>
-
-        </div>
-
+      <!-- Bottom Text Fallback Input Bar -->
+      <div class="pt-3 border-t dark:border-slate-800/80 border-slate-200">
+        <form onsubmit="handleTextSubmit(event)" class="max-w-xl mx-auto flex items-center space-x-2">
+          <input type="text" id="text-chat-input" placeholder="Type a message instead (e.g. Why was invoice INV-4471 short?)..." class="flex-1 dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-300 rounded-full px-4 py-2 text-xs sm:text-sm dark:text-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 placeholder:text-slate-400 shadow-sm">
+          <button type="submit" id="btn-send-text" class="px-4 py-2 rounded-full bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white font-semibold text-xs flex items-center space-x-1 transition shadow-sm" title="Send text query">
+            <span>Send</span>
+            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+          </button>
+        </form>
       </div>
 
     </section>
@@ -1254,6 +1240,229 @@
 
       </div>
 
+  <!-- ==================== CUSTOMER CALL SECONDARY DRAWERS ==================== -->
+
+  <!-- 1. Full Conversation Transcript Drawer -->
+  <div id="drawer-conversation" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeDrawer('drawer-conversation')"></div>
+    <div class="absolute inset-y-0 right-0 max-w-lg w-full glass-panel shadow-2xl p-6 overflow-y-auto border-l dark:border-slate-800 border-slate-200 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i>
+            <h3 class="text-base font-bold dark:text-white text-slate-900">Conversation Transcript</h3>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="clearTranscript()" class="text-xs dark:text-slate-400 text-slate-500 hover:text-indigo-400 px-2 py-1">Clear</button>
+            <button onclick="closeDrawer('drawer-conversation')" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Speech Audio Player Card -->
+        <div id="tts-audio-card" class="hidden mb-4 p-3 rounded-xl dark:bg-purple-950/40 bg-purple-50 border dark:border-purple-800/50 border-purple-200">
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center space-x-1.5">
+              <i data-lucide="volume-2" class="w-3.5 h-3.5 text-purple-400"></i>
+              <span class="text-[11px] font-bold dark:text-purple-200 text-purple-900">Smallest AI Lightning TTS Playback</span>
+            </div>
+            <span class="text-[10px] text-purple-400 font-mono">24kHz WAV</span>
+          </div>
+          <audio id="tts-audio-player" controls class="w-full h-8 rounded dark:bg-slate-950 bg-white"></audio>
+        </div>
+
+        <!-- Turn-by-Turn Feed -->
+        <div id="transcript-feed" class="space-y-3 max-h-[calc(100vh-14rem)] overflow-y-auto pr-1 text-xs">
+          <div class="p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 text-slate-400 text-xs italic">
+            Awaiting start of call...
+          </div>
+        </div>
+      </div>
+      <div class="pt-4 border-t dark:border-slate-800 border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
+        <span>Synchronized to PostgreSQL <code>case_interactions</code></span>
+        <button onclick="closeDrawer('drawer-conversation')" class="font-bold text-indigo-400 hover:underline">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Call Details & Observability HUD Drawer -->
+  <div id="drawer-call-details" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeDrawer('drawer-call-details')"></div>
+    <div class="absolute inset-y-0 right-0 max-w-xl w-full glass-panel shadow-2xl p-6 overflow-y-auto border-l dark:border-slate-800 border-slate-200">
+      
+      <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="cpu" class="w-4 h-4 text-purple-400"></i>
+          <h3 class="text-base font-bold dark:text-white text-slate-900">Call Details & AI Observability</h3>
+        </div>
+        <button onclick="closeDrawer('drawer-call-details')" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-5 text-xs">
+        <!-- Active Tier & Routing -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider text-[10px]">Active Routing Tier</span>
+            <span id="route-source-badge" class="text-[10px] px-2 py-0.5 rounded font-bold dark:bg-slate-950 bg-white dark:text-slate-300 text-slate-700 border dark:border-slate-800 border-slate-300">STANDBY</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div id="tier-card-1" class="tier-card p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 transition opacity-40">
+              <div class="text-[10px] font-bold text-blue-400 uppercase">Tier 1</div>
+              <div class="text-[11px] font-bold dark:text-white text-slate-900">L1 Basic Finance Triage</div>
+            </div>
+            <div id="tier-card-2" class="tier-card p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 transition opacity-40">
+              <div class="text-[10px] font-bold text-indigo-400 uppercase">Tier 2</div>
+              <div class="text-[11px] font-bold dark:text-white text-slate-900">L2 AR/AP Specialist</div>
+            </div>
+            <div id="tier-card-3" class="tier-card p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 transition opacity-40">
+              <div class="text-[10px] font-bold text-purple-400 uppercase">Tier 3</div>
+              <div class="text-[11px] font-bold dark:text-white text-slate-900">L3 Accounting Authority</div>
+            </div>
+            <div id="tier-card-4" class="tier-card p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 transition opacity-40">
+              <div class="text-[10px] font-bold text-rose-400 uppercase">Tier 4</div>
+              <div class="text-[11px] font-bold dark:text-white text-slate-900">L4 Executive Controller</div>
+            </div>
+          </div>
+
+          <!-- Escalation Notice (if triggered) -->
+          <div id="escalation-alert-box" class="hidden mt-3 p-2.5 rounded-xl dark:bg-amber-950/60 bg-amber-50 border dark:border-amber-800/80 border-amber-300 dark:text-amber-300 text-amber-800 text-xs flex items-start space-x-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold">Auto-Escalation Activated:</span>
+              <p id="escalation-alert-text" class="mt-0.5 text-[11px] dark:text-amber-200/90 text-amber-900"></p>
+            </div>
+          </div>
+
+          <div class="mt-3 pt-3 border-t dark:border-slate-800 border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Routing Plan:</span>
+            <p id="inspector-plan" class="text-[11px] dark:text-slate-300 text-slate-700 leading-relaxed dark:bg-slate-950 bg-white p-2 rounded-lg border dark:border-slate-800 border-slate-200 font-mono">
+              Awaiting incoming call...
+            </p>
+          </div>
+        </div>
+
+        <!-- PostgreSQL Tools Executed -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200">
+          <h4 class="text-[11px] font-bold uppercase tracking-wider dark:text-slate-300 text-slate-700 mb-2 flex items-center space-x-1.5">
+            <i data-lucide="database" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>PostgreSQL Tools Invoked</span>
+          </h4>
+          <div id="tools-pill-container" class="flex flex-wrap gap-1.5 mb-3">
+            <span class="text-xs text-slate-500 italic">No tools invoked yet.</span>
+          </div>
+
+          <div class="pt-3 border-t dark:border-slate-800 border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1.5">Verified Financial Evidence:</span>
+            <div id="evidence-container" class="flex flex-wrap gap-1.5">
+              <span class="text-xs text-slate-500 italic">Evidence dossier appears post-resolution.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation & Reflection -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-[11px] font-bold uppercase tracking-wider dark:text-slate-300 text-slate-700 flex items-center space-x-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>Evaluation & Reflection</span>
+            </h4>
+            <span id="score-badge" class="text-sm font-black text-emerald-400 font-mono">--/100</span>
+          </div>
+
+          <div class="space-y-2 mt-3">
+            <div>
+              <div class="flex justify-between text-[11px] dark:text-slate-400 text-slate-500 mb-1">
+                <span>Resolution Quality:</span>
+                <span id="score-quality" class="font-bold dark:text-slate-200 text-slate-800">--</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full dark:bg-slate-800 bg-slate-200 overflow-hidden">
+                <div id="bar-quality" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 0%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px] dark:text-slate-400 text-slate-500 mb-1">
+                <span>Tool Economy:</span>
+                <span id="score-tools" class="font-bold dark:text-slate-200 text-slate-800">--</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full dark:bg-slate-800 bg-slate-200 overflow-hidden">
+                <div id="bar-tools" class="h-full bg-indigo-500 rounded-full transition-all" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 pt-3 border-t dark:border-slate-800 border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Synthesized Reflection:</span>
+            <p id="inspector-reflection" class="text-[11px] dark:text-indigo-300 text-indigo-700 italic dark:bg-slate-950 bg-white p-2 rounded-lg border dark:border-slate-800 border-slate-200 font-medium">
+              Reflections formulate post-resolution to continuously guide future routing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Developer & Demo Controls Drawer -->
+  <div id="drawer-dev-tools" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeDrawer('drawer-dev-tools')"></div>
+    <div class="absolute inset-y-0 right-0 max-w-lg w-full glass-panel shadow-2xl p-6 overflow-y-auto border-l dark:border-slate-800 border-slate-200">
+      
+      <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="sliders" class="w-4 h-4 text-indigo-400"></i>
+          <h3 class="text-base font-bold dark:text-white text-slate-900">Developer & Demo Controls</h3>
+        </div>
+        <button onclick="closeDrawer('drawer-dev-tools')" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-5 text-xs">
+        <!-- Audio Simulation Triggers -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">Simulated Audio Inputs:</span>
+          <div class="flex flex-wrap gap-2">
+            <input type="file" id="input-audio-file" accept="audio/*" class="hidden" onchange="uploadCustomAudio(event)">
+            <button onclick="document.getElementById('input-audio-file').click()" class="px-3 py-1.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-300 hover:text-indigo-400 flex items-center space-x-1.5 font-medium transition shadow-sm">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              <span>Upload Custom Audio</span>
+            </button>
+            <button onclick="runPreloadedWav(); closeDrawer('drawer-dev-tools');" class="px-3 py-1.5 rounded-xl dark:bg-indigo-950/60 bg-indigo-50 border dark:border-indigo-800/60 border-indigo-200 text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-1.5 transition shadow-sm">
+              <i data-lucide="file-audio" class="w-3.5 h-3.5"></i>
+              <span>Run test.wav</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Scenario Prompts -->
+        <div class="p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">One-Click Finance Scenarios:</span>
+          <div class="space-y-2">
+            <button onclick="sendQuickPrompt('Why was our payment PMT-8821 short by $250 on invoice INV-4471?'); closeDrawer('drawer-dev-tools');" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 transition">
+              <div class="font-bold dark:text-white text-slate-900">💳 Short-Payment Inquiry (L2 AR)</div>
+              <div class="text-[11px] text-slate-500 mt-0.5 font-mono">Why was PMT-8821 short by $250 on INV-4471?</div>
+            </button>
+
+            <button onclick="sendQuickPrompt('What caused the 18% variance on AWS hosting bill BILL-7701?'); closeDrawer('drawer-dev-tools');" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 transition">
+              <div class="font-bold dark:text-white text-slate-900">☁️ AP Hosting Variance (L3 Accounting)</div>
+              <div class="text-[11px] text-slate-500 mt-0.5 font-mono">What caused the 18% variance on AWS bill BILL-7701?</div>
+            </button>
+
+            <button onclick="sendQuickPrompt('What is our current treasury cash position and 13-week runway?'); closeDrawer('drawer-dev-tools');" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 transition">
+              <div class="font-bold dark:text-white text-slate-900">🏦 Treasury & Cash Runway (L1/L2)</div>
+              <div class="text-[11px] text-slate-500 mt-0.5 font-mono">What is our current treasury cash position and runway?</div>
+            </button>
+
+            <button onclick="sendQuickPrompt('Check overdue status of invoice INV-4472 for Nexus Logistics.'); closeDrawer('drawer-dev-tools');" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-950 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/50 transition">
+              <div class="font-bold dark:text-white text-slate-900">📋 Overdue Invoice Lookup (L1 Triage)</div>
+              <div class="text-[11px] text-slate-500 mt-0.5 font-mono">Check overdue status of INV-4472 for Nexus Logistics.</div>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1264,11 +1473,16 @@
     let isCallActive = false;
     let isListening = false;
     let isProcessing = false;
+    let isMicMuted = false;
     let callSeconds = 0;
     let callTimerInterval = null;
     let currentCaseId = null;
+    let currentOrbState = 'idle';
+    let smoothedAmp = 0;
+    let activeCaptionCaseId = null;
+    let transcriptMessageCount = 0;
 
-    // Web Audio Hands-Free VAD state
+    // Web Audio Hands-Free VAD & Reactivity state
     let audioContext = null;
     let analyser = null;
     let mediaStream = null;
@@ -1278,7 +1492,14 @@
     let speechDetectedInTurn = false;
     let silenceStartTimestamp = null;
     const SILENCE_THRESHOLD_MS = 1800; // ~1.8s trailing silence
-    const VOLUME_THRESHOLD = 0.018;     // Mic RMS threshold
+    const VOLUME_THRESHOLD = 0.016;     // Mic RMS threshold
+
+    // Customer Profiles Metadata
+    const CUSTOMER_PROFILES = {
+      'cust1': { name: 'Alice Morgan', role: 'Finance Director, Apex Global Technologies' },
+      'cust2': { name: 'Bob Jenkins', role: 'VP Operations, Lumina Commerce' },
+      'cust3': { name: 'Charlie Davis', role: 'Controller, Meridian Health' },
+    };
 
     // Theme Management
     function initTheme() {
@@ -1336,10 +1557,15 @@
 
     function onCustomerChange() {
       const sel = document.getElementById('select-customer');
-      const opt = sel.options[sel.selectedIndex].text;
-      const name = opt.split(' ')[0] + ' ' + opt.split(' ')[1];
-      document.getElementById('precall-caller-name').innerText = name;
-      document.getElementById('in-call-customer-info').innerText = `Active Call with ${name} (${sel.value})`;
+      const val = sel ? sel.value : 'cust1';
+      const prof = CUSTOMER_PROFILES[val] || {
+        name: sel ? sel.options[sel.selectedIndex].text : 'Alice Morgan',
+        role: 'Verified Enterprise Contact'
+      };
+      const nameEl = document.getElementById('precall-caller-name');
+      const roleEl = document.getElementById('precall-caller-role');
+      if (nameEl) nameEl.innerText = prof.name;
+      if (roleEl) roleEl.innerText = prof.role;
     }
 
     // Call Timer
@@ -1350,24 +1576,292 @@
         callSeconds++;
         const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
         const secs = String(callSeconds % 60).padStart(2, '0');
-        document.getElementById('call-timer').innerText = `${mins}:${secs}`;
+        const timer = document.getElementById('call-timer');
+        if (timer) timer.innerText = `${mins}:${secs}`;
       }, 1000);
+    }
+
+    // ==================== DRAWER MANAGEMENT ====================
+    function openDrawer(drawerId) {
+      const drawer = document.getElementById(drawerId);
+      if (drawer) {
+        drawer.classList.remove('hidden');
+        lucide.createIcons();
+      }
+    }
+
+    function closeDrawer(drawerId) {
+      const drawer = document.getElementById(drawerId);
+      if (drawer) {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDrawer('drawer-conversation');
+        closeDrawer('drawer-call-details');
+        closeDrawer('drawer-dev-tools');
+        if (typeof closeRecordDrawer === 'function') {
+          closeRecordDrawer();
+        }
+      }
+    });
+
+    // ==================== LIVING VOICE ORB STATE ENGINE ====================
+    function setOrbCenterIcon(iconName, spin = false) {
+      const container = document.getElementById('orb-center-icon');
+      if (!container) return;
+      container.innerHTML = `<i data-lucide="${iconName}" class="w-8 h-8 sm:w-9 sm:h-9 ${spin ? 'animate-spin' : ''}"></i>`;
+      lucide.createIcons();
+    }
+
+    function updateOrbAudioReactivity(rms) {
+      if (isMicMuted || !isListening || currentOrbState !== 'listening') {
+        rms = 0;
+      }
+      const targetAmp = Math.min(Math.max((rms - 0.01) * 14, 0), 1.0);
+      smoothedAmp = smoothedAmp * 0.65 + targetAmp * 0.35;
+
+      const orb = document.getElementById('voice-orb');
+      const halo = document.getElementById('orb-halo');
+      const ambient = document.getElementById('orb-ambient-glow');
+
+      if (orb) {
+        if (currentOrbState === 'listening') {
+          const scaleVal = 1.0 + smoothedAmp * 0.20;
+          orb.style.transform = `scale(${scaleVal.toFixed(3)})`;
+        } else {
+          orb.style.transform = '';
+        }
+      }
+      if (halo) {
+        if (currentOrbState === 'listening') {
+          const haloScale = 1.25 + smoothedAmp * 0.30;
+          const haloOpacity = 0.35 + smoothedAmp * 0.45;
+          halo.style.transform = `scale(${haloScale.toFixed(3)})`;
+          halo.style.opacity = haloOpacity.toFixed(2);
+        } else {
+          halo.style.transform = '';
+          halo.style.opacity = '';
+        }
+      }
+      if (ambient) {
+        if (currentOrbState === 'listening' && smoothedAmp > 0.05) {
+          ambient.style.transform = `scale(${(1.0 + smoothedAmp * 0.18).toFixed(3)})`;
+        } else {
+          ambient.style.transform = '';
+        }
+      }
+    }
+
+    function setOrbState(state, title = null, subtitle = null) {
+      currentOrbState = state;
+      const wrapper = document.getElementById('orb-stage-wrapper');
+      const orb = document.getElementById('voice-orb');
+
+      const allStates = ['idle', 'connecting', 'listening', 'thinking', 'speaking', 'handoff', 'ended', 'error'];
+      allStates.forEach(s => {
+        if (wrapper) wrapper.classList.remove(`orb-state-${s}`);
+        if (orb) orb.classList.remove(`orb-state-${s}`);
+      });
+
+      if (wrapper) wrapper.classList.add(`orb-state-${state}`);
+      if (orb) orb.classList.add(`orb-state-${state}`);
+
+      let iconName = 'mic';
+      let isSpin = false;
+      if (state === 'idle') iconName = 'mic';
+      else if (state === 'connecting') { iconName = 'loader-2'; isSpin = true; }
+      else if (state === 'listening') iconName = isMicMuted ? 'mic-off' : 'mic';
+      else if (state === 'thinking') iconName = 'sparkles';
+      else if (state === 'speaking') iconName = 'volume-2';
+      else if (state === 'handoff') iconName = 'arrow-right';
+      else if (state === 'ended') iconName = 'phone-off';
+      else if (state === 'error') iconName = 'alert-circle';
+
+      setOrbCenterIcon(iconName, isSpin);
+
+      if (title) {
+        const t = document.getElementById('voice-status-title');
+        if (t) t.innerHTML = title;
+      }
+      if (subtitle) {
+        const s = document.getElementById('voice-status-subtitle');
+        if (s) s.innerHTML = subtitle;
+      }
+
+      if (state !== 'listening') {
+        updateOrbAudioReactivity(0);
+      }
+    }
+
+    function updateVoiceStatus(title, subtitle) {
+      const t = document.getElementById('voice-status-title');
+      const s = document.getElementById('voice-status-subtitle');
+      if (t && title) t.innerHTML = title;
+      if (s && subtitle) s.innerHTML = subtitle;
+    }
+
+    // ==================== FLOATING LIVE CAPTION & FEEDBACK ====================
+    function showLiveCaption(speaker, text, caseId = null) {
+      activeCaptionCaseId = caseId;
+      const card = document.getElementById('live-caption-card');
+      const spk = document.getElementById('live-caption-speaker');
+      const txt = document.getElementById('live-caption-text');
+      const fb = document.getElementById('live-caption-feedback');
+
+      if (spk) spk.innerText = speaker;
+      if (txt) txt.innerText = text;
+
+      if (fb) {
+        if (caseId) {
+          fb.innerHTML = `
+            <span class="text-[10px] text-slate-500 font-semibold mr-1">Helpful?</span>
+            <button onclick="submitLiveCaptionFeedback('positive')" title="Helpful" class="p-1 rounded-lg hover:bg-emerald-950/60 text-slate-400 hover:text-emerald-400 transition"><i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i></button>
+            <button onclick="submitLiveCaptionFeedback('negative')" title="Not helpful" class="p-1 rounded-lg hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 transition"><i data-lucide="thumbs-down" class="w-3.5 h-3.5"></i></button>
+          `;
+          fb.classList.remove('hidden');
+        } else {
+          fb.classList.add('hidden');
+        }
+      }
+
+      if (card) {
+        card.classList.remove('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    async function submitLiveCaptionFeedback(rating) {
+      const caseId = activeCaptionCaseId || currentCaseId;
+      const fb = document.getElementById('live-caption-feedback');
+      if (fb) {
+        fb.innerHTML = `<span class="text-emerald-400 text-[11px] font-bold flex items-center space-x-1"><i data-lucide="check" class="w-3 h-3"></i><span>Recorded (${rating === 'positive' ? '👍' : '👎'})</span></span>`;
+        lucide.createIcons();
+      }
+      if (caseId) {
+        await submitFeedback(caseId, rating);
+      }
+    }
+
+    // ==================== CALL STATION INTERACTIVE CONTROLS ====================
+    function handleOrbClick() {
+      if (!isCallActive) {
+        startCustomerCall();
+      } else if (currentOrbState === 'speaking') {
+        const audioPlayer = document.getElementById('tts-audio-player');
+        if (audioPlayer && !audioPlayer.paused) {
+          audioPlayer.pause();
+          audioPlayer.currentTime = 0;
+          if (isCallActive) startHandsFreeListening();
+        }
+      } else if (isListening) {
+        toggleMicMute();
+      } else if (currentOrbState === 'ended') {
+        resetCallToStandby();
+      }
+    }
+
+    function handleOrbKeydown(event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handleOrbClick();
+      }
+    }
+
+    function toggleMicMute() {
+      isMicMuted = !isMicMuted;
+      const btn = document.getElementById('btn-mic-toggle');
+
+      if (mediaStream) {
+        mediaStream.getAudioTracks().forEach(track => {
+          track.enabled = !isMicMuted;
+        });
+      }
+
+      if (isMicMuted) {
+        if (btn) {
+          btn.className = "w-10 h-10 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg shadow-rose-600/30 transition";
+          btn.title = "Unmute Microphone";
+          btn.innerHTML = `<i data-lucide="mic-off" class="w-4 h-4"></i>`;
+        }
+        if (isListening) {
+          setOrbCenterIcon('mic-off');
+          updateVoiceStatus("Microphone Muted", "Click unmute or orb to speak.");
+        }
+      } else {
+        if (btn) {
+          btn.className = "w-10 h-10 rounded-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 hover:text-indigo-400 flex items-center justify-center shadow-sm transition";
+          btn.title = "Mute Microphone";
+          btn.innerHTML = `<i data-lucide="mic" class="w-4 h-4"></i>`;
+        }
+        if (isListening) {
+          setOrbCenterIcon('mic');
+          updateVoiceStatus("Listening Hands-Free...", "Speak naturally. Trailing silence (~1.8s) auto-submits.");
+        }
+      }
+      lucide.createIcons();
+    }
+
+    function resetCallToStandby() {
+      isCallActive = false;
+      isProcessing = false;
+      isListening = false;
+      isMicMuted = false;
+      stopHandsFreeListening();
+      clearInterval(callTimerInterval);
+
+      document.getElementById('btn-start-call').classList.remove('hidden');
+      document.getElementById('in-call-controls').classList.add('hidden');
+      document.getElementById('call-ended-summary').classList.add('hidden');
+
+      const liveCard = document.getElementById('live-caption-card');
+      if (liveCard) liveCard.classList.add('hidden');
+
+      const timer = document.getElementById('call-timer');
+      if (timer) timer.innerText = "00:00";
+
+      const micBtn = document.getElementById('btn-mic-toggle');
+      if (micBtn) {
+        micBtn.className = "w-10 h-10 rounded-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-300 text-slate-700 hover:text-indigo-400 flex items-center justify-center shadow-sm transition";
+        micBtn.innerHTML = `<i data-lucide="mic" class="w-4 h-4"></i>`;
+      }
+
+      const agentHeading = document.getElementById('active-agent-heading');
+      const agentBadge = document.getElementById('active-agent-tier-badge');
+      if (agentHeading) agentHeading.innerText = "Maximor AI / Orchestrator";
+      if (agentBadge) {
+        agentBadge.innerText = "L0";
+        agentBadge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700";
+      }
+
+      setOrbState('idle', 'Ready to talk', 'Click orb or button to start hands-free voice call');
+      updateOrbAudioReactivity(0);
+      lucide.createIcons();
     }
 
     // ==================== HANDS-FREE VOICE CALL LOOP ====================
 
     async function startCustomerCall() {
       isCallActive = true;
-      document.getElementById('pre-call-container').classList.add('hidden');
-      document.getElementById('in-call-container').classList.remove('hidden');
+      isMicMuted = false;
+
+      document.getElementById('btn-start-call').classList.add('hidden');
+      document.getElementById('in-call-controls').classList.remove('hidden');
+      document.getElementById('call-ended-summary').classList.add('hidden');
       startCallTimer();
 
       const customerId = document.getElementById('select-customer').value;
-      updateVoiceStatus("Connecting call...", "Requesting personalized greeting from Maximor AI...");
+      setOrbState('connecting', "Connecting call...", "Requesting personalized greeting from Maximor AI...");
 
-      document.getElementById('active-agent-heading').innerText = "Connected to Orchestrator (Call Director)";
-      document.getElementById('active-agent-tier-badge').innerText = "Tier 0";
-      document.getElementById('active-agent-tier-badge').className = "text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-950 text-indigo-400 border border-indigo-800";
+      const agentHeading = document.getElementById('active-agent-heading');
+      const agentBadge = document.getElementById('active-agent-tier-badge');
+      if (agentHeading) agentHeading.innerText = "Maximor AI / Orchestrator";
+      if (agentBadge) {
+        agentBadge.innerText = "L0";
+        agentBadge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700";
+      }
 
       try {
         // Step 1: Request Spoken Greeting via /api/voice/greet
@@ -1379,20 +1873,26 @@
         const data = await res.json();
 
         // Step 2: Append Greeting to Transcript
-        appendTranscript("agent", data.greeting_text || "Thanks for calling Maximor AI. How can I help you today?", null, "Orchestrator (Call Director)");
+        const greeting = data.greeting_text || "Thanks for calling Maximor AI. How can I help you today?";
+        appendTranscript("agent", greeting, null, "Maximor AI / Orchestrator");
+        showLiveCaption("Maximor AI / Orchestrator", greeting, null);
 
         // Step 3: Play Greeting Audio, then enter Hands-Free Listening Loop
         if (data.audio_url) {
+          setOrbState('speaking', "Maximor AI Speaking...", "Streaming personalized greeting...");
           playAgentAudio(data.audio_url, () => {
-            // Greeting finished! Start hands-free continuous listening
-            startHandsFreeListening();
+            if (isCallActive) {
+              startHandsFreeListening();
+            }
           });
         } else {
-          startHandsFreeListening();
+          if (isCallActive) {
+            startHandsFreeListening();
+          }
         }
       } catch (err) {
         console.error("Greet error:", err);
-        startHandsFreeListening();
+        if (isCallActive) startHandsFreeListening();
       }
     }
 
@@ -1400,17 +1900,24 @@
       isCallActive = false;
       stopHandsFreeListening();
       clearInterval(callTimerInterval);
-      document.getElementById('in-call-container').classList.add('hidden');
-      document.getElementById('pre-call-container').classList.remove('hidden');
-      document.getElementById('call-status-pill').className = "px-2.5 py-0.5 rounded-full text-xs font-bold dark:bg-emerald-950 bg-emerald-100 dark:text-emerald-400 text-emerald-800 border dark:border-emerald-800/80 border-emerald-300 flex items-center space-x-1.5";
-      document.getElementById('call-status-text').innerText = "Standby (Click Call to Start)";
+
+      const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+      const secs = String(callSeconds % 60).padStart(2, '0');
+      const durationFormatted = `${mins}:${secs}`;
+
+      document.getElementById('in-call-controls').classList.add('hidden');
+      document.getElementById('call-ended-summary').classList.remove('hidden');
+      document.getElementById('ended-duration').innerText = durationFormatted;
+
+      setOrbState('ended', `Call ended (${durationFormatted})`, "Conversation and audit trail saved to Customer Executive");
+      updateOrbAudioReactivity(0);
       lucide.createIcons();
     }
 
     async function startHandsFreeListening() {
       if (!isCallActive || isProcessing) return;
       try {
-        if (!mediaStream) {
+        if (!mediaStream || !mediaStream.active) {
           mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         }
 
@@ -1425,6 +1932,7 @@
         const source = audioContext.createMediaStreamSource(mediaStream);
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = 0.4;
         source.connect(analyser);
 
         recordedChunks = [];
@@ -1438,15 +1946,14 @@
         speechDetectedInTurn = false;
         silenceStartTimestamp = null;
 
-        updateVoiceStatus("Listening Hands-Free...", "Speak naturally. Trailing silence (~2s) auto-submits.");
-        document.getElementById('listening-wave-ring').classList.remove('hidden');
-        document.getElementById('speaking-wave-ring').classList.add('hidden');
+        setOrbState('listening', "Listening Hands-Free...", "Speak naturally. Trailing silence (~1.8s) auto-submits.");
 
         // Start VAD Loop
         startVadLoop();
       } catch (err) {
         console.warn("Microphone access failed or denied:", err);
-        updateVoiceStatus("Microphone Inactive", "You can type in the box below or click any scenario button.");
+        setOrbState('error', "Microphone Inactive", "You can type in the box below or click any scenario button in Details.");
+        isListening = false;
       }
     }
 
@@ -1456,8 +1963,7 @@
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
       }
-      document.getElementById('listening-wave-ring').classList.add('hidden');
-      document.getElementById('speaking-wave-ring').classList.add('hidden');
+      updateOrbAudioReactivity(0);
     }
 
     function startVadLoop() {
@@ -1477,15 +1983,16 @@
         }
         const rms = Math.sqrt(sum / dataArray.length);
 
-        if (rms > VOLUME_THRESHOLD) {
+        // Map live amplitude to voice orb dynamics
+        updateOrbAudioReactivity(rms);
+
+        if (rms > VOLUME_THRESHOLD && !isMicMuted) {
           // User is currently speaking!
           speechDetectedInTurn = true;
           silenceStartTimestamp = null;
-          document.getElementById('speaking-wave-ring').classList.remove('hidden');
           updateVoiceStatus("Voice Detected &bull; Listening...", "Recording your finance inquiry...");
         } else {
           // Silence
-          document.getElementById('speaking-wave-ring').classList.add('hidden');
           if (speechDetectedInTurn) {
             if (!silenceStartTimestamp) {
               silenceStartTimestamp = Date.now();
@@ -1495,16 +2002,13 @@
             }
           }
         }
-      }, 100);
+      }, 80);
     }
 
     function triggerEndOfTurn() {
       stopHandsFreeListening();
       isProcessing = true;
-      updateVoiceStatus("Processing with gpt-5-nano...", "Synthesizing Pulse STT & querying PostgreSQL...");
-      document.getElementById('call-status-pill').className = "px-2.5 py-0.5 rounded-full text-xs font-bold dark:bg-amber-950 bg-amber-100 dark:text-amber-400 text-amber-800 border dark:border-amber-800/80 border-amber-300 flex items-center space-x-1.5";
-      document.getElementById('call-status-text').innerText = "Reasoning with gpt-5-nano...";
-
+      setOrbState('thinking', "Reasoning with gpt-5-nano...", "Synthesizing Pulse STT & querying PostgreSQL...");
       mediaRecorder.onstop = uploadVoiceTurn;
     }
 
@@ -1520,8 +2024,10 @@
         handleInteractionResult(data);
       } catch (err) {
         console.error("Voice turn error:", err);
-        updateVoiceStatus("Voice Processing Notice", "Falling back to ready mode.");
-        if (isCallActive) startHandsFreeListening();
+        setOrbState('error', "Voice Processing Notice", "Falling back to ready mode.");
+        if (isCallActive) {
+          setTimeout(() => startHandsFreeListening(), 1500);
+        }
       } finally {
         isProcessing = false;
       }
@@ -1530,25 +2036,27 @@
     function playAgentAudio(url, onComplete) {
       const audioCard = document.getElementById('tts-audio-card');
       const audioPlayer = document.getElementById('tts-audio-player');
+      if (audioCard) audioCard.classList.remove('hidden');
+      if (!audioPlayer) {
+        if (onComplete) onComplete();
+        return;
+      }
       audioPlayer.src = url;
-      audioCard.classList.remove('hidden');
 
-      audioPlayer.onended = () => {
+      let finished = false;
+      const finishOnce = () => {
+        if (finished) return;
+        finished = true;
         if (onComplete) onComplete();
       };
-      audioPlayer.onerror = () => {
-        if (onComplete) onComplete();
-      };
+
+      audioPlayer.onended = finishOnce;
+      audioPlayer.onerror = finishOnce;
 
       audioPlayer.play().catch(e => {
-        console.log("Browser autoplay restriction:", e);
-        if (onComplete) onComplete();
+        console.log("Browser autoplay restriction or playback failure:", e);
+        finishOnce();
       });
-    }
-
-    function updateVoiceStatus(title, subtitle) {
-      document.getElementById('voice-status-title').innerText = title;
-      document.getElementById('voice-status-subtitle').innerText = subtitle;
     }
 
     // ==================== TEXT INPUT & QUICK PROMPTS ====================
@@ -1568,16 +2076,16 @@
 
     async function executeTextQuery(message) {
       if (!isCallActive) {
-        // Auto-open in-call workstation if text submitted in standby
         isCallActive = true;
-        document.getElementById('pre-call-container').classList.add('hidden');
-        document.getElementById('in-call-container').classList.remove('hidden');
+        document.getElementById('btn-start-call').classList.add('hidden');
+        document.getElementById('in-call-controls').classList.remove('hidden');
+        document.getElementById('call-ended-summary').classList.add('hidden');
         startCallTimer();
       }
 
       stopHandsFreeListening();
       isProcessing = true;
-      updateVoiceStatus("Reasoning with gpt-5-nano...", "Executing PostgreSQL tools and policies...");
+      setOrbState('thinking', "Reasoning with gpt-5-nano...", "Executing PostgreSQL tools and policies...");
 
       try {
         const res = await fetch('/api/text/call', {
@@ -1591,8 +2099,9 @@
         const data = await res.json();
         handleInteractionResult(data);
       } catch (err) {
-        alert("Query error: " + err.message);
-        if (isCallActive) startHandsFreeListening();
+        console.error("Text query error:", err);
+        setOrbState('error', "Execution Notice", err.message || "Query failed");
+        if (isCallActive) setTimeout(() => startHandsFreeListening(), 2000);
       } finally {
         isProcessing = false;
       }
@@ -1605,14 +2114,15 @@
 
       if (!isCallActive) {
         isCallActive = true;
-        document.getElementById('pre-call-container').classList.add('hidden');
-        document.getElementById('in-call-container').classList.remove('hidden');
+        document.getElementById('btn-start-call').classList.add('hidden');
+        document.getElementById('in-call-controls').classList.remove('hidden');
+        document.getElementById('call-ended-summary').classList.add('hidden');
         startCallTimer();
       }
 
       stopHandsFreeListening();
       isProcessing = true;
-      updateVoiceStatus(`Processing ${file.name}...`, "Transcribing via Smallest AI Pulse...");
+      setOrbState('thinking', `Processing ${file.name}...`, "Transcribing via Smallest AI Pulse...");
 
       const formData = new FormData();
       formData.append('audio', file, file.name);
@@ -1623,8 +2133,9 @@
         const data = await res.json();
         handleInteractionResult(data);
       } catch (err) {
-        alert("Upload error: " + err.message);
-        if (isCallActive) startHandsFreeListening();
+        console.error("Upload error:", err);
+        setOrbState('error', "Upload Notice", err.message || "Upload failed");
+        if (isCallActive) setTimeout(() => startHandsFreeListening(), 2000);
       } finally {
         isProcessing = false;
       }
@@ -1633,14 +2144,15 @@
     async function runPreloadedWav() {
       if (!isCallActive) {
         isCallActive = true;
-        document.getElementById('pre-call-container').classList.add('hidden');
-        document.getElementById('in-call-container').classList.remove('hidden');
+        document.getElementById('btn-start-call').classList.add('hidden');
+        document.getElementById('in-call-controls').classList.remove('hidden');
+        document.getElementById('call-ended-summary').classList.add('hidden');
         startCallTimer();
       }
 
       stopHandsFreeListening();
       isProcessing = true;
-      updateVoiceStatus("Processing test.wav...", "Transcribing via Smallest AI Pulse...");
+      setOrbState('thinking', "Processing test.wav...", "Transcribing via Smallest AI Pulse...");
 
       try {
         const audioBlob = await fetch('/api/audio/test.wav').then(r => r.blob());
@@ -1652,8 +2164,9 @@
         const data = await res.json();
         handleInteractionResult(data);
       } catch (err) {
-        alert("Test audio error: " + err.message);
-        if (isCallActive) startHandsFreeListening();
+        console.error("Test audio error:", err);
+        setOrbState('error', "Audio Error", err.message || "Error running test.wav");
+        if (isCallActive) setTimeout(() => startHandsFreeListening(), 2000);
       } finally {
         isProcessing = false;
       }
@@ -1662,26 +2175,27 @@
     // ==================== INTERACTION RESULT PRESENTER ====================
     function handleInteractionResult(data) {
       if (!data.success) {
-        alert("Error: " + (data.error || "Execution failed"));
-        if (isCallActive) startHandsFreeListening();
+        setOrbState('error', "Processing Notice", data.error || "Execution failed");
+        if (isCallActive) setTimeout(() => startHandsFreeListening(), 2000);
         return;
       }
 
       currentCaseId = data.case_id || data.case?.id || `CASE-${Date.now()}`;
 
-      // 0. Update Active Agent in Workstation Header with smooth transition
+      // 0. Update Active Agent in Top Bar & Voice Orb Handoff
       const targetRole = data.specialist_role || (data.acting_agent ? data.acting_agent.replace(/^L\d+\s+/, '') : "Finance Specialist");
       const tier = data.route?.route_level ?? (data.handoff_required ? 2 : 0);
       const agentHeading = document.getElementById('active-agent-heading');
       const agentBadge = document.getElementById('active-agent-tier-badge');
 
       if (data.handoff_required) {
+        setOrbState('handoff', `Connecting to ${targetRole}…`, `Transferring with verified context to Tier L${tier}`);
         if (agentHeading) {
           agentHeading.innerHTML = `<span class="inline-flex items-center space-x-1.5 text-indigo-400"><span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping mr-1"></span><span>Connecting to ${targetRole}…</span></span>`;
         }
         if (agentBadge) {
           agentBadge.innerText = "Connecting…";
-          agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60 animate-pulse";
+          agentBadge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60 animate-pulse";
         }
         setTimeout(() => {
           if (agentHeading) {
@@ -1689,16 +2203,16 @@
           }
           if (agentBadge) {
             agentBadge.innerText = `L${tier} Active`;
-            agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 transition-all duration-300";
+            agentBadge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 transition-all duration-300";
           }
         }, 700);
       } else {
         if (agentHeading) {
-          agentHeading.innerText = data.acting_agent || "Orchestrator (Call Director)";
+          agentHeading.innerText = data.acting_agent || "Maximor AI / Orchestrator";
         }
         if (agentBadge) {
-          agentBadge.innerText = "Call Director · L0";
-          agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-300 border border-slate-700";
+          agentBadge.innerText = "L0";
+          agentBadge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700";
         }
       }
 
@@ -1708,34 +2222,39 @@
       // Warm handoff conversational flow vs. direct orchestrator answer
       if (data.handoff_required && data.orchestrator_speech) {
         // Step A: Orchestrator warm handoff statement
-        appendTranscript("agent", data.orchestrator_speech, null, "Orchestrator (Call Director)");
+        appendTranscript("agent", data.orchestrator_speech, null, "Maximor AI / Orchestrator");
 
-        // Step B: Warm Handoff Divider Banner (minimal, premium)
+        // Step B: Warm Handoff Divider Banner
         appendHandoffDivider(
-          "Orchestrator (Call Director)",
+          "Maximor AI / Orchestrator",
           targetRole,
           tier
         );
 
         // Step C: Receiving Specialist response with feedback widget
+        const specialistText = data.specialist_speech || data.response_text || "Case resolved.";
         appendTranscript(
           "agent",
-          data.specialist_speech || data.response_text || "Case resolved.",
+          specialistText,
           currentCaseId,
-          data.acting_agent || data.specialist_role || "Finance Specialist"
+          `${targetRole} · L${tier}`
         );
+        showLiveCaption(`${targetRole} · L${tier}`, specialistText, currentCaseId);
       } else {
         // Direct Orchestrator answer with feedback widget
+        const agentText = data.response_text || "Case resolved.";
         appendTranscript(
           "agent",
-          data.response_text || "Case resolved.",
+          agentText,
           currentCaseId,
-          data.acting_agent || "Orchestrator (Call Director)"
+          data.acting_agent || "Maximor AI / Orchestrator"
         );
+        showLiveCaption(data.acting_agent || "Maximor AI / Orchestrator", agentText, currentCaseId);
       }
 
       // 2. Play Audio if synthesized & auto-resume hands-free listening
       if (data.audio_url) {
+        setOrbState('speaking', "Maximor AI Speaking...", "Streaming synthesized response via Lightning TTS...");
         playAgentAudio(data.audio_url, () => {
           if (isCallActive) {
             startHandsFreeListening();
@@ -1747,7 +2266,7 @@
         }
       }
 
-      // 3. Update HUD Inspector
+      // 3. Update HUD Inspector in Call Details Drawer
       const routeLevel = data.route?.route_level || 1;
       const routePlan = data.route?.plan || "Standard finance routing plan";
       const routeSource = data.route?.routing_source || "heuristic";
@@ -1774,73 +2293,89 @@
 
       // Update source badge
       const badge = document.getElementById('route-source-badge');
-      if (!data.handoff_required) {
-        badge.innerText = 'ORCHESTRATOR DIRECT';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-teal-900 text-teal-200 border border-teal-700';
-      } else if (data.route?.learning_applied) {
-        badge.innerText = 'LEARNED OVERRIDE';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-purple-900 text-purple-200 border border-purple-700';
-      } else if (routeSource === 'llm') {
-        badge.innerText = 'OPENAI GPT-5 NANO';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-900 text-indigo-200 border border-indigo-700';
-      } else {
-        badge.innerText = 'FINANCE ROUTER';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold dark:bg-slate-800 bg-slate-200 dark:text-slate-300 text-slate-800';
+      if (badge) {
+        if (!data.handoff_required) {
+          badge.innerText = 'ORCHESTRATOR DIRECT';
+          badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-teal-900 text-teal-200 border border-teal-700';
+        } else if (data.route?.learning_applied) {
+          badge.innerText = 'LEARNED OVERRIDE';
+          badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-purple-900 text-purple-200 border border-purple-700';
+        } else if (routeSource === 'llm') {
+          badge.innerText = 'OPENAI GPT-5 NANO';
+          badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-900 text-indigo-200 border border-indigo-700';
+        } else {
+          badge.innerText = 'FINANCE ROUTER';
+          badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold dark:bg-slate-800 bg-slate-200 dark:text-slate-300 text-slate-800';
+        }
       }
 
       // Update Plan
-      document.getElementById('inspector-plan').innerText = routePlan;
+      const planEl = document.getElementById('inspector-plan');
+      if (planEl) planEl.innerText = routePlan;
 
       // Update Tools Container
       const toolsContainer = document.getElementById('tools-pill-container');
-      toolsContainer.innerHTML = '';
-      if (actions.length === 0) {
-        toolsContainer.innerHTML = '<span class="text-xs text-slate-500 italic">No tools invoked.</span>';
-      } else {
-        actions.forEach(act => {
-          const pill = document.createElement('span');
-          pill.className = 'inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold dark:bg-slate-900 bg-slate-100 border dark:border-slate-700 border-slate-300 dark:text-indigo-300 text-indigo-700';
-          pill.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-indigo-500"></i><span>${act}</span>`;
-          toolsContainer.appendChild(pill);
-        });
+      if (toolsContainer) {
+        toolsContainer.innerHTML = '';
+        if (actions.length === 0) {
+          toolsContainer.innerHTML = '<span class="text-xs text-slate-500 italic">No tools invoked.</span>';
+        } else {
+          actions.forEach(act => {
+            const pill = document.createElement('span');
+            pill.className = 'inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold dark:bg-slate-900 bg-slate-100 border dark:border-slate-700 border-slate-300 dark:text-indigo-300 text-indigo-700';
+            pill.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-indigo-500"></i><span>${act}</span>`;
+            toolsContainer.appendChild(pill);
+          });
+        }
       }
 
       // Update Evidence Dossier
       const evContainer = document.getElementById('evidence-container');
-      evContainer.innerHTML = '';
-      if (evidence.length === 0) {
-        evContainer.innerHTML = '<span class="text-xs text-slate-500 italic">No evidence items flagged.</span>';
-      } else {
-        evidence.forEach(ev => {
-          const pill = document.createElement('span');
-          pill.className = 'inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-800/80';
-          pill.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i><span>${ev}</span>`;
-          evContainer.appendChild(pill);
-        });
+      if (evContainer) {
+        evContainer.innerHTML = '';
+        if (evidence.length === 0) {
+          evContainer.innerHTML = '<span class="text-xs text-slate-500 italic">No evidence items flagged.</span>';
+        } else {
+          evidence.forEach(ev => {
+            const pill = document.createElement('span');
+            pill.className = 'inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-800/80';
+            pill.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i><span>${ev}</span>`;
+            evContainer.appendChild(pill);
+          });
+        }
       }
 
       // Escalation Alert
       const escBox = document.getElementById('escalation-alert-box');
-      if (escalated) {
-        escBox.classList.remove('hidden');
-        document.getElementById('escalation-alert-text').innerText = escalationReason || "Promoted to higher tier.";
-      } else {
-        escBox.classList.add('hidden');
+      if (escBox) {
+        if (escalated) {
+          escBox.classList.remove('hidden');
+          const escText = document.getElementById('escalation-alert-text');
+          if (escText) escText.innerText = escalationReason || "Promoted to higher tier.";
+        } else {
+          escBox.classList.add('hidden');
+        }
       }
 
       // Scorecard
       const scoreVal = typeof scoreObj === 'object' ? (scoreObj.score || 92) : scoreObj;
-      document.getElementById('score-badge').innerText = `${scoreVal}/100`;
+      const scoreBadge = document.getElementById('score-badge');
+      if (scoreBadge) scoreBadge.innerText = `${scoreVal}/100`;
       const qualityScore = scoreDetails.score_breakdown?.resolution_quality || 48;
       const toolScore = scoreDetails.score_breakdown?.tool_efficiency || 19;
-      document.getElementById('score-quality').innerText = `${qualityScore}/50`;
-      document.getElementById('score-tools').innerText = `${toolScore}/20`;
-      document.getElementById('bar-quality').style.width = `${(qualityScore / 50) * 100}%`;
-      document.getElementById('bar-tools').style.width = `${(toolScore / 20) * 100}%`;
+      const sq = document.getElementById('score-quality');
+      const st = document.getElementById('score-tools');
+      const bq = document.getElementById('bar-quality');
+      const bt = document.getElementById('bar-tools');
+      if (sq) sq.innerText = `${qualityScore}/50`;
+      if (st) st.innerText = `${toolScore}/20`;
+      if (bq) bq.style.width = `${(qualityScore / 50) * 100}%`;
+      if (bt) bt.style.width = `${(toolScore / 20) * 100}%`;
 
       // Reflection Lesson
       const lessons = reflection.lessons || [];
-      document.getElementById('inspector-reflection').innerText = lessons.length > 0 ? lessons[0] : "Resolved without escalation.";
+      const refEl = document.getElementById('inspector-reflection');
+      if (refEl) refEl.innerText = lessons.length > 0 ? lessons[0] : "Resolved without escalation.";
 
       lucide.createIcons();
     }
@@ -1848,6 +2383,7 @@
     // ==================== TRANSCRIPT & FEEDBACK COMPONENT ====================
     function appendTranscript(sender, message, caseId = null, roleTitle = null) {
       const feed = document.getElementById('transcript-feed');
+      if (!feed) return;
       if (feed.children.length === 1 && (feed.children[0].innerText.includes('Awaiting start') || feed.children[0].innerText.includes('Awaiting conversation'))) {
         feed.innerHTML = '';
       }
@@ -1855,7 +2391,7 @@
       const bubble = document.createElement('div');
       bubble.className = `flex flex-col ${isAgent ? 'items-start' : 'items-end'}`;
 
-      const senderLabel = roleTitle || (isAgent ? 'Maximor AI Agent' : 'Customer');
+      const senderLabel = roleTitle || (isAgent ? 'Maximor AI' : 'Customer');
 
       let feedbackWidgetHtml = '';
       if (isAgent && caseId) {
@@ -1884,11 +2420,17 @@
       `;
       feed.appendChild(bubble);
       feed.scrollTop = feed.scrollHeight;
+
+      transcriptMessageCount++;
+      const countBadge = document.getElementById('transcript-count-badge');
+      if (countBadge) countBadge.innerText = transcriptMessageCount;
+
       lucide.createIcons();
     }
 
     function appendHandoffDivider(fromAgent, toAgent, tier = 2) {
       const feed = document.getElementById('transcript-feed');
+      if (!feed) return;
       const divider = document.createElement('div');
       divider.className = 'my-2.5 w-full flex items-center justify-center';
 
@@ -1910,6 +2452,12 @@
         lucide.createIcons();
       }
 
+      const liveCaptionFb = document.getElementById('live-caption-feedback');
+      if (liveCaptionFb && (!activeCaptionCaseId || activeCaptionCaseId === caseId)) {
+        liveCaptionFb.innerHTML = `<span class="text-emerald-400 text-[11px] font-bold flex items-center space-x-1"><i data-lucide="check" class="w-3 h-3"></i><span>Recorded (${rating === 'positive' ? '👍' : '👎'})</span></span>`;
+        lucide.createIcons();
+      }
+
       try {
         await fetch('/api/feedback', {
           method: 'POST',
@@ -1926,11 +2474,17 @@
     }
 
     function clearTranscript() {
-      document.getElementById('transcript-feed').innerHTML = `
-        <div class="p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 text-slate-400 text-xs italic">
-          Awaiting conversation...
-        </div>
-      `;
+      transcriptMessageCount = 0;
+      const countBadge = document.getElementById('transcript-count-badge');
+      if (countBadge) countBadge.innerText = '0';
+      const feed = document.getElementById('transcript-feed');
+      if (feed) {
+        feed.innerHTML = `
+          <div class="p-3 rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800 border-slate-200 text-slate-400 text-xs italic">
+            Awaiting conversation...
+          </div>
+        `;
+      }
     }
 
     // ==================== WORKSPACE 1: FINANCE OPS LOGIC ====================
@@ -2637,8 +3191,10 @@
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
+      onCustomerChange();
+      setOrbState('idle', 'Ready to talk', 'Click orb or button to start hands-free voice call');
       const hash = window.location.hash.replace('#', '');
-      if (['landing', 'demo', 'crm'].includes(hash)) {
+      if (['landing', 'demo', 'finance', 'executive', 'crm'].includes(hash)) {
         switchView(hash);
       } else {
         switchView(currentView);
