@@ -337,13 +337,25 @@ def record_feedback(case_id: str, rating: str, reason: Optional[str] = None, com
         )
 
     # Add audit event
+    fb_details = {
+        "source_agent": "Customer",
+        "destination_agent": "Orchestrator",
+        "handoff_reason": "Customer feedback evaluation",
+        "confidence": 1.0,
+        "context_summary": f"Customer marked resolution as {rating_clean}: {reason}",
+        "timestamp": time.time(),
+        "outcome": rating_clean,
+        "rating": rating_clean,
+        "reason": reason,
+        "comment": comment
+    }
     db.execute(
         """INSERT INTO audit_events (id, organization_id, case_id, actor_type, actor_id, action, details)
            VALUES (%s, %s, %s, %s, %s, %s, %s);""",
         (
             f"aud_{uuid.uuid4().hex[:12]}", "org_apex", case_id, "customer",
-            "caller", "FEEDBACK_RECORDED",
-            json.dumps({"rating": rating_clean, "reason": reason, "comment": comment})
+            "caller", "CUSTOMER_FEEDBACK_RECORDED",
+            json.dumps(fb_details, default=str)
         )
     )
 
@@ -355,10 +367,21 @@ def record_audit_event(case_id: Optional[str], action: str, details: Dict[str, A
     """Record compliance audit trail entry."""
     aud_id = f"aud_{uuid.uuid4().hex[:12]}"
     try:
+        if case_id:
+            try:
+                db.execute(
+                    """INSERT INTO cases (id, organization_id, title, description, status)
+                       VALUES (%s, 'org_apex', 'Case Audit Record', 'Case created for audit trail', 'open')
+                       ON CONFLICT (id) DO NOTHING;""",
+                    (case_id,)
+                )
+            except Exception:
+                pass
         db.execute(
             """INSERT INTO audit_events (id, organization_id, case_id, actor_type, actor_id, action, details)
                VALUES (%s, %s, %s, %s, %s, %s, %s);""",
-            (aud_id, "org_apex", case_id, actor_type, actor_id, action, json.dumps(details))
+            (aud_id, "org_apex", case_id, actor_type, actor_id, action, json.dumps(details, default=str))
         )
     except Exception:
         pass
+

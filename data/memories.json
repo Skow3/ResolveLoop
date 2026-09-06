@@ -1202,8 +1202,1439 @@
         }
       },
       "timestamp": 1788685828.9179313
+    },
+    "VOICE-1788685999": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-A01ACF",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "The case was handled appropriately at L1 and resolved without escalation, effectively addressing a straightforward identity inquiry in a timely manner."
+        }
+      },
+      "timestamp": 1788686006.8399816
+    },
+    "VOICE-1788686061": {
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's current gas position from the gas management and billing systems and present it to the customer, with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788681121'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "handoff_required": false,
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788686061",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 1 with no escalation, using fetch_profile to inform the gas position and open_ticket to document the resolution\u2014timely and appropriate for a medium-priority inquiry."
+        }
+      },
+      "timestamp": 1788686076.9247022
+    },
+    "VOICE-1788686139": {
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's current gas position from the gas management and billing systems and present it to the customer, with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788686061'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "handoff_required": false,
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788686139",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 1 without escalation using appropriate tools, indicating satisfactory handling for a medium-priority issue."
+        }
+      },
+      "timestamp": 1788686150.197227
+    },
+    "TEST_SEQ_01": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile the short payment against the invoice (verify remittance details, payment allocation, credits/discounts/fees, and terms history); identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'MX-1788680364'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_474feacd",
+          "case_id": "TEST_SEQ_01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was our Acme payment short?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788686605.9618363
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-724FD1",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "The case was resolved at Level 2 without escalation, with appropriate use of invoice, payment, customer history, and policy version data to explain the short payment."
+        }
+      },
+      "timestamp": 1788686613.4205284
+    },
+    "TEST_D_01": {
+      "route": {
+        "route_level": 4,
+        "plan": "level: 4; plan: Escalate to Policy/Risk (L4) for a formal policy override on a 5,000 transaction with ambiguous terms; perform quick cross-system policy check, document rationale, obtain necessary approvals, and prepare customer communication.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_policy_version"
+        ],
+        "acting_agent": "L4 Executive Controller & Risk Authority",
+        "handoff_required": true,
+        "orchestrator_speech": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
+        "specialist_role": "Executive Controller & Risk Authority",
+        "handoff_context": {
+          "handoff_id": "hnd_8413c69a",
+          "case_id": "TEST_D_01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "We need an override for a 5,000 transaction under ambiguous policy terms",
+          "conversation_summary": "Inquiry regarding material_policy_exception in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "material_policy_exception",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l4_executive",
+            "name": "Executive Controller & Risk Authority",
+            "tier": 4
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue material_policy_exception require Executive Controller & Risk Authority tool authority",
+          "information_already_collected": [
+            {
+              "key": "policy",
+              "value": "ESC-400"
+            },
+            {
+              "key": "threshold",
+              "value": "$50,000+"
+            },
+            {
+              "key": "approval_tier",
+              "value": "CFO/Controller"
+            }
+          ],
+          "entities_already_identified": {
+            "policy": "ESC-400",
+            "threshold": "$50,000+",
+            "approval_tier": "CFO/Controller"
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [],
+          "relevant_policy": {
+            "policy_code": "ESC-400",
+            "name": "Executive Financial Authority & Policy Override Matrix",
+            "domain": "general_finance",
+            "description": "Any variance explanation or single transaction adjustment exceeding $50,000, or legal dispute involving credit terms, requires escalation to L4 Controller or CFO signoff.",
+            "rules": {
+              "requires_cfo": true,
+              "threshold_usd": 50000.0
+            },
+            "version": "v1.0",
+            "source": "board_of_directors",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Escalate audit dossier to corporate Controller and CFO for human authorization",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788686690.8726728
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-1CEA05",
+          "response_text": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself. ... Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
+          "orchestrator_speech": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400.",
+          "specialist_role": "Executive Controller & Risk Authority",
+          "acting_agent": "L4 Executive Controller & Risk Authority",
+          "evidence": [
+            "Policy ESC-400 ($50k+ Authority)",
+            "Human Controller Review Dispatched",
+            "Risk Dossier Prepared"
+          ],
+          "final_agent_level": 4,
+          "confidence": 0.94,
+          "human_review_required": true
+        },
+        "escalated": true,
+        "escalation_reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation."
+      },
+      "score": {
+        "score": 70,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": -5,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 4,
+            "tools_used": 2,
+            "escalated": true,
+            "resolved": true
+          },
+          "llm_verdict": "Prompt escalation to L4 with relevant data (customer and policy version) effectively resolved the issue, though the underlying policy ambiguity should be formally clarified to prevent recurrence."
+        }
+      },
+      "timestamp": 1788686697.3978662
+    },
+    "TEST_B_01": {
+      "route": {
+        "route_level": 2,
+        "plan": "Adapted route to L2 based on past similar case 'MX-1788680364' (Promoted from baseline to L2)",
+        "routing_source": "experience_learning",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'MX-1788680364'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice"
+        ],
+        "acting_agent": "L1 Basic Finance Triage Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
+        "specialist_role": "Basic Finance Triage Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_f82a5bd4",
+          "case_id": "TEST_B_01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "What is the status of invoice INV-4471?",
+          "conversation_summary": "Inquiry regarding invoice_status_lookup in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "invoice_status_lookup",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l1_triage",
+            "name": "Finance Triage Specialist",
+            "tier": 1
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue invoice_status_lookup require Basic Finance Triage Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471"
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            }
+          ],
+          "relevant_policy": null,
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Provide invoice INV-4471 balance and payment status",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788686709.6502397
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-C97EC4",
+          "response_text": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself. ... Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
+          "orchestrator_speech": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system.",
+          "specialist_role": "Basic Finance Triage Specialist",
+          "acting_agent": "L1 Basic Finance Triage Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "NetSuite ERP",
+            "Status: Partially Paid (Balance: $250)"
+          ],
+          "final_agent_level": 1,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 100,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "The case was resolved successfully at L2 without escalation, using get_customer and get_invoice to provide the current status of invoice INV-4471."
+        }
+      },
+      "timestamp": 1788686715.045853
+    },
+    "TEST_G_01": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile Acme's short payment against the relevant invoice: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST_SEQ_01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "I experienced a brief delay connecting with our specialist, but I am staying on the line with you. I've noted your request and our finance operations team is actively looking into it. How else may I assist you in the meantime?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-FALLBACK-734491",
+          "response_text": "I experienced a brief delay connecting with our specialist, but I am staying on the line with you. I've noted your request and our finance operations team is actively looking into it. How else may I assist you in the meantime?",
+          "evidence": [
+            "Handoff Failover Safe Mode Active"
+          ],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 0,
+          "confidence": 0.88,
+          "fallback_engaged": true
+        },
+        "escalated": false,
+        "escalation_reason": "Specialist initialization failure; graceful Orchestrator fallback"
+      },
+      "score": {
+        "score": 85,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 2 without escalation, which is appropriate for medium priority, though the lack of tools used and resolution details reduces traceability."
+        }
+      },
+      "timestamp": 1788686732.4379694
+    },
+    "MX-1788686788": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-FCE5C4",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 1 with a clear identity disclosure; no escalation needed, yielding a satisfactory and efficient handling of the \"Who are you?\" inquiry."
+        }
+      },
+      "timestamp": 1788686795.0046048
+    },
+    "VOICE-1788686869": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-E4AB98",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolution achieved at first-line (L1) with no escalation, indicating appropriate handling of a medium-priority case."
+        }
+      },
+      "timestamp": 1788686874.6997387
+    },
+    "TEST-CASE-A": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-925721",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 85,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient Level-1 handling with no escalation; the case was resolved successfully, appropriate for a low-priority, basic informational inquiry."
+        }
+      },
+      "timestamp": 1788687456.9243243
+    },
+    "TEST-CASE-B": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Contextual status check for INV-4471: verify payments, allocations, credits/fees, and terms history; confirm current status with cust1; escalate to Level 3 if discrepancies or unresolved items.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-CASE-B'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice"
+        ],
+        "acting_agent": "L1 Basic Finance Triage Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
+        "specialist_role": "Basic Finance Triage Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_e90a1703",
+          "case_id": "TEST-CASE-B",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "What's the status of invoice INV-4471?",
+          "conversation_summary": "Inquiry regarding invoice_status_lookup in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "invoice_status_lookup",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l1_triage",
+            "name": "Finance Triage Specialist",
+            "tier": 1
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue invoice_status_lookup require Basic Finance Triage Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471"
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            }
+          ],
+          "relevant_policy": null,
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Provide invoice INV-4471 balance and payment status",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788687459.5227897
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-F0C22F",
+          "response_text": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself. ... Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
+          "orchestrator_speech": "I've got the invoice number INV-4471. Let me bring in our Finance Triage specialist to check the current status in NetSuite ERP. I'll pass along the details so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system. I've checked our NetSuite ERP records. Invoice INV-4471 for Acme Corp in the amount of $12,500 is currently partially paid with a remaining balance of $250. Payment remittance PMT-8821 for $12,250 was recorded on August 23, 2026.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received invoice number INV-4471 from the call director. Let me check the current status in our NetSuite ERP system.",
+          "specialist_role": "Basic Finance Triage Specialist",
+          "acting_agent": "L1 Basic Finance Triage Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "NetSuite ERP",
+            "Status: Partially Paid (Balance: $250)"
+          ],
+          "final_agent_level": 1,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 100,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 2,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved: The status of invoice INV-4471 was retrieved successfully using L2 routing with get_customer and get_invoice; no escalation was required."
+        }
+      },
+      "timestamp": 1788687464.694524
+    },
+    "TEST-CASE-C": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile Acme's short payment against the relevant invoice by verifying remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare corrections or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST_SEQ_01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_9120f870",
+          "case_id": "TEST-CASE-C",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was our Acme payment short?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788687469.736092
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-A8DCB2",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94,
+          "human_review_required": false
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 90,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 10,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 5,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Efficient and thorough resolution without escalation, using the cited data tools to diagnose and explain the short payment to the customer."
+        }
+      },
+      "timestamp": 1788687475.6444724
+    },
+    "TEST-CASE-D": {
+      "route": {
+        "route_level": 4,
+        "plan": "level: 4; plan: Escalate to Policy/Risk (L4) for a formal policy override on a $65,000 transaction with ambiguous terms; perform cross-system policy checks, document rationale, obtain necessary approvals, and prepare customer communication.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L4 based on past similar case 'TEST-CASE-D'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "get_policy_version"
+        ],
+        "acting_agent": "L4 Executive Controller & Risk Authority",
+        "handoff_required": true,
+        "orchestrator_speech": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
+        "specialist_role": "Executive Controller & Risk Authority",
+        "handoff_context": {
+          "handoff_id": "hnd_42758f58",
+          "case_id": "TEST-CASE-D",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "We need an override for a $65,000 transaction under ambiguous policy terms",
+          "conversation_summary": "Inquiry regarding material_policy_exception in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "material_policy_exception",
+          "priority": "high",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l4_executive",
+            "name": "Executive Controller & Risk Authority",
+            "tier": 4
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue material_policy_exception require Executive Controller & Risk Authority tool authority",
+          "information_already_collected": [
+            {
+              "key": "policy",
+              "value": "ESC-400"
+            },
+            {
+              "key": "threshold",
+              "value": "$50,000+"
+            },
+            {
+              "key": "approval_tier",
+              "value": "CFO/Controller"
+            }
+          ],
+          "entities_already_identified": {
+            "policy": "ESC-400",
+            "threshold": "$50,000+",
+            "approval_tier": "CFO/Controller"
+          },
+          "tools_already_used": [
+            "get_customer",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [],
+          "relevant_policy": {
+            "policy_code": "ESC-400",
+            "name": "Executive Financial Authority & Policy Override Matrix",
+            "domain": "general_finance",
+            "description": "Any variance explanation or single transaction adjustment exceeding $50,000, or legal dispute involving credit terms, requires escalation to L4 Controller or CFO signoff.",
+            "rules": {
+              "requires_cfo": true,
+              "threshold_usd": 50000.0
+            },
+            "version": "v1.0",
+            "source": "board_of_directors",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Escalate audit dossier to corporate Controller and CFO for human authorization",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788687478.5953817
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-98B082",
+          "response_text": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself. ... Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
+          "orchestrator_speech": "This involves a high-impact financial transaction exceeding standard automated limits under policy ESC-400. I am transferring your file to our Executive Controller specialist for policy review and audit dossier preparation. I'll pass along all details so you won't need to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400. I have compiled the comprehensive financial audit dossier and submitted this case for priority Human Review by our corporate Controller and CFO. Your escalation ticket has been dispatched with high priority, and a corporate finance officer will provide final authorization within 2 business hours.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the case dossier from the call director. Because this inquiry involves ambiguous policy interpretation or material exposure exceeding $50,000, automated settlement is restricted under policy ESC-400.",
+          "specialist_role": "Executive Controller & Risk Authority",
+          "acting_agent": "L4 Executive Controller & Risk Authority",
+          "evidence": [
+            "Policy ESC-400 ($50k+ Authority)",
+            "Human Controller Review Dispatched",
+            "Risk Dossier Prepared"
+          ],
+          "final_agent_level": 4,
+          "confidence": 0.94,
+          "human_review_required": true
+        },
+        "escalated": true,
+        "escalation_reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation."
+      },
+      "score": {
+        "score": 80,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 20,
+            "first_contact_resolution": -5,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 4,
+            "tools_used": 2,
+            "escalated": true,
+            "resolved": true
+          },
+          "llm_verdict": "Appropriate escalation for a high-value transaction with policy ambiguity, data-driven handling, and a resolved outcome, but the underlying policy ambiguity should be clarified and updated."
+        }
+      },
+      "timestamp": 1788687486.065538
+    },
+    "TEST-CASE-G": {
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile Acme's short payment against the relevant invoice; verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST_SEQ_01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "I experienced a brief delay connecting with our specialist, but I am staying on the line with you. I've noted your request and our finance operations team is actively looking into it. How else may I assist you in the meantime?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-FALLBACK-D2AB18",
+          "response_text": "I experienced a brief delay connecting with our specialist, but I am staying on the line with you. I've noted your request and our finance operations team is actively looking into it. How else may I assist you in the meantime?",
+          "evidence": [
+            "Handoff Failover Safe Mode Active"
+          ],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 0,
+          "confidence": 0.88,
+          "fallback_engaged": true
+        },
+        "escalated": false,
+        "escalation_reason": "Specialist initialization failure; graceful Orchestrator fallback"
+      },
+      "score": {
+        "score": 85,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 15
+          },
+          "metrics": {
+            "route_level": 2,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 2 without escalation, reflecting appropriate and timely handling of a medium-priority payment-short issue."
+        }
+      },
+      "timestamp": 1788687516.8484719
+    },
+    "VOICE-1788687582": {
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-CDD170",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": {
+        "score": 75,
+        "details": {
+          "score_breakdown": {
+            "resolution_quality": 50,
+            "tool_efficiency": 5,
+            "first_contact_resolution": 15,
+            "route_appropriateness": 5
+          },
+          "metrics": {
+            "route_level": 1,
+            "tools_used": 0,
+            "escalated": false,
+            "resolved": true
+          },
+          "llm_verdict": "Resolved at Level 1 without escalation for a medium-priority hackathon inquiry, indicating effective initial-contact handling."
+        }
+      },
+      "timestamp": 1788687588.5181906
     }
   },
-  "procedural_memory": {},
-  "failure_memory": []
+  "procedural_memory": {
+    "rule_executive_risk": {
+      "pattern": "executive_risk",
+      "target_level": 4,
+      "required_tools": [
+        "policy_override"
+      ]
+    },
+    "rule_order_management": {
+      "pattern": "order_management",
+      "target_level": 2,
+      "required_tools": [
+        "lookup_order",
+        "cancel_order"
+      ]
+    }
+  },
+  "failure_memory": [
+    {
+      "case_id": "TEST_D_01",
+      "description": "We need an override for a 5,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788686697.4065356
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788686967.6473553
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788687060.7599885
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788687342.0087547
+    },
+    {
+      "case_id": "TEST-CASE-D",
+      "description": "We need an override for a $65,000 transaction under ambiguous policy terms",
+      "initial_route": 4,
+      "reason": "Ambiguous policy interpretation or transaction exceeding $50k threshold (policy ESC-400). Escalated to L4 Executive Controller for Human Review dossier preparation.",
+      "timestamp": 1788687486.0670288
+    }
+  ]
 }

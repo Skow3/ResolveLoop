@@ -207,12 +207,16 @@ def api_voice_call():
         solve_res = eng_res.get("solve") or {}
         resolution = solve_res.get("resolution") or {}
 
+        stt = result.get("stt_result") or {}
+        case_obj = result.get("case") or {}
+        case_id = case_obj.get("id") or f"VOICE-{int(time.time())}"
+
         return jsonify({
             "success": True,
-            "transcription": result.get("stt_result", {}).get("text", ""),
-            "stt_provider": result.get("stt_result", {}).get("provider", "none"),
-            "case": result.get("case"),
-            "case_id": result.get("case", {}).get("id"),
+            "transcription": stt.get("text", ""),
+            "stt_provider": stt.get("provider", "none"),
+            "case": case_obj,
+            "case_id": case_id,
             "route": eng_res.get("route"),
             "solve": solve_res,
             "score": eng_res.get("score"),

@@ -1,5 +1,16 @@
-"""Tests for Maximor AI Finance Operations: PostgreSQL tools, short payment resolution, and feedback."""
+"""Tests for Maximor AI Finance Operations: PostgreSQL tools, warm handoffs, L1-L4 scenarios, and audit trail.
+
+Covers:
+- Test Case A: Basic conversational query ("Who are you?") -> Orchestrator answers directly, no transfer.
+- Test Case B: L1 case ("What's the status of invoice INV-4471?") -> Orchestrator -> L1 Triage -> invoice tool -> response without repetition.
+- Test Case C: L2 case ("Why was our Acme payment short?") -> Orchestrator -> L2 AR -> terms matching + credit discount -> full audit trail.
+- Test Case D: Multi-tier escalation / Ambiguous policy ("We need an override for a $65,000 transaction under ambiguous policy terms") -> L4 Executive Controller -> human review.
+- Test Case F: Voice handoff endpoints -> Pulse STT / text fallback -> warm handoff -> Lightning TTS audio generation.
+- Test Case G: Handoff failure -> simulated specialist error -> graceful return of control to Orchestrator -> call never crashes.
+"""
 import unittest
+import time
+import json
 from resolve_loop.db import db
 from resolve_loop.seeds import seed_database
 from resolve_loop.finance_tools import (
@@ -19,9 +30,11 @@ class TestFinanceOperations(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         seed_database()
+        cls.engine = ResolveLoopEngine()
+        cls.client = app.test_client()
 
     def test_database_records_retrieval(self):
-        """Verify synthetic finance records are queried accurately from database."""
+        """Verify synthetic finance records are queried accurately from PostgreSQL database."""
         cust = get_customer("cust1")
         self.assertEqual(cust.get("name"), "Alice Morgan")
 
@@ -42,20 +55,247 @@ class TestFinanceOperations(unittest.TestCase):
         cash = get_cash_position()
         self.assertIsNotNone(cash)
 
-    def test_short_payment_resolution_and_escalation(self):
-        """Verify that short payment query correctly routes and resolves via policy SHORT-PAY-01."""
-        engine = ResolveLoopEngine()
+    def test_case_a_basic_conversational(self):
+        """Test Case A: Basic conversational query - Orchestrator answers directly without transfer."""
         case = Case(
-            id="TEST-FIN-01",
+            id="TEST-CASE-A",
             customer_id="cust1",
-            description="Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
-            priority="medium",
-            metadata={"domain": "accounts_receivable"}
+            description="Who are you and what is Maximor AI?",
+            priority="low"
         )
-        result = engine.run_once(case)
-        self.assertTrue(result["solve"]["resolution"]["resolved"])
-        self.assertIn("INV-4471", result["solve"]["resolution"]["response_text"])
-        self.assertIn("250", result["solve"]["resolution"]["response_text"])
+        db.execute("DELETE FROM audit_events WHERE case_id = %s;", (case.id,))
+        result = self.engine.run_once(case)
+        solve = result.get("solve", {})
+
+        # Verify Orchestrator handled directly
+        self.assertFalse(solve.get("handoff_required"))
+        self.assertEqual(solve.get("acting_agent"), "Orchestrator (Call Director)")
+        self.assertIn("Maximor AI", solve.get("orchestrator_speech", ""))
+        self.assertIsNone(solve.get("specialist_speech"))
+
+        # Verify audit trail in database
+        events = db.fetch_all(
+            "SELECT action, details FROM audit_events WHERE case_id = %s ORDER BY created_at ASC;",
+            (case.id,)
+        )
+        actions = [e["action"] for e in events]
+        self.assertIn("ORCHESTRATOR_ANSWERED", actions)
+        self.assertIn("ORCHESTRATOR_DIRECT_REPLY", actions)
+        self.assertIn("RESOLUTION_GENERATED", actions)
+
+    def test_case_b_l1_invoice_status(self):
+        """Test Case B: L1 case - Invoice status lookup via NetSuite tool without repetition."""
+        case = Case(
+            id="TEST-CASE-B",
+            customer_id="cust1",
+            description="What's the status of invoice INV-4471?",
+            priority="medium"
+        )
+        db.execute("DELETE FROM audit_events WHERE case_id = %s;", (case.id,))
+        result = self.engine.run_once(case)
+        solve = result.get("solve", {})
+
+        # Verify L1 Specialist routing
+        self.assertTrue(solve.get("handoff_required"))
+        self.assertIn("Finance Triage", solve.get("specialist_role", ""))
+        self.assertEqual(solve.get("resolution", {}).get("final_agent_level"), 1)
+
+        # Verify no repetition in acknowledgement
+        ack = solve.get("resolution", {}).get("specialist_acknowledgement", "")
+        self.assertIn("INV-4471", ack)
+        self.assertNotIn("Thanks for calling Maximor AI", ack)
+
+        # Verify specialist resolution details from NetSuite ERP
+        spec_speech = solve.get("specialist_speech", "")
+        self.assertIn("INV-4471", spec_speech)
+        self.assertIn("12,500", spec_speech)
+        self.assertIn("250", spec_speech)
+
+        # Verify audit trail contains invoice tool call
+        events = db.fetch_all(
+            "SELECT action FROM audit_events WHERE case_id = %s ORDER BY created_at ASC;",
+            (case.id,)
+        )
+        actions = [e["action"] for e in events]
+        self.assertIn("CALLED_INVOICE_TOOL", actions)
+
+    def test_case_c_l2_short_payment_and_audit_trail(self):
+        """Test Case C: L2 case - Short payment investigation, terms matching, and full audit trail lifecycle."""
+        case = Case(
+            id="TEST-CASE-C",
+            customer_id="cust1",
+            description="Why was our Acme payment short?",
+            priority="medium"
+        )
+        db.execute("DELETE FROM audit_events WHERE case_id = %s;", (case.id,))
+        result = self.engine.run_once(case)
+        solve = result.get("solve", {})
+
+        # Verify L2 Specialist routing and resolution
+        self.assertTrue(solve.get("handoff_required"))
+        self.assertIn("Accounts Receivable", solve.get("specialist_role", ""))
+        self.assertEqual(solve.get("resolution", {}).get("final_agent_level"), 2)
+
+        # Verify prompt payment discount resolution under policy SHORT-PAY-01
+        res_text = solve.get("resolution", {}).get("response_text", "")
+        self.assertIn("2/10 Net 30", res_text)
+        self.assertIn("250", res_text)
+        self.assertIn("SHORT-PAY-01", res_text)
+
+        # Record Customer Feedback to complete feedback loop
+        fb_res = record_feedback(
+            case_id=case.id,
+            rating="positive",
+            reason="Accurate discount explanation and prompt settlement",
+            interaction_id="int_call_101"
+        )
+        self.assertEqual(fb_res.get("status"), "recorded")
+
+        # Verify Complete Audit Trail Lifecycle Sequence:
+        # Case created -> Orchestrator answered -> Intent detected -> Routed to L2 ->
+        # Warm handoff initiated -> L2 acknowledged context -> Retrieved customer history ->
+        # Retrieved SHORT-PAY-01 -> Called invoice tool -> Called payment tool ->
+        # Resolution generated -> Customer feedback recorded -> Experience stored.
+        events = db.fetch_all(
+            "SELECT action, details FROM audit_events WHERE case_id = %s ORDER BY created_at ASC;",
+            (case.id,)
+        )
+        actions = [e["action"] for e in events]
+
+        expected_sequence = [
+            "CASE_CREATED",
+            "ORCHESTRATOR_ANSWERED",
+            "INTENT_DETECTED",
+            "ROUTED_TO_L2",
+            "WARM_HANDOFF_INITIATED",
+            "SPECIALIST_ACKNOWLEDGED_CONTEXT",
+            "CUSTOMER_HISTORY_RETRIEVED",
+            "POLICY_RETRIEVED",
+            "CALLED_INVOICE_TOOL",
+            "CALLED_PAYMENT_TOOL",
+            "RESOLUTION_GENERATED",
+            "CUSTOMER_FEEDBACK_RECORDED",
+            "EXPERIENCE_STORED",
+        ]
+
+        for expected_action in expected_sequence:
+            self.assertIn(expected_action, actions, f"Missing expected audit action: {expected_action}")
+
+        # Verify chronological ordering of core lifecycle events
+        idx_created = actions.index("CASE_CREATED")
+        idx_orch = actions.index("ORCHESTRATOR_ANSWERED")
+        idx_intent = actions.index("INTENT_DETECTED")
+        idx_routed = actions.index("ROUTED_TO_L2")
+        idx_warm = actions.index("WARM_HANDOFF_INITIATED")
+        idx_ack = actions.index("SPECIALIST_ACKNOWLEDGED_CONTEXT")
+        idx_res = actions.index("RESOLUTION_GENERATED")
+        idx_fb = actions.index("CUSTOMER_FEEDBACK_RECORDED")
+
+        self.assertTrue(idx_created <= idx_orch < idx_intent < idx_routed < idx_warm < idx_ack < idx_res < idx_fb)
+
+        # Verify required audit fields are present in every event
+        for ev in events:
+            det = ev.get("details") or {}
+            self.assertIn("source_agent", det)
+            self.assertIn("destination_agent", det)
+            self.assertIn("handoff_reason", det)
+            self.assertIn("confidence", det)
+            self.assertIn("context_summary", det)
+            self.assertIn("timestamp", det)
+            self.assertIn("outcome", det)
+
+    def test_case_d_l4_ambiguous_policy_escalation(self):
+        """Test Case D: Multi-tier escalation / Material exception exceeding $50,000 threshold."""
+        case = Case(
+            id="TEST-CASE-D",
+            customer_id="cust1",
+            description="We need an override for a $65,000 transaction under ambiguous policy terms",
+            priority="high"
+        )
+        db.execute("DELETE FROM audit_events WHERE case_id = %s;", (case.id,))
+        result = self.engine.run_once(case)
+        solve = result.get("solve", {})
+
+        # Verify L4 escalation and Controller review requirement
+        self.assertTrue(solve.get("escalated"))
+        self.assertEqual(solve.get("resolution", {}).get("final_agent_level"), 4)
+        self.assertTrue(solve.get("resolution", {}).get("human_review_required"))
+        self.assertIn("Executive Controller", solve.get("specialist_role", ""))
+        self.assertIn("ESC-400", solve.get("specialist_speech", ""))
+
+        # Verify audit trail logs L4 routing
+        events = db.fetch_all(
+            "SELECT action FROM audit_events WHERE case_id = %s ORDER BY created_at ASC;",
+            (case.id,)
+        )
+        actions = [e["action"] for e in events]
+        self.assertIn("ROUTED_TO_L4", actions)
+
+    def test_case_f_voice_handoff_endpoints(self):
+        """Test Case F: Voice handoff via Smallest AI endpoints and speech synthesis."""
+        # 1. Voice Greet endpoint
+        greet_res = self.client.post("/api/voice/greet", json={"customer_id": "cust1"})
+        self.assertEqual(greet_res.status_code, 200)
+        greet_json = greet_res.get_json()
+        self.assertTrue(greet_json.get("success"))
+        self.assertIn("Thanks for calling Maximor AI", greet_json.get("greeting_text"))
+        self.assertIn("Alice Morgan", greet_json.get("greeting_text"))
+
+        # 2. Text / Speech Call endpoint simulating conversational handoff
+        call_res = self.client.post("/api/text/call", json={
+            "customer_id": "cust1",
+            "message": "Why was our Acme payment short?"
+        })
+        self.assertEqual(call_res.status_code, 200)
+        call_json = call_res.get_json()
+        self.assertTrue(call_json.get("success"))
+        self.assertTrue(call_json.get("handoff_required"))
+        self.assertIn("Accounts Receivable", call_json.get("specialist_role", ""))
+        self.assertIsNotNone(call_json.get("orchestrator_speech"))
+        self.assertIsNotNone(call_json.get("specialist_speech"))
+
+        # If audio was generated, verify the stream endpoint serves audio
+        if call_json.get("audio_url"):
+            audio_url = call_json["audio_url"]
+            audio_res = self.client.get(audio_url)
+            self.assertEqual(audio_res.status_code, 200)
+            self.assertEqual(audio_res.mimetype, "audio/wav")
+            audio_res.close()
+
+    def test_case_g_handoff_failure_fallback(self):
+        """Test Case G: Handoff failure resilience - Gracefully returns control to Orchestrator without call drop."""
+        case = Case(
+            id="TEST-CASE-G",
+            customer_id="cust1",
+            description="Why was our Acme payment short?",
+            priority="medium",
+            metadata={"force_specialist_failure": True}
+        )
+        db.execute("DELETE FROM audit_events WHERE case_id = %s;", (case.id,))
+        # Engine execution MUST NOT throw an unhandled exception
+        result = self.engine.run_once(case)
+        solve = result.get("solve", {})
+
+        # Verify graceful fallback to Orchestrator
+        self.assertEqual(solve.get("acting_agent"), "Orchestrator (Call Director)")
+        self.assertFalse(solve.get("handoff_required"))
+        self.assertTrue(solve.get("resolution", {}).get("fallback_engaged"))
+
+        # Verify Orchestrator speech stays on the line with the customer
+        orch_speech = solve.get("orchestrator_speech", "")
+        self.assertIn("brief delay", orch_speech)
+        self.assertIn("staying on the line", orch_speech)
+
+        # Verify audit trail records failover event
+        events = db.fetch_all(
+            "SELECT action, details FROM audit_events WHERE case_id = %s ORDER BY created_at ASC;",
+            (case.id,)
+        )
+        actions = [e["action"] for e in events]
+        self.assertIn("HANDOFF_FAILED_FALLBACK_TO_ORCHESTRATOR", actions)
+
+        fail_event = next(e for e in events if e["action"] == "HANDOFF_FAILED_FALLBACK_TO_ORCHESTRATOR")
+        self.assertEqual(fail_event["details"].get("outcome"), "Orchestrator failover engaged")
 
     def test_feedback_system_updates_experience_confidence(self):
         """Verify that recording positive/negative feedback updates experience confidence in DB."""
@@ -67,76 +307,19 @@ class TestFinanceOperations(unittest.TestCase):
         self.assertEqual(fb_neg.get("status"), "recorded")
 
     def test_web_endpoints(self):
-        """Verify Flask endpoints for greet, status, and feedback."""
-        client = app.test_client()
-
+        """Verify Flask endpoints for status, CRM data, and benchmark."""
         # Status
-        status_res = client.get("/api/status")
+        status_res = self.client.get("/api/status")
         self.assertEqual(status_res.status_code, 200)
         self.assertIn("PostgreSQL", status_res.get_json()["database_backend"])
 
-        # Greet
-        greet_res = client.post("/api/voice/greet", json={"customer_id": "cust1"})
-        self.assertEqual(greet_res.status_code, 200)
-        self.assertIn("Thanks for calling Maximor AI", greet_res.get_json()["greeting_text"])
-
-        # Feedback
-        fb_res = client.post("/api/feedback", json={
-            "case_id": "TEST-WEB-01",
-            "rating": "positive",
-            "reason": "Clear explanation"
-        })
-        self.assertEqual(fb_res.status_code, 200)
-        self.assertTrue(fb_res.get_json()["success"])
-
-    def test_warm_handoff_and_direct_orchestrator(self):
-        """Verify warm handoffs vs direct orchestrator responses."""
-        engine = ResolveLoopEngine()
-
-        # 1. Direct Conversational Query to Orchestrator (No handoff required)
-        case_gen = Case(
-            id="TEST-GEN-01",
-            customer_id="cust1",
-            description="Who are you and what can you help me with?",
-            priority="low"
-        )
-        res_gen = engine.run_once(case_gen)
-        solve_gen = res_gen.get("solve", {})
-        self.assertFalse(solve_gen.get("handoff_required"))
-        self.assertEqual(solve_gen.get("acting_agent"), "Orchestrator (Call Director)")
-        self.assertIn("Maximor AI", solve_gen.get("orchestrator_speech", ""))
-
-        # 2. Specialist Finance Query (Warm handoff required)
-        case_spec = Case(
-            id="TEST-SPEC-01",
-            customer_id="cust1",
-            description="Why was payment PMT-8821 short by $250 on invoice INV-4471?",
-            priority="medium"
-        )
-        res_spec = engine.run_once(case_spec)
-        solve_spec = res_spec.get("solve", {})
-        self.assertTrue(solve_spec.get("handoff_required"))
-        self.assertIn("Accounts Receivable", solve_spec.get("specialist_role", ""))
-        self.assertIsNotNone(solve_spec.get("handoff_context"))
-        
-        ctx = solve_spec["handoff_context"]
-        self.assertEqual(ctx["case_id"], "TEST-SPEC-01")
-        rec_ids = [r.get("external_id") for r in ctx.get("relevant_finance_records", []) if isinstance(r, dict)]
-        self.assertIn("INV-4471", rec_ids)
-        pol_str = str(ctx.get("relevant_policy", ""))
-        self.assertIn("SHORT-PAY-01", pol_str)
-        self.assertIn("I've received the context", solve_spec.get("specialist_speech", ""))
-
-        # 3. Web Endpoint Verification
-        client = app.test_client()
-        call_res = client.post("/api/text/call", json={
-            "customer_id": "cust1",
-            "message": "Who are you?"
-        })
-        self.assertEqual(call_res.status_code, 200)
-        call_json = call_res.get_json()
-        self.assertFalse(call_json.get("handoff_required"))
-        self.assertEqual(call_json.get("acting_agent"), "Orchestrator (Call Director)")
+        # CRM Data
+        crm_res = self.client.get("/api/crm/data")
+        self.assertEqual(crm_res.status_code, 200)
+        crm_data = crm_res.get_json()
+        self.assertTrue(len(crm_data.get("customers", [])) > 0)
+        self.assertTrue(len(crm_data.get("finance_records", [])) > 0)
+        self.assertTrue(len(crm_data.get("policies", [])) > 0)
 
 if __name__ == "__main__":
     unittest.main()

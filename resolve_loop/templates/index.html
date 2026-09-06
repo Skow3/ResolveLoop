@@ -1034,21 +1034,36 @@
 
       currentCaseId = data.case_id || data.case?.id || `CASE-${Date.now()}`;
 
-      // 0. Update Active Agent in Workstation Header
-      const activeAgentName = data.acting_agent || (data.handoff_required ? (data.specialist_role || "Finance Specialist") : "Orchestrator (Call Director)");
+      // 0. Update Active Agent in Workstation Header with smooth transition
+      const targetRole = data.specialist_role || (data.acting_agent ? data.acting_agent.replace(/^L\d+\s+/, '') : "Finance Specialist");
+      const tier = data.route?.route_level ?? (data.handoff_required ? 2 : 0);
       const agentHeading = document.getElementById('active-agent-heading');
-      if (agentHeading) {
-        agentHeading.innerText = `Connected to ${activeAgentName}`;
-      }
       const agentBadge = document.getElementById('active-agent-tier-badge');
-      if (agentBadge) {
-        const tier = data.route?.route_level ?? (data.handoff_required ? 2 : 0);
-        if (!data.handoff_required && activeAgentName.includes("Orchestrator")) {
-          agentBadge.innerText = "Tier 0";
+
+      if (data.handoff_required) {
+        if (agentHeading) {
+          agentHeading.innerHTML = `<span class="inline-flex items-center space-x-1.5 text-indigo-400"><span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping mr-1"></span><span>Connecting to ${targetRole}…</span></span>`;
+        }
+        if (agentBadge) {
+          agentBadge.innerText = "Connecting…";
+          agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60 animate-pulse";
+        }
+        setTimeout(() => {
+          if (agentHeading) {
+            agentHeading.innerText = `${targetRole} · L${tier}`;
+          }
+          if (agentBadge) {
+            agentBadge.innerText = `L${tier} Active`;
+            agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 transition-all duration-300";
+          }
+        }, 700);
+      } else {
+        if (agentHeading) {
+          agentHeading.innerText = data.acting_agent || "Orchestrator (Call Director)";
+        }
+        if (agentBadge) {
+          agentBadge.innerText = "Call Director · L0";
           agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-300 border border-slate-700";
-        } else {
-          agentBadge.innerText = `Tier ${tier}`;
-          agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-900 text-indigo-200 border border-indigo-700";
         }
       }
 
@@ -1060,12 +1075,11 @@
         // Step A: Orchestrator warm handoff statement
         appendTranscript("agent", data.orchestrator_speech, null, "Orchestrator (Call Director)");
 
-        // Step B: Warm Handoff Divider Banner
+        // Step B: Warm Handoff Divider Banner (minimal, premium)
         appendHandoffDivider(
           "Orchestrator (Call Director)",
-          data.specialist_role || data.acting_agent || "Specialist",
-          data.handoff_context?.reason_for_handoff || "Specialist escalation",
-          data.handoff_context
+          targetRole,
+          tier
         );
 
         // Step C: Receiving Specialist response with feedback widget
@@ -1238,40 +1252,16 @@
       lucide.createIcons();
     }
 
-    function appendHandoffDivider(fromAgent, toAgent, reason, handoffContext) {
+    function appendHandoffDivider(fromAgent, toAgent, tier = 2) {
       const feed = document.getElementById('transcript-feed');
       const divider = document.createElement('div');
-      divider.className = 'my-3 w-full flex flex-col items-center';
-
-      const ctxId = `handoff-ctx-${Date.now()}`;
-      let contextHtml = '';
-      if (handoffContext) {
-        const entities = handoffContext.entities_already_identified || handoffContext.information_already_collected || [];
-        const records = handoffContext.relevant_finance_records || [];
-        contextHtml = `
-          <div id="${ctxId}" class="hidden mt-2 p-3 w-full max-w-[90%] rounded-xl dark:bg-slate-950 bg-slate-50 border dark:border-indigo-900/60 border-indigo-200 text-[11px] space-y-1.5 font-mono text-left shadow-inner">
-            <div class="text-indigo-400 font-bold font-sans flex items-center justify-between border-b dark:border-slate-800 border-slate-300 pb-1">
-              <span class="flex items-center space-x-1"><i data-lucide="file-text" class="w-3.5 h-3.5"></i><span>Warm Handoff Dossier</span></span>
-              <span class="text-[10px] text-slate-400 font-mono">${handoffContext.case_id || ''}</span>
-            </div>
-            <div><span class="text-slate-400 font-sans">Domain:</span> <span class="dark:text-indigo-300 text-indigo-700 font-semibold">${handoffContext.detected_domain || 'Finance Operations'}</span></div>
-            <div><span class="text-slate-400 font-sans">Reason:</span> <span class="dark:text-slate-200 text-slate-800">${handoffContext.reason_for_handoff || reason || 'Tier Escalation'}</span></div>
-            <div><span class="text-slate-400 font-sans">Summary:</span> <span class="dark:text-slate-300 text-slate-600">${handoffContext.conversation_summary || handoffContext.original_customer_request || ''}</span></div>
-            ${handoffContext.relevant_policy ? `<div><span class="text-slate-400 font-sans">Policy:</span> <span class="text-amber-400 font-semibold">${handoffContext.relevant_policy}</span></div>` : ''}
-            ${entities.length > 0 ? `<div><span class="text-slate-400 font-sans">Entities Identified:</span> <span class="text-emerald-400">${JSON.stringify(entities)}</span></div>` : ''}
-            ${records.length > 0 ? `<div><span class="text-slate-400 font-sans">Finance Records:</span> <span class="text-cyan-400">${records.join(', ')}</span></div>` : ''}
-          </div>
-        `;
-      }
+      divider.className = 'my-2.5 w-full flex items-center justify-center';
 
       divider.innerHTML = `
-        <button type="button" onclick="${handoffContext ? `const el = document.getElementById('${ctxId}'); if(el) el.classList.toggle('hidden');` : ''}" class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full dark:bg-indigo-950/80 bg-indigo-50 border dark:border-indigo-800/80 border-indigo-300 text-xs shadow-sm hover:border-indigo-500 transition group cursor-pointer">
-          <i data-lucide="arrow-right-left" class="w-3.5 h-3.5 text-indigo-400 group-hover:rotate-180 transition-transform duration-300"></i>
-          <span class="font-bold text-indigo-400">Warm Transfer:</span>
-          <span class="dark:text-slate-200 text-slate-700 font-medium">${fromAgent} → ${toAgent}</span>
-          ${handoffContext ? `<span class="text-[10px] text-slate-400 font-normal underline decoration-dotted ml-1">(View Dossier)</span>` : ''}
-        </button>
-        ${contextHtml}
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full dark:bg-slate-900/90 bg-slate-100 border dark:border-slate-800 border-slate-300 text-xs dark:text-slate-300 text-slate-700 shadow-sm transition">
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>Transferred to <strong class="text-indigo-400">${toAgent}</strong> <span class="text-[10px] px-1.5 py-0.5 rounded dark:bg-indigo-950 bg-indigo-100 dark:text-indigo-300 text-indigo-700 font-bold border dark:border-indigo-800 border-indigo-200">L${tier}</span></span>
+        </div>
       `;
       feed.appendChild(divider);
       feed.scrollTop = feed.scrollHeight;
