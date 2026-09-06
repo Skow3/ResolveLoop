@@ -2037,6 +2037,235 @@ def api_learning_unseen_case():
     })
 
 
+# ==============================================================================
+# PHASE 3: AUTOMATED AGENT ENGINEER (AGENT FACTORY) ENDPOINTS
+# ==============================================================================
+
+@app.route("/api/factory/tools", methods=["GET"])
+def api_factory_tools():
+    """Return the catalog of registered canonical finance tools for specialist design."""
+    from .agent_factory import VALID_FINANCE_TOOLS
+    tools_list = list(VALID_FINANCE_TOOLS.values())
+    return jsonify({
+        "success": True,
+        "tools": tools_list,
+        "count": len(tools_list)
+    })
+
+
+@app.route("/api/factory/design", methods=["POST"])
+def api_factory_design():
+    """Design a specialist configuration (v0) from high-level goal and tool constraints."""
+    from .agent_factory import design_specialist
+    data = request.get_json() or {}
+    goal = data.get("goal", "").strip()
+    if not goal:
+        return jsonify({"error": "Goal is required to design a specialist."}), 400
+
+    domain = data.get("domain", "accounts_receivable")
+    selected_tools = data.get("selected_tools", [])
+    evaluation_criteria = data.get("evaluation_criteria", [])
+    name = data.get("name")
+    budgets = data.get("budgets")
+
+    try:
+        preview = design_specialist(
+            goal=goal,
+            domain=domain,
+            selected_tools=selected_tools,
+            evaluation_criteria=evaluation_criteria,
+            name=name,
+            budget_constraints=budgets,
+        )
+        return jsonify({
+            "success": True,
+            "preview": preview,
+            "strategy": preview["strategy"]
+        })
+    except Exception as e:
+        logger.error("Error in design_specialist: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/save", methods=["POST"])
+def api_factory_save():
+    """Save designed specialist strategy to registry and PostgreSQL database."""
+    from .agent_factory import save_specialist
+    data = request.get_json() or {}
+    strat_data = data.get("strategy")
+    if not strat_data:
+        return jsonify({"error": "Strategy data object is required."}), 400
+
+    try:
+        saved = save_specialist(strat_data)
+        return jsonify({
+            "success": True,
+            "strategy": saved.to_dict(),
+            "message": f"Saved specialist {saved.strategy_id} ({saved.name}) as Version 0 CANDIDATE."
+        })
+    except Exception as e:
+        logger.error("Error in save_specialist: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/test", methods=["POST"])
+def api_factory_test():
+    """Test a specialist strategy against benchmark cases on the real runtime."""
+    from .agent_factory import test_specialist, analyze_failures
+    data = request.get_json() or {}
+    strat_id = data.get("strategy_id")
+    if not strat_id:
+        return jsonify({"error": "strategy_id is required."}), 400
+
+    try:
+        test_results = test_specialist(strat_id)
+        failures = analyze_failures(test_results)
+        return jsonify({
+            "success": True,
+            "test_results": test_results,
+            "failure_patterns": failures
+        })
+    except Exception as e:
+        logger.error("Error in test_specialist: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/engineer", methods=["POST"])
+def api_factory_engineer():
+    """Reflect on observed failures and engineer improved candidate strategy (v1)."""
+    from .agent_factory import reflect_and_improve
+    data = request.get_json() or {}
+    strat_id = data.get("strategy_id")
+    test_results = data.get("test_results") or {}
+    iteration = int(data.get("iteration", 1))
+
+    strat = strategy_registry.get_strategy(strat_id)
+    if not strat:
+        return jsonify({"error": f"Strategy {strat_id} not found."}), 404
+
+    try:
+        improvement = reflect_and_improve(
+            base_strategy=strat,
+            test_results=test_results,
+            iteration=iteration,
+            max_iterations=3
+        )
+        return jsonify({
+            "success": True,
+            "improvement": improvement,
+            "candidate_strategy": improvement["candidate_strategy"],
+            "diff": improvement["diff"],
+            "causal_chain": improvement["causal_chain"]
+        })
+    except Exception as e:
+        logger.error("Error in reflect_and_improve: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/run_cycle", methods=["POST"])
+def api_factory_run_cycle():
+    """Execute complete autonomous engineering cycle: Design -> Test -> Reflect -> Improve -> Retest -> Compare -> Persist."""
+    from .agent_factory import run_full_engineering_cycle
+    data = request.get_json() or {}
+    goal = data.get("goal", "").strip()
+    if not goal:
+        return jsonify({"error": "Goal is required to run engineering cycle."}), 400
+
+    domain = data.get("domain", "accounts_receivable")
+    selected_tools = data.get("selected_tools", [])
+    evaluation_criteria = data.get("evaluation_criteria", [])
+    name = data.get("name")
+    max_iterations = int(data.get("max_iterations", 3))
+    auto_promote = bool(data.get("auto_promote", False))
+
+    try:
+        cycle_result = run_full_engineering_cycle(
+            goal=goal,
+            domain=domain,
+            selected_tools=selected_tools,
+            evaluation_criteria=evaluation_criteria,
+            name=name,
+            max_iterations=max_iterations,
+            auto_promote_if_improved=auto_promote,
+        )
+        return jsonify({
+            "success": True,
+            "cycle": cycle_result
+        })
+    except Exception as e:
+        logger.error("Error in run_full_engineering_cycle: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/promote", methods=["POST"])
+def api_factory_promote():
+    """Promote an engineered candidate strategy to ACTIVE status in production."""
+    from .agent_factory import promote_specialist
+    data = request.get_json() or {}
+    strat_id = data.get("strategy_id")
+    if not strat_id:
+        return jsonify({"error": "strategy_id is required."}), 400
+
+    promoted_by = data.get("promoted_by", "Automated Agent Engineer")
+    notes = data.get("notes", "")
+
+    try:
+        promo_result = promote_specialist(
+            strategy_id=strat_id,
+            promoted_by=promoted_by,
+            notes=notes
+        )
+        return jsonify(promo_result)
+    except Exception as e:
+        logger.error("Error in promote_specialist: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/unseen", methods=["POST"])
+def api_factory_unseen():
+    """Test generalization on novel unseen scenario without prompt memorization."""
+    from .agent_factory import run_unseen_case
+    data = request.get_json() or {}
+    strat_id = data.get("strategy_id")
+    strat = strategy_registry.get_strategy(strat_id) if strat_id else None
+
+    try:
+        res = run_unseen_case(specialist_strategy=strat)
+        return jsonify({
+            "success": True,
+            "result": res
+        })
+    except Exception as e:
+        logger.error("Error in run_unseen_case: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/factory/runs", methods=["GET"])
+def api_factory_runs():
+    """List historical automated agent engineering runs."""
+    from .agent_factory import list_engineering_runs
+    limit = min(int(request.args.get("limit", 50)), 100)
+    runs = list_engineering_runs(limit=limit)
+    return jsonify({
+        "success": True,
+        "runs": runs,
+        "count": len(runs)
+    })
+
+
+@app.route("/api/factory/runs/<run_id>", methods=["GET"])
+def api_factory_run_detail(run_id):
+    """Fetch details of a specific automated engineering run."""
+    from .agent_factory import get_engineering_run
+    run = get_engineering_run(run_id)
+    if not run:
+        return jsonify({"error": f"Engineering run {run_id} not found."}), 404
+    return jsonify({
+        "success": True,
+        "run": run
+    })
+
+
 def start_server(host="0.0.0.0", port=5000, debug=False):
     print(f"Starting Maximor AI Web Server on http://{host}:{port}")
     app.run(host=host, port=port, debug=debug)

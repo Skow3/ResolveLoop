@@ -252,7 +252,7 @@ class ResolveLoopEngine:
             elif any(k in desc_lower for k in ["variance", "flux", "journal entry", "reconciliation", "asc 606", "revenue schedule"]):
                 lvl = 3
                 plan = "Complex accounting / reconciliation routed to L3 Authority."
-            elif any(k in desc_lower for k in ["short payment", "short-pay", "discount", "2/10", "deduction", "pmt-8821"]):
+            elif any(k in desc_lower for k in ["short payment", "short-pay", "paid short", "short", "discount", "2/10", "deduction", "pmt-8821"]):
                 lvl = 1 if not learning_applied and case.priority == "low" else 2
                 plan = "Short payment / terms inquiry routed to L1 (cold start)." if lvl == 1 else "Short payment inquiry routed to L2 Investigation."
             elif any(k in desc_lower for k in ["refund", "money", "charged", "billing", "dispute"]):
@@ -1020,7 +1020,7 @@ class ResolveLoopEngine:
 
         return {"score": score_obj, "reflection": reflection}
 
-    def run_once(self, case: Case) -> Dict[str, Any]:
+    def run_once(self, case: Case, override_strategy: Optional[AgentStrategy] = None) -> Dict[str, Any]:
         """Execute one complete cycle: CASE -> RETRIEVE -> ROUTE -> SOLVE -> EVALUATE -> REFLECT -> STORE -> IMPROVE."""
         try:
             # 0. Record CASE_CREATED audit event
@@ -1039,7 +1039,7 @@ class ResolveLoopEngine:
 
             similar = self.store.find_similar_experiences(case.description, limit=3)
             route = self.route_case(case, similar_experiences=similar)
-            solve_result = self.solve_case(case, route, similar_experiences=similar)
+            solve_result = self.solve_case(case, route, similar_experiences=similar, override_strategy=override_strategy)
             eval_reflect = self.evaluate_and_reflect(case, route, solve_result)
             reflection = eval_reflect["reflection"]
             score = eval_reflect["score"]

@@ -281,6 +281,33 @@ CREATE TABLE IF NOT EXISTS structured_failures (
     metadata JSONB DEFAULT '{}'::jsonb
 );
 
+-- 17. Agent Engineering Runs (Automated Agent Engineer Factory history and telemetry)
+CREATE TABLE IF NOT EXISTS agent_engineering_runs (
+    id VARCHAR(64) PRIMARY KEY,
+    organization_id VARCHAR(64) DEFAULT 'org_apex' REFERENCES organizations(id) ON DELETE CASCADE,
+    run_name VARCHAR(255) NOT NULL,
+    specialist_id VARCHAR(64) NOT NULL,
+    specialist_name VARCHAR(255) NOT NULL,
+    domain VARCHAR(64) NOT NULL,
+    goal TEXT NOT NULL,
+    selected_tools JSONB NOT NULL DEFAULT '[]'::jsonb,
+    evaluation_criteria JSONB NOT NULL DEFAULT '[]'::jsonb,
+    v0_strategy_id VARCHAR(64) REFERENCES agent_strategies(id) ON DELETE SET NULL,
+    v1_strategy_id VARCHAR(64) REFERENCES agent_strategies(id) ON DELETE SET NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'COMPLETED', -- RUNNING, COMPLETED, REGRESSION_HALTED, REJECTED, PROMOTED
+    iterations_count INTEGER DEFAULT 1,
+    max_iterations INTEGER DEFAULT 3,
+    v0_metrics JSONB DEFAULT '{}'::jsonb,
+    v1_metrics JSONB DEFAULT '{}'::jsonb,
+    pareto_comparison JSONB DEFAULT '{}'::jsonb,
+    failure_patterns JSONB DEFAULT '[]'::jsonb,
+    reflections JSONB DEFAULT '[]'::jsonb,
+    regression_detected BOOLEAN DEFAULT FALSE,
+    unseen_test_results JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMPTZ
+);
+
 -- Indexes for lightning fast operations
 CREATE INDEX IF NOT EXISTS idx_finance_records_type_ext ON finance_records(organization_id, record_type, external_id);
 CREATE INDEX IF NOT EXISTS idx_finance_records_date ON finance_records(transaction_date);
@@ -293,6 +320,8 @@ CREATE INDEX IF NOT EXISTS idx_audit_case ON audit_events(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_agent_strategies_tier_domain_status ON agent_strategies(agent_tier, domain, status);
 CREATE INDEX IF NOT EXISTS idx_structured_failures_case ON structured_failures(case_id);
 CREATE INDEX IF NOT EXISTS idx_structured_failures_type ON structured_failures(failure_type);
+CREATE INDEX IF NOT EXISTS idx_agent_engineering_runs_spec ON agent_engineering_runs(specialist_id, status);
+CREATE INDEX IF NOT EXISTS idx_agent_engineering_runs_org ON agent_engineering_runs(organization_id, created_at);
 """
 
 class Database:

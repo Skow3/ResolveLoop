@@ -12,7 +12,11 @@ def request_llm(prompt: str, model: str = MODEL, system_prompt: Optional[str] = 
     
     Returns string response if enabled and successful, else None.
     """
-    if not CONFIG_USE_LLM:
+    use_env = os.environ.get("RESOLVELOOP_USE_LLM")
+    if use_env is not None:
+        if use_env != "1":
+            return None
+    elif not CONFIG_USE_LLM:
         return None
 
     api_key = os.environ.get("OPENAI_API_KEY") or CONFIG_OPENAI_KEY

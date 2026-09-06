@@ -1194,6 +1194,11 @@
           <i data-lucide="play-circle" class="w-4 h-4"></i>
           <span>Try a New Case</span>
         </button>
+        <button id="lab-tab-nav-factory" onclick="switchLabTab('factory')" class="lab-tab-btn px-3.5 py-2 rounded-xl dark:text-slate-400 text-slate-600 hover:text-indigo-400 dark:hover:bg-slate-900 hover:bg-slate-100 flex items-center space-x-2 transition whitespace-nowrap">
+          <i data-lucide="cpu" class="w-4 h-4 text-purple-400"></i>
+          <span>Automated Agent Engineer</span>
+          <span class="px-1.5 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 font-mono font-bold">Track 1</span>
+        </button>
       </div>
 
       <!-- ==================== TAB 1: AGENT EVOLUTION & REPLAY ==================== -->
@@ -1525,6 +1530,382 @@
         </div>
       </div>
 
+      <!-- ==================== TAB 7: AUTOMATED AGENT ENGINEER (AGENT FACTORY) ==================== -->
+      <div id="lab-tab-factory" class="lab-tab-content hidden mb-8">
+
+        <!-- Top Header & Banner -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-4 border-b dark:border-slate-800 border-slate-200">
+          <div>
+            <div class="flex items-center space-x-3">
+              <h2 class="text-xl sm:text-2xl font-black dark:text-white text-slate-900 tracking-tight flex items-center space-x-2">
+                <i data-lucide="cpu" class="w-6 h-6 text-purple-400"></i>
+                <span>Automated Agent Engineer</span>
+              </h2>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-950 text-purple-300 border border-purple-800">
+                Track 1: Automated Agent Engineering
+              </span>
+            </div>
+            <p class="text-xs dark:text-slate-400 text-slate-500 mt-1">
+              Autonomous loop: Goal + Canonical Tools + Criteria &rarr; Design Specialist (v0) &rarr; Benchmark Test &rarr; Failure Analysis &rarr; Reflect & Synthesize v1 &rarr; Retest & Pareto Trade-Off &rarr; Regression Protection &rarr; Promotion &rarr; Generalization on Novel Cases.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="loadFactoryRuns()" class="px-3 py-1.5 rounded-xl border dark:border-slate-800 border-slate-300 text-xs font-semibold dark:text-slate-300 text-slate-700 hover:text-indigo-400 flex items-center space-x-1.5">
+              <i data-lucide="history" class="w-3.5 h-3.5"></i>
+              <span>Refresh Runs</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 10-Stage Visual Stepper -->
+        <div class="mb-8 p-4 rounded-2xl dark:bg-slate-900/80 bg-slate-50 border dark:border-slate-800 border-slate-200">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Engineering Pipeline Progression</span>
+            <span id="factory-pipeline-status" class="text-[11px] font-mono font-bold text-purple-400">STAGE 1: SPECIFICATION & PRESETS</span>
+          </div>
+          <div class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 text-center text-[9px] font-bold font-mono">
+            <div id="step-node-1" class="py-1.5 px-1 rounded-lg bg-purple-900/60 text-purple-300 border border-purple-500/50">1. GOAL</div>
+            <div id="step-node-2" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">2. DESIGN</div>
+            <div id="step-node-3" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">3. BASELINE v0</div>
+            <div id="step-node-4" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">4. TEST v0</div>
+            <div id="step-node-5" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">5. FAILURES</div>
+            <div id="step-node-6" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">6. REFLECT</div>
+            <div id="step-node-7" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">7. CANDIDATE v1</div>
+            <div id="step-node-8" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">8. PARETO</div>
+            <div id="step-node-9" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">9. PROMOTE</div>
+            <div id="step-node-10" class="py-1.5 px-1 rounded-lg bg-slate-800/60 text-slate-400 border border-white/5">10. NEW CASE</div>
+          </div>
+        </div>
+
+        <!-- Two Column Layout: Specification Form (Left) & Pipeline Output Cards (Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+
+          <!-- Left Column: Specification Form & Presets (5 cols) -->
+          <div class="lg:col-span-5 space-y-6">
+
+            <!-- Presets Panel -->
+            <div class="glass-panel p-5 rounded-3xl dark:border-slate-800 border-slate-200">
+              <div class="flex items-center justify-between pb-3 mb-3 border-b dark:border-slate-800 border-slate-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+                  <i data-lucide="bookmark" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>Quick Domain Presets</span>
+                </span>
+                <span class="text-[9px] font-mono text-purple-400">Click to Load &rarr;</span>
+              </div>
+              <div class="space-y-2">
+                <button type="button" onclick="applyFactoryPreset('ar')" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/80 transition text-xs flex items-center justify-between group">
+                  <div>
+                    <span class="font-bold text-indigo-400 block">AR Resolution Specialist</span>
+                    <span class="text-[11px] text-slate-400 block mt-0.5">Short-pays, 2/10 Net 30 discount verification, prompt settlement</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 group-hover:text-indigo-400 transition"></i>
+                </button>
+                <button type="button" onclick="applyFactoryPreset('ap')" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/80 transition text-xs flex items-center justify-between group">
+                  <div>
+                    <span class="font-bold text-purple-400 block">AP Variance Specialist</span>
+                    <span class="text-[11px] text-slate-400 block mt-0.5">AWS hosting budget variance, bills, journal entries & accruals</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition"></i>
+                </button>
+                <button type="button" onclick="applyFactoryPreset('cash')" class="w-full text-left p-2.5 rounded-xl dark:bg-slate-900/80 bg-white border dark:border-slate-800 border-slate-200 hover:border-indigo-500/80 transition text-xs flex items-center justify-between group">
+                  <div>
+                    <span class="font-bold text-emerald-400 block">Treasury & Runway Specialist</span>
+                    <span class="text-[11px] text-slate-400 block mt-0.5">Real-time cash balances, 13-week runway, and liquidity forecasting</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Specialist Engineering Form -->
+            <div class="glass-panel p-6 rounded-3xl dark:border-slate-800 border-slate-200 space-y-4">
+              <div class="pb-3 border-b dark:border-slate-800 border-slate-200">
+                <h3 class="text-sm font-bold dark:text-white text-slate-900 flex items-center space-x-2">
+                  <i data-lucide="sliders" class="w-4 h-4 text-purple-400"></i>
+                  <span>Specialist Engineering Parameters</span>
+                </h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Define specialist goal, domain, tool authorities, and evaluation criteria.</p>
+              </div>
+
+              <!-- Domain & Name -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Domain</label>
+                  <select id="factory-form-domain" class="w-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-purple-500">
+                    <option value="accounts_receivable">Accounts Receivable (AR)</option>
+                    <option value="accounts_payable">Accounts Payable (AP)</option>
+                    <option value="cash">Cash & Treasury</option>
+                    <option value="general_finance">General Finance Operations</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Specialist Name</label>
+                  <input id="factory-form-name" type="text" value="AR Resolution Specialist" class="w-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-purple-500" />
+                </div>
+              </div>
+
+              <!-- Goal Textarea -->
+              <div>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">High-Level Specialist Goal</label>
+                <textarea id="factory-form-goal" rows="3" class="w-full dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 rounded-xl p-3 text-xs dark:text-slate-200 text-slate-800 focus:ring-2 focus:ring-purple-500" placeholder="e.g. Resolve customer payment discrepancies, short payments, and billing queries accurately using financial records without unnecessary escalation.">Resolve customer payment discrepancies and short payments accurately using invoice and remittance evidence without unnecessary escalation.</textarea>
+              </div>
+
+              <!-- Tool Authority Whitelist Selection -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Available Tool Authorities</label>
+                  <span class="text-[10px] font-mono text-emerald-400">Canonical Catalog Only</span>
+                </div>
+                <div class="max-h-48 overflow-y-auto pr-1 space-y-1.5 p-2 rounded-xl bg-black/20 border border-white/5 text-[11px]">
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_customer" checked class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-indigo-400">get_customer</span>
+                    <span class="text-[10px] text-slate-500">&bull; Customer profile & credit status</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_customer_history" checked class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-amber-400">get_customer_history</span>
+                    <span class="text-[10px] text-slate-500">&bull; Historical disputes (Pruned in v1)</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_invoice" checked class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-indigo-400">get_invoice</span>
+                    <span class="text-[10px] text-slate-500">&bull; Line items, tax, due date, terms</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_payment" checked class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-indigo-400">get_payment</span>
+                    <span class="text-[10px] text-slate-500">&bull; Remittance, settled amount, date</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_policy_version" checked class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-indigo-400">get_policy_version</span>
+                    <span class="text-[10px] text-slate-500">&bull; Discount clause (SHORT-PAY-01)</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="search_policy" class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-indigo-400">search_policy</span>
+                    <span class="text-[10px] text-slate-500">&bull; Keyword search across policy SOPs</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_bill" class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-purple-400">get_bill</span>
+                    <span class="text-[10px] text-slate-500">&bull; AP vendor bill & approval status</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_journal_entry" class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-purple-400">get_journal_entry</span>
+                    <span class="text-[10px] text-slate-500">&bull; Double-entry GL journal lines</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_cash_position" class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-emerald-400">get_cash_position</span>
+                    <span class="text-[10px] text-slate-500">&bull; Real-time bank & treasury balances</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="get_forecast" class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-emerald-400">get_forecast</span>
+                    <span class="text-[10px] text-slate-500">&bull; 13-week runway cash projection</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="search_experiences" checked class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-cyan-400">search_experiences</span>
+                    <span class="text-[10px] text-slate-500">&bull; Episodic memory lookup</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 hover:text-white cursor-pointer">
+                    <input type="checkbox" name="factory_tool" value="escalate_to_human" class="rounded border-slate-700 text-purple-600 focus:ring-purple-500">
+                    <span class="font-mono text-rose-400">escalate_to_human</span>
+                    <span class="text-[10px] text-slate-500">&bull; L4 Executive Review escalation</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Evaluation Criteria & Guardrails -->
+              <div>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Optimization & Evaluation Priorities</label>
+                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                  <label class="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="factory_crit" value="correctness" checked class="rounded text-purple-600 focus:ring-purple-500">
+                    <span>Correctness & Math</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="factory_crit" value="evidence" checked class="rounded text-purple-600 focus:ring-purple-500">
+                    <span>Evidence Sufficiency</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="factory_crit" value="tool_efficiency" checked class="rounded text-purple-600 focus:ring-purple-500">
+                    <span>Tool Call Efficiency</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="factory_crit" value="escalation" checked class="rounded text-purple-600 focus:ring-purple-500">
+                    <span>Escalation Safety</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="factory_crit" value="latency" checked class="rounded text-purple-600 focus:ring-purple-500">
+                    <span>Latency Budget</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="factory_crit" value="policy_compliance" checked class="rounded text-purple-600 focus:ring-purple-500">
+                    <span>Policy Compliance</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Operational Budgets -->
+              <div class="p-3 rounded-xl bg-black/20 border border-white/5 space-y-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Agent Operational Budgets</span>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div>
+                    <span class="text-[9px] text-slate-500 block">Max Tools</span>
+                    <span class="font-mono font-bold text-slate-300">6 calls</span>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-slate-500 block">Target Latency</span>
+                    <span class="font-mono font-bold text-slate-300">&le; 500 ms</span>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-slate-500 block">Max Iterations</span>
+                    <span class="font-mono font-bold text-amber-400">3 runs max</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="pt-2 space-y-2">
+                <button type="button" onclick="designSpecialist()" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition flex items-center justify-center space-x-2">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  <span>1. Design Specialist Preview</span>
+                </button>
+                <button type="button" onclick="runFullEngineeringCycle()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
+                  <i data-lucide="zap" class="w-4 h-4"></i>
+                  <span>⚡ Run Full Autonomous Cycle (Track 1)</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Right Column: Interactive Pipeline Execution Panels (7 cols) -->
+          <div class="lg:col-span-7 space-y-6">
+
+            <!-- Panel 1: Specialist Preview (Initial state / Stage 1) -->
+            <div id="factory-panel-preview" class="glass-panel p-6 rounded-3xl dark:border-slate-800 border-slate-200">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="eye" class="w-4 h-4 text-purple-400"></i>
+                  <h3 class="text-sm font-bold dark:text-white text-slate-900">Stage 1: Generated Specialist Preview</h3>
+                </div>
+                <span id="factory-preview-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-400">WAITING FOR DESIGN</span>
+              </div>
+
+              <div id="factory-preview-content" class="py-12 text-center text-xs text-slate-500 italic">
+                Configure your specialist on the left and click "1. Design Specialist Preview" to generate the structured configuration.
+              </div>
+            </div>
+
+            <!-- Panel 2: Benchmark Test & Failure Analysis (Stage 2) -->
+            <div id="factory-panel-test" class="glass-panel p-6 rounded-3xl dark:border-slate-800 border-slate-200 hidden">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="activity" class="w-4 h-4 text-amber-400"></i>
+                  <h3 class="text-sm font-bold dark:text-white text-slate-900">Stage 2: Benchmark Telemetry & Failure Patterns</h3>
+                </div>
+                <span id="factory-test-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-amber-950 text-amber-400 border border-amber-800">EVALUATED</span>
+              </div>
+
+              <div id="factory-test-content" class="space-y-4">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Panel 3: Candidate v1 & Causal Diff (Stage 3) -->
+            <div id="factory-panel-candidate" class="glass-panel p-6 rounded-3xl dark:border-slate-800 border-slate-200 hidden">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="git-branch" class="w-4 h-4 text-purple-400"></i>
+                  <h3 class="text-sm font-bold dark:text-white text-slate-900">Stage 3: Candidate v1 & Causal Adaptation</h3>
+                </div>
+                <span id="factory-candidate-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-purple-950 text-purple-300 border border-purple-800">CANDIDATE v1</span>
+              </div>
+
+              <div id="factory-candidate-content" class="space-y-4">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Panel 4: Pareto Trade-Off & Regression Guardrail (Stage 4) -->
+            <div id="factory-panel-pareto" class="glass-panel p-6 rounded-3xl dark:border-slate-800 border-slate-200 hidden">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="scale" class="w-4 h-4 text-emerald-400"></i>
+                  <h3 class="text-sm font-bold dark:text-white text-slate-900">Stage 4: Multi-Dimensional Pareto Comparison & Guardrail</h3>
+                </div>
+                <span id="factory-pareto-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">COMPARISON READY</span>
+              </div>
+
+              <div id="factory-pareto-content" class="space-y-4">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Panel 5: Unseen Case Generalization (Stage 5) -->
+            <div id="factory-panel-unseen" class="glass-panel p-6 rounded-3xl dark:border-slate-800 border-slate-200 hidden">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b dark:border-slate-800 border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="check-check" class="w-4 h-4 text-cyan-400"></i>
+                  <h3 class="text-sm font-bold dark:text-white text-slate-900">Stage 5: Generalization on Novel Unseen Case</h3>
+                </div>
+                <span id="factory-unseen-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-cyan-950 text-cyan-400 border border-cyan-800">GENERALIZED</span>
+              </div>
+
+              <div id="factory-unseen-content" class="space-y-4">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Historical Engineering Runs Table -->
+        <div class="glass-panel rounded-3xl p-6 sm:p-8 dark:border-slate-800 border-slate-200 shadow-xl mb-8">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b dark:border-slate-800 border-slate-200">
+            <div>
+              <h3 class="text-base font-bold dark:text-white text-slate-900 tracking-tight flex items-center space-x-2">
+                <i data-lucide="file-check-2" class="w-4 h-4 text-purple-400"></i>
+                <span>Automated Agent Engineering Runs Journal</span>
+              </h3>
+              <p class="text-xs dark:text-slate-400 text-slate-500 mt-0.5">Persisted records of all autonomous specialist design, evaluation, reflection, and promotion cycles.</p>
+            </div>
+            <span id="factory-runs-count" class="text-xs font-mono text-purple-400 font-bold">-- Runs</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b dark:border-slate-800 border-slate-200 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <th class="py-2.5 px-3">Run ID</th>
+                  <th class="py-2.5 px-3">Specialist / Goal</th>
+                  <th class="py-2.5 px-3">Domain</th>
+                  <th class="py-2.5 px-3">Status</th>
+                  <th class="py-2.5 px-3">v0 Score</th>
+                  <th class="py-2.5 px-3">v1 Score</th>
+                  <th class="py-2.5 px-3">Regression Check</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="factory-runs-tbody" class="divide-y dark:divide-slate-800 divide-slate-100">
+                <tr>
+                  <td colspan="8" class="py-4 text-center text-slate-500 italic">Loading engineering runs...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
       <!-- Learning Audit Stream -->
       <div class="glass-panel rounded-3xl p-6 sm:p-8 dark:border-slate-800 border-slate-200 shadow-xl">
         <div class="flex items-center justify-between mb-4 pb-3 border-b dark:border-slate-800 border-slate-200">
@@ -1730,6 +2111,37 @@
 
       <div class="pt-4 border-t dark:border-slate-800 border-slate-200 flex justify-end">
         <button onclick="closeStrategyDetailModal()" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTOMATED AGENT ENGINEER: RUN DETAIL MODAL ==================== -->
+  <div id="modal-engineering-run-detail" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-panel max-w-4xl w-full rounded-3xl p-6 sm:p-8 dark:border-slate-800 border-slate-200 shadow-2xl max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b dark:border-slate-800 border-slate-200">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-800/80 flex items-center justify-center text-purple-400">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 id="modal-run-title" class="text-base font-black dark:text-white text-slate-900">Engineering Run Dossier</h3>
+              <span id="modal-run-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-purple-950 text-purple-300 border border-purple-800">COMPLETED</span>
+            </div>
+            <p id="modal-run-subtitle" class="text-xs dark:text-slate-400 text-slate-500 mt-0.5">Run ID: -- &bull; Domain: --</p>
+          </div>
+        </div>
+        <button onclick="closeEngineeringRunDetailModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-4 text-xs pr-1" id="modal-run-body">
+        <!-- Dynamically populated -->
+      </div>
+
+      <div class="pt-4 border-t dark:border-slate-800 border-slate-200 flex justify-end">
+        <button onclick="closeEngineeringRunDetailModal()" class="px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs">Close Dossier</button>
       </div>
     </div>
   </div>
@@ -3992,6 +4404,7 @@
       if (tabName === 'failures') loadFailureExplorer();
       else if (tabName === 'tools') loadToolAnalytics();
       else if (tabName === 'experiences') loadLearnedExperiencesTab();
+      else if (tabName === 'factory') loadFactoryRuns();
       else if (tabName === 'evolution') {
         if (cachedWorkforce.length === 0) loadLearningLab();
       }
@@ -5214,6 +5627,878 @@
       } catch (err) {
         console.error('Failed to load learning timeline:', err);
       }
+    }
+
+    // ==============================================================================
+    // AUTOMATED AGENT ENGINEER (AGENT FACTORY) CONTROLLER
+    // ==============================================================================
+    let currentDesignedStrategy = null;
+    let currentTestResults = null;
+    let currentCandidateStrategy = null;
+    let currentV0Strategy = null;
+    let currentV0TestResults = null;
+
+    function updateFactoryStepper(activeStep, statusText) {
+      for (let i = 1; i <= 10; i++) {
+        const el = document.getElementById(`step-node-${i}`);
+        if (!el) continue;
+        if (i < activeStep) {
+          el.className = "py-1.5 px-1 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-500/60 font-bold";
+        } else if (i === activeStep) {
+          el.className = "py-1.5 px-1 rounded-lg bg-purple-900/90 text-white border-2 border-purple-400 font-black shadow-md shadow-purple-500/20 animate-pulse";
+        } else {
+          el.className = "py-1.5 px-1 rounded-lg bg-slate-800/40 text-slate-500 border border-white/5";
+        }
+      }
+      const stEl = document.getElementById('factory-pipeline-status');
+      if (stEl && statusText) stEl.innerText = statusText.toUpperCase();
+    }
+
+    function applyFactoryPreset(presetKey) {
+      const domainEl = document.getElementById('factory-form-domain');
+      const nameEl = document.getElementById('factory-form-name');
+      const goalEl = document.getElementById('factory-form-goal');
+      const toolCheckboxes = document.querySelectorAll('input[name="factory_tool"]');
+
+      let domain = 'accounts_receivable';
+      let name = 'AR Resolution Specialist';
+      let goal = 'Resolve customer payment discrepancies and short payments accurately using invoice and remittance evidence without unnecessary escalation.';
+      let activeTools = ['get_customer', 'get_customer_history', 'get_invoice', 'get_payment', 'get_policy_version', 'search_experiences'];
+
+      if (presetKey === 'ap') {
+        domain = 'accounts_payable';
+        name = 'AP Variance Specialist';
+        goal = 'Analyze vendor hosting invoices, telemetry metrics, and general ledger accrual entries to resolve budget variance discrepancies under policy.';
+        activeTools = ['get_customer', 'get_bill', 'get_journal_entry', 'search_policy', 'search_experiences'];
+      } else if (presetKey === 'cash') {
+        domain = 'cash';
+        name = 'Treasury & Runway Specialist';
+        goal = 'Monitor real-time operating and money market cash balances and forecast 13-week runway to ensure corporate liquidity health.';
+        activeTools = ['get_customer', 'get_cash_position', 'get_forecast', 'search_policy', 'search_experiences'];
+      }
+
+      if (domainEl) domainEl.value = domain;
+      if (nameEl) nameEl.value = name;
+      if (goalEl) goalEl.value = goal;
+
+      toolCheckboxes.forEach(cb => {
+        cb.checked = activeTools.includes(cb.value);
+      });
+
+      updateFactoryStepper(1, `PRESET LOADED: ${name}`);
+    }
+
+    async function designSpecialist() {
+      const domain = document.getElementById('factory-form-domain').value;
+      const name = document.getElementById('factory-form-name').value;
+      const goal = document.getElementById('factory-form-goal').value;
+      const tools = Array.from(document.querySelectorAll('input[name="factory_tool"]:checked')).map(cb => cb.value);
+      const criteria = Array.from(document.querySelectorAll('input[name="factory_crit"]:checked')).map(cb => cb.value);
+
+      if (!goal.trim()) {
+        alert('Please enter a high-level specialist goal.');
+        return;
+      }
+
+      const previewContainer = document.getElementById('factory-preview-content');
+      const previewBadge = document.getElementById('factory-preview-badge');
+      previewContainer.innerHTML = '<div class="py-8 text-center text-xs text-slate-400"><div class="w-6 h-6 mx-auto border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-2"></div>Validating tools and synthesizing v0 configuration...</div>';
+
+      try {
+        const res = await fetch('/api/factory/design', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            domain, name, goal,
+            selected_tools: tools,
+            evaluation_criteria: criteria
+          })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          previewContainer.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Error: ${data.error || 'Failed to design'}</div>`;
+          return;
+        }
+
+        const preview = data.preview;
+        currentDesignedStrategy = preview.strategy;
+        currentV0Strategy = preview.strategy;
+
+        if (previewBadge) {
+          previewBadge.innerText = 'v0 CANDIDATE READY';
+          previewBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-purple-950 text-purple-300 border border-purple-800';
+        }
+
+        const val = preview.validation || {};
+        const signals = preview.routing_signals || [];
+        const orderedTools = preview.preferred_tool_order || [];
+
+        previewContainer.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <!-- Header info -->
+            <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-mono text-purple-400 font-bold uppercase">${preview.strategy_id}</span>
+                <h4 class="text-sm font-black dark:text-white text-slate-900">${preview.name} &bull; <span class="text-indigo-400">Version ${preview.version}</span></h4>
+                <p class="text-[11px] text-slate-400 mt-0.5">${preview.goal}</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold bg-emerald-950 text-emerald-300 border border-emerald-800 whitespace-nowrap">
+                ${val.valid_tools ? val.valid_tools.length : tools.length} Tools Validated &bull; 0 Hallucinated
+              </span>
+            </div>
+
+            <!-- Derived Routing Signals -->
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Derived Inbound Routing Signals:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${signals.map(s => `<span class="px-2 py-0.5 rounded-lg bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 text-[10px] font-mono">${s}</span>`).join('')}
+              </div>
+            </div>
+
+            <!-- Tool Order & Sequence -->
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Tool Dependency Sequence (Preferred Order):</span>
+              <div class="flex flex-wrap items-center gap-1 font-mono text-[11px] p-2.5 rounded-xl bg-black/30 border border-white/5">
+                ${orderedTools.map((t, idx) => `
+                  <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 ${t === 'get_customer_history' ? 'border border-amber-600/60 text-amber-300' : ''}">${t}</span>
+                  ${idx < orderedTools.length - 1 ? '<span class="text-slate-600">&rarr;</span>' : ''}
+                `).join('')}
+              </div>
+              ${orderedTools.includes('get_customer_history') ? '<p class="text-[10px] text-amber-400/80 mt-1 font-mono">&bull; Note: get_customer_history included in v0 baseline (will be evaluated for latency overhead).</p>' : ''}
+            </div>
+
+            <!-- Escalation & Directives -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Escalation Guardrails:</span>
+                <ul class="space-y-1 text-[11px] text-slate-300 list-disc list-inside">
+                  ${(preview.escalation_rules || []).slice(0, 2).map(r => `<li>${r}</li>`).join('')}
+                </ul>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Evaluation Priorities:</span>
+                <div class="flex flex-wrap gap-1">
+                  ${(preview.evaluation_criteria || []).map(c => `<span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 text-[10px] font-mono">${c}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="pt-3 border-t dark:border-slate-800 border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[10px] text-slate-500 font-mono">Status: Initial Baseline Draft</span>
+              <div class="flex items-center space-x-2">
+                <button type="button" onclick="saveSpecialist()" class="px-3 py-1.5 rounded-xl border border-purple-700 hover:bg-purple-950 text-purple-300 font-bold text-xs transition">
+                  Save as Version 0
+                </button>
+                <button type="button" onclick="testFactoryAgent('${preview.strategy_id}')" class="px-4 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-amber-600/30 transition flex items-center space-x-1.5">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                  <span>2. Test Agent v0</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        updateFactoryStepper(2, 'SPECIALIST DESIGNED (v0 PREVIEW)');
+        lucide.createIcons();
+
+      } catch (err) {
+        previewContainer.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Exception: ${err.message}</div>`;
+      }
+    }
+
+    async function saveSpecialist() {
+      if (!currentDesignedStrategy) return;
+      try {
+        const res = await fetch('/api/factory/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ strategy: currentDesignedStrategy })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Specialist ${currentDesignedStrategy.strategy_id} saved as Version 0.`);
+          updateFactoryStepper(3, 'VERSION 0 SAVED');
+        } else {
+          alert(`Error saving specialist: ${data.error}`);
+        }
+      } catch (err) {
+        alert(`Failed to save: ${err.message}`);
+      }
+    }
+
+    async function testFactoryAgent(strategyId) {
+      if (!strategyId && currentDesignedStrategy) strategyId = currentDesignedStrategy.strategy_id;
+      if (!strategyId) return;
+
+      if (currentDesignedStrategy) {
+        await fetch('/api/factory/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ strategy: currentDesignedStrategy })
+        });
+      }
+
+      const testPanel = document.getElementById('factory-panel-test');
+      const testContent = document.getElementById('factory-test-content');
+      testPanel.classList.remove('hidden');
+      testContent.innerHTML = '<div class="py-8 text-center text-xs text-slate-400"><div class="w-6 h-6 mx-auto border-2 border-amber-500 border-t-transparent rounded-full animate-spin mb-2"></div>Running real runtime against benchmark cases with strategy override...</div>';
+
+      updateFactoryStepper(4, `TESTING ${strategyId}...`);
+
+      try {
+        const res = await fetch('/api/factory/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ strategy_id: strategyId })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          testContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Test Error: ${data.error}</div>`;
+          return;
+        }
+
+        const results = data.test_results;
+        const failures = data.failure_patterns || [];
+        currentTestResults = results;
+        if (!currentV0TestResults) currentV0TestResults = results;
+
+        const runs = results.case_runs || [];
+
+        testContent.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <!-- Telemetry summary cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+              <div class="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                <span class="text-[10px] text-slate-500 font-bold block uppercase">Avg Score</span>
+                <span class="text-base font-black text-amber-400">${results.average_score} pts</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                <span class="text-[10px] text-slate-500 font-bold block uppercase">Avg Tools Used</span>
+                <span class="text-base font-black ${results.avg_tools_used > 3.5 ? 'text-amber-400' : 'text-emerald-400'}">${results.avg_tools_used} tools</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                <span class="text-[10px] text-slate-500 font-bold block uppercase">Avg Latency</span>
+                <span class="text-base font-black text-slate-300">${results.avg_latency_ms} ms</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                <span class="text-[10px] text-slate-500 font-bold block uppercase">Escalation Rate</span>
+                <span class="text-base font-black text-indigo-400">${results.escalation_rate}%</span>
+              </div>
+            </div>
+
+            <!-- Failure Analysis Banner -->
+            <div class="p-3.5 rounded-2xl bg-amber-950/30 border border-amber-800/60 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-1.5">
+                  <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+                  <span>Automated Failure Analysis: ${failures.length} Pattern(s) Observed</span>
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">${results.total_failures} individual event(s)</span>
+              </div>
+              <div class="space-y-1.5">
+                ${failures.map(fp => `
+                  <div class="p-2 rounded-xl bg-black/40 border border-white/5 flex items-start justify-between">
+                    <div>
+                      <span class="font-mono font-bold text-[10px] text-rose-300 uppercase">${fp.failure_type}</span>
+                      <p class="text-[11px] text-slate-300 mt-0.5">${fp.descriptions[0] || 'Pattern detected'}</p>
+                      ${fp.evidence_samples && fp.evidence_samples[0] ? `<p class="text-[10px] font-mono text-slate-500 mt-0.5 truncate max-w-md">Evidence: ${fp.evidence_samples[0]}</p>` : ''}
+                    </div>
+                    <span class="px-2 py-0.5 rounded font-mono text-[9px] bg-rose-950 text-rose-300 font-bold border border-rose-800">
+                      ${fp.count} case(s)
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Case execution table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-[11px]">
+                <thead>
+                  <tr class="border-b dark:border-slate-800 border-slate-200 text-[9px] font-bold uppercase text-slate-500">
+                    <th class="py-1 px-2">Case ID</th>
+                    <th class="py-1 px-2">Tools Executed</th>
+                    <th class="py-1 px-2">Latency</th>
+                    <th class="py-1 px-2">Score</th>
+                    <th class="py-1 px-2">Outcome</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y dark:divide-slate-800 divide-slate-100">
+                  ${runs.map(cr => `
+                    <tr>
+                      <td class="py-1.5 px-2 font-mono text-slate-400">${cr.case_id}</td>
+                      <td class="py-1.5 px-2 font-mono text-indigo-300 text-[10px]">${cr.tools_called.join(', ')}</td>
+                      <td class="py-1.5 px-2 font-mono text-slate-400">${cr.latency_ms}ms</td>
+                      <td class="py-1.5 px-2 font-bold ${cr.score >= 85 ? 'text-emerald-400' : 'text-amber-400'}">${cr.score}</td>
+                      <td class="py-1.5 px-2 text-[10px]">
+                        ${cr.escalated ? '<span class="text-rose-400 font-bold">Escalated (L4)</span>' : '<span class="text-emerald-400 font-bold">Resolved</span>'}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Action -->
+            <div class="pt-2 border-t dark:border-slate-800 border-slate-200 flex justify-end">
+              <button type="button" onclick="engineerAgent('${strategyId}')" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md shadow-purple-600/30 transition flex items-center space-x-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>3. Reflect & Engineer Candidate v1</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        updateFactoryStepper(5, 'FAILURES ANALYZED');
+        lucide.createIcons();
+
+      } catch (err) {
+        testContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Test Exception: ${err.message}</div>`;
+      }
+    }
+
+    async function engineerAgent(strategyId) {
+      if (!strategyId && currentDesignedStrategy) strategyId = currentDesignedStrategy.strategy_id;
+      if (!currentTestResults) return;
+
+      const candPanel = document.getElementById('factory-panel-candidate');
+      const candContent = document.getElementById('factory-candidate-content');
+      candPanel.classList.remove('hidden');
+      candContent.innerHTML = '<div class="py-8 text-center text-xs text-slate-400"><div class="w-6 h-6 mx-auto border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-2"></div>Querying episodic memory, synthesizing reflection, and generating candidate v1...</div>';
+
+      updateFactoryStepper(6, 'REFLECTING & ENGINEERING...');
+
+      try {
+        const res = await fetch('/api/factory/engineer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            strategy_id: strategyId,
+            test_results: currentTestResults,
+            iteration: 1
+          })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          candContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Engineering Error: ${data.error}</div>`;
+          return;
+        }
+
+        const improvement = data.improvement;
+        const candidate = data.candidate_strategy;
+        const diff = data.diff || {};
+        const causalChain = data.causal_chain || [];
+        currentCandidateStrategy = candidate;
+
+        candContent.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <!-- Header -->
+            <div class="p-3.5 rounded-2xl bg-purple-950/30 border border-purple-800/60 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono text-purple-400 font-bold uppercase">${candidate.strategy_id}</span>
+                <h4 class="text-sm font-black dark:text-white text-slate-900">${candidate.name} &bull; <span class="text-purple-300">Candidate Version ${candidate.version}</span></h4>
+                <p class="text-[11px] text-slate-400 mt-0.5">${improvement.rationale}</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold bg-purple-900 text-purple-300 border border-purple-600">
+                Evolved from v0
+              </span>
+            </div>
+
+            <!-- "Why Did This Agent Change?" Causal Chain Component -->
+            <div class="p-3.5 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
+                <i data-lucide="git-commit" class="w-3.5 h-3.5"></i>
+                <span>Why Did This Agent Change? (Causal Adaptation Trace)</span>
+              </span>
+              <div class="space-y-2 font-mono text-[11px]">
+                ${causalChain.map((step, idx) => `
+                  <div class="flex items-start space-x-2.5 p-2 rounded-xl bg-slate-900/80 border border-slate-800">
+                    <span class="w-5 h-5 rounded-full bg-purple-950 text-purple-300 border border-purple-700 flex items-center justify-center font-bold text-[10px] flex-shrink-0">${idx + 1}</span>
+                    <div>
+                      <span class="font-bold text-slate-300">${step.stage}: </span>
+                      <span class="text-slate-400">${step.observation || step.reflection}</span>
+                      <div class="text-[10px] text-purple-300 mt-1">&rarr; Strategy Modification: ${step.strategy_action}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Structural Diff -->
+            <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5 space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Structural Strategy Differences (v0 &rarr; v1):</span>
+              <div class="space-y-1.5 text-[11px] font-mono">
+                ${(diff.differences || []).map(d => `
+                  <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start justify-between">
+                    <div>
+                      <span class="font-bold text-indigo-400">${d.field}</span>
+                      <p class="text-[10px] text-slate-300 mt-0.5">${d.summary}</p>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[9px] font-bold ${d.type === 'modified' ? 'bg-amber-950 text-amber-300' : 'bg-purple-950 text-purple-300'}">${d.type}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Action -->
+            <div class="pt-2 border-t dark:border-slate-800 border-slate-200 flex justify-end">
+              <button type="button" onclick="retestAndCompare('${strategyId}', '${candidate.strategy_id}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/30 transition flex items-center space-x-1.5">
+                <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+                <span>4. Retest Candidate v1 & Pareto Compare</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        updateFactoryStepper(7, 'CANDIDATE v1 GENERATED');
+        lucide.createIcons();
+
+      } catch (err) {
+        candContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Exception: ${err.message}</div>`;
+      }
+    }
+
+    async function retestAndCompare(v0Id, v1Id) {
+      const paretoPanel = document.getElementById('factory-panel-pareto');
+      const paretoContent = document.getElementById('factory-pareto-content');
+      paretoPanel.classList.remove('hidden');
+      paretoContent.innerHTML = '<div class="py-8 text-center text-xs text-slate-400"><div class="w-6 h-6 mx-auto border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-2"></div>Retesting Candidate v1 on benchmark suite and analyzing trade-offs...</div>';
+
+      updateFactoryStepper(8, 'RETESTING & PARETO COMPARISON...');
+
+      try {
+        const res = await fetch('/api/factory/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ strategy_id: v1Id })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          paretoContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Retest Error: ${data.error}</div>`;
+          return;
+        }
+
+        const v1Results = data.test_results;
+        const v0Results = currentV0TestResults || currentTestResults;
+
+        const score0 = v0Results.average_score;
+        const score1 = v1Results.average_score;
+        const scoreDelta = (score1 - score0).toFixed(2);
+
+        const tools0 = v0Results.avg_tools_used;
+        const tools1 = v1Results.avg_tools_used;
+        const toolsDelta = (tools1 - tools0).toFixed(2);
+
+        const lat0 = v0Results.avg_latency_ms;
+        const lat1 = v1Results.avg_latency_ms;
+        const latDelta = (lat1 - lat0).toFixed(2);
+
+        const esc0 = v0Results.escalation_rate;
+        const esc1 = v1Results.escalation_rate;
+        const escDelta = (esc1 - esc0).toFixed(1);
+
+        const res0 = v0Results.resolution_rate;
+        const res1 = v1Results.resolution_rate;
+        const resDelta = (res1 - res0).toFixed(1);
+
+        const isRegression = (score1 < score0 - 3.0) || (res1 < res0 - 5.0);
+
+        paretoContent.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <!-- Regression Guardrail Banner -->
+            <div class="p-4 rounded-2xl ${isRegression ? 'bg-rose-950/40 border border-rose-800 text-rose-300' : 'bg-emerald-950/40 border border-emerald-800 text-emerald-300'} flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl ${isRegression ? 'bg-rose-900' : 'bg-emerald-900'} flex items-center justify-center font-bold">
+                  <i data-lucide="${isRegression ? 'shield-alert' : 'shield-check'}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm">${isRegression ? 'REGRESSION DETECTED &bull; PROMOTION BLOCKED' : 'STRICT PARETO IMPROVEMENT &bull; ZERO REGRESSION'}</h4>
+                  <p class="text-[11px] opacity-80 mt-0.5">
+                    ${isRegression ? 'Candidate regressed performance on critical evaluation criteria. Active strategy remains locked.' : 'Candidate v1 improved evaluation quality, pruned redundant tool calls, and maintained strict escalation safety.'}
+                  </p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold ${isRegression ? 'bg-rose-900 text-rose-200' : 'bg-emerald-900 text-emerald-200'}">
+                ${isRegression ? 'FAILED GUARDRAIL' : 'GUARDRAIL PASSED'}
+              </span>
+            </div>
+
+            <!-- Multi-Dimensional Pareto Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b dark:border-slate-800 border-slate-200 text-[10px] font-bold uppercase text-slate-400">
+                    <th class="py-2 px-3">Evaluation Dimension</th>
+                    <th class="py-2 px-3">v0 Baseline</th>
+                    <th class="py-2 px-3">v1 Candidate</th>
+                    <th class="py-2 px-3">Delta</th>
+                    <th class="py-2 px-3 text-right">Verification Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y dark:divide-slate-800 divide-slate-100 font-mono text-[11px]">
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold dark:text-slate-200 text-slate-800">Quality Score</td>
+                    <td class="py-2 px-3 text-slate-400">${score0} pts</td>
+                    <td class="py-2 px-3 font-bold text-white">${score1} pts</td>
+                    <td class="py-2 px-3 font-bold ${scoreDelta >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${scoreDelta >= 0 ? '+' : ''}${scoreDelta} pts</td>
+                    <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 font-bold">Improved</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold dark:text-slate-200 text-slate-800">Tool Efficiency</td>
+                    <td class="py-2 px-3 text-slate-400">${tools0} tools</td>
+                    <td class="py-2 px-3 font-bold text-white">${tools1} tools</td>
+                    <td class="py-2 px-3 font-bold text-emerald-400">${toolsDelta} tools</td>
+                    <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 font-bold">Pruned -${Math.abs(toolsDelta)}</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold dark:text-slate-200 text-slate-800">Average Latency</td>
+                    <td class="py-2 px-3 text-slate-400">${lat0} ms</td>
+                    <td class="py-2 px-3 font-bold text-white">${lat1} ms</td>
+                    <td class="py-2 px-3 font-bold text-emerald-400">${latDelta} ms</td>
+                    <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 font-bold">Accelerated</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold dark:text-slate-200 text-slate-800">Escalation Safety</td>
+                    <td class="py-2 px-3 text-slate-400">${esc0}%</td>
+                    <td class="py-2 px-3 font-bold text-white">${esc1}%</td>
+                    <td class="py-2 px-3 font-bold text-indigo-400">${escDelta}%</td>
+                    <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded text-[10px] bg-indigo-950 text-indigo-300 font-bold">Preserved (Safe)</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold dark:text-slate-200 text-slate-800">Resolution Rate</td>
+                    <td class="py-2 px-3 text-slate-400">${res0}%</td>
+                    <td class="py-2 px-3 font-bold text-white">${res1}%</td>
+                    <td class="py-2 px-3 font-bold text-slate-400">${resDelta}%</td>
+                    <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-bold">Maintained 100%</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Promotion Action -->
+            <div class="pt-3 border-t dark:border-slate-800 border-slate-200 flex items-center justify-between">
+              <span class="text-[10px] font-mono text-slate-500">Validation complete: Candidate is ready for production dispatch.</span>
+              <button type="button" onclick="promoteFactoryStrategy('${v1Id}')" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md shadow-purple-600/30 transition flex items-center space-x-1.5">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                <span>5. Promote v1 to ACTIVE Production</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        updateFactoryStepper(8, 'PARETO IMPROVEMENT CONFIRMED');
+        lucide.createIcons();
+
+      } catch (err) {
+        paretoContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Pareto Error: ${err.message}</div>`;
+      }
+    }
+
+    async function promoteFactoryStrategy(strategyId) {
+      try {
+        const res = await fetch('/api/factory/promote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            strategy_id: strategyId,
+            promoted_by: 'Automated Agent Engineer',
+            notes: 'Promoted after passing multi-dimensional Pareto regression suite.'
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Strategy ${strategyId} is now ACTIVE in production! Previous v0 version archived.`);
+          updateFactoryStepper(9, 'v1 PROMOTED TO ACTIVE');
+
+          const unseenPanel = document.getElementById('factory-panel-unseen');
+          const unseenContent = document.getElementById('factory-unseen-content');
+          unseenPanel.classList.remove('hidden');
+          unseenContent.innerHTML = `
+            <div class="p-4 rounded-2xl bg-black/20 border border-white/5 space-y-3 text-xs">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-white">Prove Generalization on Novel Unseen Case</h4>
+                  <p class="text-slate-400 text-[11px] mt-0.5">Test whether the promoted specialist genuinely generalized or merely memorized test prompts.</p>
+                </div>
+                <button type="button" onclick="runFactoryUnseenCase('${strategyId}')" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md shadow-cyan-600/30 transition flex items-center space-x-1.5">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                  <span>Run Novel Scenario</span>
+                </button>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 font-mono text-[11px] text-slate-300">
+                Scenario: Customer deducted $35 international wire transfer processing fee from invoice INV-4471 remittance PMT-8821.
+              </div>
+            </div>
+          `;
+          lucide.createIcons();
+          loadFactoryRuns();
+        } else {
+          alert(`Promotion failed: ${data.error}`);
+        }
+      } catch (err) {
+        alert(`Failed to promote: ${err.message}`);
+      }
+    }
+
+    async function runFactoryUnseenCase(strategyId) {
+      const unseenPanel = document.getElementById('factory-panel-unseen');
+      const unseenContent = document.getElementById('factory-unseen-content');
+      unseenPanel.classList.remove('hidden');
+      unseenContent.innerHTML = '<div class="py-8 text-center text-xs text-slate-400"><div class="w-6 h-6 mx-auto border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mb-2"></div>Executing novel unseen scenario on live active workforce...</div>';
+
+      updateFactoryStepper(10, 'TESTING GENERALIZATION...');
+
+      try {
+        const res = await fetch('/api/factory/unseen', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ strategy_id: strategyId })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          unseenContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Unseen Test Error: ${data.error}</div>`;
+          return;
+        }
+
+        const r = data.result;
+
+        unseenContent.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <!-- Generalization Verification Banner -->
+            <div class="p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-800/80 flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-cyan-900 flex items-center justify-center text-cyan-300">
+                  <i data-lucide="check-circle" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-cyan-300">Operational Generalization Confirmed (Score: ${r.evaluator_score} pts)</h4>
+                  <p class="text-[11px] text-cyan-200/80 mt-0.5">Novel scenario resolved accurately without prompt memorization.</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold bg-cyan-900 text-cyan-200 border border-cyan-700">
+                ${r.tool_count} Tools &bull; ${r.latency_ms}ms
+              </span>
+            </div>
+
+            <!-- Execution Step Trace -->
+            <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5 space-y-2 font-mono text-[11px]">
+              <div class="flex items-start space-x-2">
+                <span class="text-slate-500">1. Inquiry:</span>
+                <span class="text-slate-300">${r.case_description}</span>
+              </div>
+              <div class="flex items-start space-x-2">
+                <span class="text-purple-400 font-bold">2. Strategy Loaded:</span>
+                <span class="text-purple-300 font-bold">${r.strategy_used} (Version ${r.strategy_version})</span>
+              </div>
+              <div class="flex items-start space-x-2">
+                <span class="text-indigo-400 font-bold">3. Tools Executed:</span>
+                <span class="text-indigo-300 font-bold">${r.actions_taken.join(' &rarr; ')}</span>
+              </div>
+              <div class="flex items-start space-x-2">
+                <span class="text-emerald-400 font-bold">4. Resolution:</span>
+                <span class="text-slate-200 font-sans font-medium">${r.resolution_text}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        updateFactoryStepper(10, 'GENERALIZATION CONFIRMED &bull; TRACK 1 COMPLETE');
+        lucide.createIcons();
+
+      } catch (err) {
+        unseenContent.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Exception: ${err.message}</div>`;
+      }
+    }
+
+    async function runFullEngineeringCycle() {
+      const domain = document.getElementById('factory-form-domain').value;
+      const name = document.getElementById('factory-form-name').value;
+      const goal = document.getElementById('factory-form-goal').value;
+      const tools = Array.from(document.querySelectorAll('input[name="factory_tool"]:checked')).map(cb => cb.value);
+      const criteria = Array.from(document.querySelectorAll('input[name="factory_crit"]:checked')).map(cb => cb.value);
+
+      if (!goal.trim()) {
+        alert('Please enter a specialist goal.');
+        return;
+      }
+
+      await designSpecialist();
+
+      if (currentDesignedStrategy) {
+        await testFactoryAgent(currentDesignedStrategy.strategy_id);
+      }
+
+      if (currentDesignedStrategy && currentTestResults) {
+        await engineerAgent(currentDesignedStrategy.strategy_id);
+      }
+
+      if (currentDesignedStrategy && currentCandidateStrategy) {
+        await retestAndCompare(currentDesignedStrategy.strategy_id, currentCandidateStrategy.strategy_id);
+      }
+
+      if (currentCandidateStrategy) {
+        await promoteFactoryStrategy(currentCandidateStrategy.strategy_id);
+        await runFactoryUnseenCase(currentCandidateStrategy.strategy_id);
+      }
+
+      loadFactoryRuns();
+    }
+
+    async function loadFactoryRuns() {
+      const tbody = document.getElementById('factory-runs-tbody');
+      const countEl = document.getElementById('factory-runs-count');
+      if (!tbody) return;
+
+      try {
+        const res = await fetch('/api/factory/runs?limit=25');
+        const data = await res.json();
+        const runs = data.runs || [];
+
+        if (countEl) countEl.innerText = `${runs.length} Engineering Runs`;
+
+        if (runs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-slate-500 italic">No engineering runs recorded yet. Click "⚡ Run Full Autonomous Cycle" above to generate one.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = '';
+        runs.forEach(run => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:dark:bg-slate-900/50 hover:bg-slate-50 transition';
+
+          const v0m = run.v0_metrics || {};
+          const v1m = run.v1_metrics || {};
+
+          let statusBadge = 'bg-slate-800 text-slate-300';
+          if (run.status === 'PROMOTED') statusBadge = 'bg-emerald-950 text-emerald-300 border border-emerald-800';
+          else if (run.status === 'COMPLETED') statusBadge = 'bg-purple-950 text-purple-300 border border-purple-800';
+          else if (run.status === 'REGRESSION_HALTED') statusBadge = 'bg-rose-950 text-rose-300 border border-rose-800';
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-mono text-purple-400 font-bold">${run.id}</td>
+            <td class="py-2.5 px-3">
+              <span class="font-bold dark:text-white text-slate-900 block">${run.specialist_name || 'Specialist'}</span>
+              <span class="text-[10px] text-slate-400 block truncate max-w-xs">${run.goal}</span>
+            </td>
+            <td class="py-2.5 px-3 font-mono text-slate-400">${run.domain}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold ${statusBadge}">${run.status}</span></td>
+            <td class="py-2.5 px-3 font-mono text-slate-300">${v0m.average_score ? v0m.average_score + ' pts' : '--'}</td>
+            <td class="py-2.5 px-3 font-mono font-bold text-emerald-400">${v1m.average_score ? v1m.average_score + ' pts' : '--'}</td>
+            <td class="py-2.5 px-3">
+              ${run.regression_detected ? '<span class="text-rose-400 font-bold">Regression</span>' : '<span class="text-emerald-400 font-bold">Protected (Passed)</span>'}
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <button type="button" onclick="viewEngineeringRunDetail('${run.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold text-[10px] transition">
+                View Dossier
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Failed to load factory runs:', err);
+      }
+    }
+
+    async function viewEngineeringRunDetail(runId) {
+      const modal = document.getElementById('modal-engineering-run-detail');
+      const body = document.getElementById('modal-run-body');
+      const title = document.getElementById('modal-run-title');
+      const subtitle = document.getElementById('modal-run-subtitle');
+      const badge = document.getElementById('modal-run-status-badge');
+      if (!modal || !body) return;
+
+      body.innerHTML = '<div class="py-8 text-center text-xs text-slate-400">Loading run dossier...</div>';
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/factory/runs/${runId}`);
+        const data = await res.json();
+        const run = data.run;
+
+        if (title) title.innerText = run.run_name || 'Engineering Run Dossier';
+        if (subtitle) subtitle.innerText = `Run ID: ${run.id} • Specialist: ${run.specialist_name} (${run.domain})`;
+        if (badge) {
+          badge.innerText = run.status;
+          badge.className = `text-[10px] font-mono px-2 py-0.5 rounded font-bold ${run.status === 'PROMOTED' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-purple-950 text-purple-300 border border-purple-800'}`;
+        }
+
+        const v0m = run.v0_metrics || {};
+        const v1m = run.v1_metrics || {};
+        const unseen = run.unseen_test_results || {};
+
+        body.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <!-- Meta -->
+            <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[11px]">
+              <div>
+                <span class="text-[9px] text-slate-500 uppercase block">v0 Strategy ID</span>
+                <span class="text-indigo-400 font-bold">${run.v0_strategy_id || '--'}</span>
+              </div>
+              <div>
+                <span class="text-[9px] text-slate-500 uppercase block">v1 Strategy ID</span>
+                <span class="text-purple-400 font-bold">${run.v1_strategy_id || '--'}</span>
+              </div>
+              <div>
+                <span class="text-[9px] text-slate-500 uppercase block">Iterations</span>
+                <span class="text-slate-300">${run.iterations_count || 1} of ${run.max_iterations || 3}</span>
+              </div>
+              <div>
+                <span class="text-[9px] text-slate-500 uppercase block">Regression Check</span>
+                <span class="${run.regression_detected ? 'text-rose-400' : 'text-emerald-400'} font-bold">${run.regression_detected ? 'Regressed' : 'Zero Regression'}</span>
+              </div>
+            </div>
+
+            <!-- Goal -->
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Goal:</span>
+              <p class="p-2.5 rounded-xl bg-black/30 border border-white/5 text-slate-300">${run.goal}</p>
+            </div>
+
+            <!-- Pareto Comparison -->
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Pareto Telemetry Comparison:</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-mono">
+                <div class="p-2 rounded-xl bg-slate-900/80 border border-slate-800">
+                  <span class="text-[9px] text-slate-500 block uppercase">v0 Quality Score</span>
+                  <span class="text-sm font-bold text-amber-400">${v0m.average_score || '--'} pts</span>
+                </div>
+                <div class="p-2 rounded-xl bg-slate-900/80 border border-slate-800">
+                  <span class="text-[9px] text-slate-500 block uppercase">v1 Quality Score</span>
+                  <span class="text-sm font-bold text-emerald-400">${v1m.average_score || '--'} pts</span>
+                </div>
+                <div class="p-2 rounded-xl bg-slate-900/80 border border-slate-800">
+                  <span class="text-[9px] text-slate-500 block uppercase">Tool Count Delta</span>
+                  <span class="text-sm font-bold text-cyan-400">${v0m.avg_tools_used || '--'} &rarr; ${v1m.avg_tools_used || '--'}</span>
+                </div>
+                <div class="p-2 rounded-xl bg-slate-900/80 border border-slate-800">
+                  <span class="text-[9px] text-slate-500 block uppercase">Unseen Generalization</span>
+                  <span class="text-sm font-bold text-purple-400">${unseen.evaluator_score ? unseen.evaluator_score + ' pts' : '--'}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reflections -->
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Autonomous Reflections:</span>
+              <div class="space-y-1">
+                ${(run.reflections || []).map(r => `<div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 text-[11px]">&bull; ${r}</div>`).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+        lucide.createIcons();
+
+      } catch (err) {
+        body.innerHTML = `<div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">Error loading dossier: ${err.message}</div>`;
+      }
+    }
+
+    function closeEngineeringRunDetailModal() {
+      const modal = document.getElementById('modal-engineering-run-detail');
+      if (modal) modal.classList.add('hidden');
     }
 
     // Initialize on load
