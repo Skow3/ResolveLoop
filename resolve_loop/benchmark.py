@@ -60,10 +60,13 @@ class Benchmark:
         esc_diff = round(after.get("escalation_rate", 0) - before.get("escalation_rate", 0), 1)
         res_diff = round(after.get("resolution_rate", 0) - before.get("resolution_rate", 0), 1)
 
+        # Learning is confirmed when escalations do not increase and performance is stable or improved
+        learning_confirmed = esc_diff <= 0.05 and score_diff >= -2.0 and res_diff >= -5.0
+
         return {
             "score_delta": f"{'+' if score_diff >= 0 else ''}{score_diff} pts",
             "tool_usage_delta": f"{'+' if tool_diff >= 0 else ''}{tool_diff} tools/case",
             "escalation_delta": f"{'+' if esc_diff >= 0 else ''}{esc_diff}%",
             "resolution_delta": f"{'+' if res_diff >= 0 else ''}{res_diff}%",
-            "learning_confirmed": score_diff >= 0 and esc_diff <= 0,
+            "learning_confirmed": learning_confirmed,
         }

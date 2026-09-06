@@ -25,6 +25,7 @@ This document records the comprehensive testing results for **ResolveLoop**, exe
 | **TC-03** | Resilience / Fallback | Unconfigured / failing voice layer fallback to pure text without crash | **PASS** |
 | **TC-04** | Security & Privacy | `.env` credentials verification; zero keys committed or tracked | **PASS** |
 | **TC-05** | Regression Test Suite | Full automated unit test suite across memory, router, tools, and voice | **PASS** (7/7) |
+| **TC-06** | 3-Page Web Application | Live validation of Landing Page, Demo Call Station, and CRM views + REST endpoints | **PASS** |
 
 ---
 
@@ -114,6 +115,19 @@ This document records the comprehensive testing results for **ResolveLoop**, exe
   * `tests/test_experience_store.py` (2 tests: roundtrip serialization, keyword similarity retrieval)
   * `tests/test_voice.py` (2 tests: unconfigured client fallback, wav audio processing)
 * **Results**: `Ran 7 tests in 2.255s. OK.`
+* **Verdict**: **PASS**
+
+### TC-06: Interactive 3-Page Web Application Verification
+* **Objective**: Verify that the Flask web application loads the 3 main views (Landing, Demo Call Station, Support CRM) and properly handles live voice and text interactions.
+* **Endpoints Tested**:
+  * `GET /` -> HTTP 200 OK (Landing Page rendered with hero, tagline, architecture cards)
+  * `GET /demo` -> HTTP 200 OK (Demo Call Station rendered with virtual phone, microphone recorder, tier badges)
+  * `GET /crm` -> HTTP 200 OK (Support CRM rendered with customer directory, experiences feed, procedural rules)
+  * `GET /api/status` -> HTTP 200 OK (`{"active_cases": 3, "runtime_model": "gpt-5-nano", "status": "online", "voice_configured": true}`)
+  * `GET /api/crm/data` -> HTTP 200 OK (Returns customers, orders, payments, KB, and memories)
+  * `POST /api/text/call` -> HTTP 200 OK (Transcribed, routed to L2, executed `lookup_order`, synthesized Lightning TTS speech)
+  * `POST /api/voice/call` -> HTTP 200 OK (Transcribed `test.wav` with Smallest AI Pulse, routed via `gpt-5-nano`, synthesized audio response)
+  * `POST /api/benchmark/run` -> HTTP 200 OK (Executed comparative 2-pass benchmark, confirmed learning improvement)
 * **Verdict**: **PASS**
 
 ---

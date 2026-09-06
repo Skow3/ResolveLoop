@@ -120,11 +120,16 @@ def main():
     parser = argparse.ArgumentParser(description="ResolveLoop Customer Support Workforce CLI")
     parser.add_argument("--voice", nargs="?", const="test.wav", help="Process audio file through Smallest AI voice loop")
     parser.add_argument("--benchmark", action="store_true", help="Run the comparative 2-pass learning benchmark")
+    parser.add_argument("--web", action="store_true", help="Start the ResolveLoop 3-Page Web Demo Server")
+    parser.add_argument("--port", type=int, default=5000, help="Web server port (default: 5000)")
     args = parser.parse_args()
 
     print_banner()
 
-    if args.voice:
+    if args.web:
+        from resolve_loop.web_app import start_server
+        start_server(port=args.port)
+    elif args.voice:
         run_voice_demo(args.voice)
     else:
         run_p0_demo()

@@ -177,19 +177,31 @@ RESOLVELOOP_USE_LLM=0        # 1 to enable OpenAI gpt-5-nano calls, 0 for heuris
 RESOLVELOOP_MODEL=gpt-5-nano # Runtime model
 ```
 
-### 3. Run ResolveLoop Demo
-Execute the full P0 learning benchmark and voice verification:
+### 3. Start the Interactive Web Application (3 Main Pages)
+Launch the web interface on `http://localhost:5000`:
+```bash
+python -m resolve_loop.main --web
+# Or directly:
+python -m resolve_loop.web_app
+```
+**Features 3 Dedicated Views**:
+1. **Landing Page (`/` or `/#landing`)**: System overview, tagline *"Every resolution makes the next one better"*, architecture visualizer, and "Start Demo" CTA.
+2. **Demo Voice Call Station (`/demo` or `/#demo`)**: Live simulated customer care call station with browser microphone recording (Smallest AI Pulse STT), real-time L1-L4 tier routing, tool execution HUD, Smallest AI Lightning TTS spoken response audio player, and text fallback.
+3. **Company Support CRM (`/crm` or `/#crm`)**: Customer profiles (Alice, Bob, Charlie), ticket ledger, `ExperienceStore` explorer (`data/experiences.json`), procedural rule inspector (`data/memories.json`), and live one-click comparative benchmark runner.
+
+### 4. Run CLI Demo & Learning Benchmark
+Execute the CLI learning benchmark and voice verification:
 ```bash
 python -m resolve_loop.main
 ```
 
-### 4. Run Voice Pipeline Directly
+### 5. Run Voice Pipeline Directly via CLI
 Transcribe and resolve an audio file:
 ```bash
 python -m resolve_loop.main --voice test.wav
 ```
 
-### 5. Run Test Suite
+### 6. Run Test Suite
 ```bash
 python -m unittest discover tests
 ```

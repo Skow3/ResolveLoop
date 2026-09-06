@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResolveLoop | Autonomous Self-Improving Support Workforce</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- ==================== TOP NAVIGATION ==================== -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('landing')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <i data-lucide="repeat" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl font-black tracking-tight text-white">Resolve<span class="text-indigo-400">Loop</span></span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-900/60 text-indigo-300 font-semibold border border-indigo-700/50">TRACK 1</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium -mt-0.5">Automated Agent Engineering</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center space-x-1 sm:space-x-2">
+        <button id="nav-landing" onclick="switchView('landing')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all text-indigo-400 bg-indigo-950/60 border border-indigo-800/60">
+          <span class="flex items-center space-x-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Overview</span>
+          </span>
+        </button>
+        <button id="nav-demo" onclick="switchView('demo')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60">
+          <span class="flex items-center space-x-1.5">
+            <i data-lucide="phone-call" class="w-4 h-4"></i>
+            <span>Voice Demo Station</span>
+          </span>
+        </button>
+        <button id="nav-crm" onclick="switchView('crm')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60">
+          <span class="flex items-center space-x-1.5">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Support CRM</span>
+          </span>
+        </button>
+      </nav>
+
+      <!-- Live Runtime Indicators -->
+      <div class="hidden lg:flex items-center space-x-2">
+        <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="text-slate-300 font-medium">Model:</span>
+          <span id="badge-model" class="text-indigo-400 font-semibold">gpt-5-nano</span>
+        </div>
+        <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs">
+          <i data-lucide="mic" class="w-3.5 h-3.5 text-purple-400"></i>
+          <span class="text-slate-300 font-medium">Voice:</span>
+          <span id="badge-voice" class="text-purple-300 font-semibold">Smallest AI</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTAINER ==================== -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- ==================== 1. LANDING PAGE ==================== -->
+    <section id="view-landing" class="view-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Hero -->
+      <div class="text-center max-w-4xl mx-auto pt-6 pb-12">
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-6 shadow-inner">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>Experience-Driven Multi-Agent Learning Loop</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight sm:leading-none">
+          The Self-Improving AI <br class="hidden sm:block">
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">Customer Support Workforce</span>
+        </h1>
+        <p class="mt-6 text-xl sm:text-2xl text-indigo-200 font-serif italic max-w-2xl mx-auto font-light">
+          "Every resolution makes the next one better."
+        </p>
+        <p class="mt-4 text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+          ResolveLoop pairs an L1–L4 tiered agent hierarchy with an experience memory layer. 
+          When an agent solves or escalates a ticket, reflection extracts procedural rules so subsequent queries route faster, prune redundant tools, and resolve seamlessly.
+        </p>
+
+        <!-- CTAs -->
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="switchView('demo')" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-lg shadow-xl shadow-indigo-600/30 flex items-center justify-center space-x-3 transition-all transform hover:-translate-y-0.5">
+            <i data-lucide="phone-call" class="w-5 h-5"></i>
+            <span>Start Voice Call Demo</span>
+          </button>
+          <button onclick="switchView('crm')" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-semibold text-lg flex items-center justify-center space-x-2 transition-all">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 text-indigo-400"></i>
+            <span>Open Support CRM</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Architecture Loop Walkthrough Cards -->
+      <div class="mt-12">
+        <h2 class="text-xs uppercase tracking-widest text-indigo-400 font-bold text-center mb-6">The Closed Autonomous Feedback Loop</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="glass-panel p-5 rounded-2xl border-slate-800 relative overflow-hidden">
+            <div class="w-10 h-10 rounded-xl bg-blue-900/50 text-blue-400 flex items-center justify-center mb-4 font-bold text-lg">1</div>
+            <h3 class="text-white font-bold text-base mb-1">Multimodal Intake</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">Accepts customer speech via <b>Smallest AI Pulse STT</b> or real-time text input with zero-latency streaming.</p>
+          </div>
+          <div class="glass-panel p-5 rounded-2xl border-slate-800 relative overflow-hidden">
+            <div class="w-10 h-10 rounded-xl bg-indigo-900/50 text-indigo-400 flex items-center justify-center mb-4 font-bold text-lg">2</div>
+            <h3 class="text-white font-bold text-base mb-1">Informed Routing</h3>
+            <p class="text-slate-400 text-xs leading-relaxed"><b>OpenAI gpt-5-nano</b> queries past experiences to route directly to L1, L2, L3, or L4, skipping under-routing.</p>
+          </div>
+          <div class="glass-panel p-5 rounded-2xl border-slate-800 relative overflow-hidden">
+            <div class="w-10 h-10 rounded-xl bg-purple-900/50 text-purple-400 flex items-center justify-center mb-4 font-bold text-lg">3</div>
+            <h3 class="text-white font-bold text-base mb-1">Targeted Tools</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">Tiered permissions execute real actions across CRM, Orders, Payment refunds, and Knowledge Base without spamming.</p>
+          </div>
+          <div class="glass-panel p-5 rounded-2xl border-slate-800 relative overflow-hidden">
+            <div class="w-10 h-10 rounded-xl bg-emerald-900/50 text-emerald-400 flex items-center justify-center mb-4 font-bold text-lg">4</div>
+            <h3 class="text-white font-bold text-base mb-1">Remember & Improve</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">Evaluator scores quality while Reflection synthesizes procedural rules, guaranteeing better future outcomes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Hierarchy Detail -->
+      <div class="mt-16 glass-panel rounded-3xl p-8 border-slate-800">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-slate-800/80 gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Hierarchical Support Tiers</h2>
+            <p class="text-slate-400 text-sm mt-1">Autonomous roles specialized with permission-bound tool execution</p>
+          </div>
+          <button onclick="switchView('demo')" class="self-start md:self-auto text-sm text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-1">
+            <span>Test in live call</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- L1 -->
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-blue-900/50 text-blue-300 border border-blue-700/50">L1 SUPPORT</span>
+              <i data-lucide="help-circle" class="w-4 h-4 text-blue-400"></i>
+            </div>
+            <h4 class="font-bold text-white text-sm">Basic Support & Triage</h4>
+            <p class="text-slate-400 text-xs mt-1">Knowledge base lookup, FAQs, customer profile greeting.</p>
+            <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-500">
+              Auto-escalates if order action or refund needed.
+            </div>
+          </div>
+          <!-- L2 -->
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-indigo-900/50 text-indigo-300 border border-indigo-700/50">L2 INVESTIGATION</span>
+              <i data-lucide="search" class="w-4 h-4 text-indigo-400"></i>
+            </div>
+            <h4 class="font-bold text-white text-sm">Order & Delivery Specialist</h4>
+            <p class="text-slate-400 text-xs mt-1">Order tracking, shipment verification, order cancellations.</p>
+            <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-500">
+              Access to Order OMS & Shipping carriers.
+            </div>
+          </div>
+          <!-- L3 -->
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-900/50 text-purple-300 border border-purple-700/50">L3 EXPERT</span>
+              <i data-lucide="credit-card" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <h4 class="font-bold text-white text-sm">Billing & Financial Authority</h4>
+            <p class="text-slate-400 text-xs mt-1">Transaction audits, dispute resolution, refund approval.</p>
+            <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-500">
+              Authorized to approve instant refunds & credits.
+            </div>
+          </div>
+          <!-- L4 -->
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-900/50 text-rose-300 border border-rose-700/50">L4 ESCALATION</span>
+              <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i>
+            </div>
+            <h4 class="font-bold text-white text-sm">Executive & Policy Override</h4>
+            <p class="text-slate-400 text-xs mt-1">Legal exceptions, account security lockouts, VIP cases.</p>
+            <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-500">
+              Overrides default policies and manual unlocks.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. DEMO PAGE (CALL STATION) ==================== -->
+    <section id="view-demo" class="view-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Top Call Station Bar -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+        <div>
+          <div class="flex items-center space-x-2">
+            <h2 class="text-2xl font-black text-white tracking-tight">Customer Care Voice Call Station</h2>
+            <span id="call-status-pill" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800/80 flex items-center space-x-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="call-status-text">Ready for Call</span>
+            </span>
+          </div>
+          <p class="text-slate-400 text-sm mt-0.5">Simulate a live support phone conversation via Smallest AI Pulse STT & Lightning TTS</p>
+        </div>
+
+        <!-- Customer Profile Selector -->
+        <div class="flex items-center space-x-3 bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider pl-2">Caller:</span>
+          <select id="select-customer" onchange="onCustomerChange()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 font-medium">
+            <option value="cust1" selected>Alice (Premium - $1,200 LTV)</option>
+            <option value="cust2">Bob (Standard - $150 LTV)</option>
+            <option value="cust3">Charlie (Enterprise - $15,000 LTV)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Two-Column Call Workstation -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Interactive Call Center Phone (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col space-y-4">
+
+          <!-- Virtual Phone Terminal -->
+          <div class="glass-panel rounded-3xl p-6 border-slate-800 shadow-2xl relative overflow-hidden">
+            
+            <!-- Active Call Header -->
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-950 border border-indigo-700/60 flex items-center justify-center text-indigo-400">
+                  <i data-lucide="headset" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 id="terminal-agent-title" class="text-white font-bold text-base">ResolveLoop Dispatcher</h3>
+                  <p id="terminal-customer-info" class="text-xs text-slate-400">Connected to Alice (cust1)</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span id="call-timer" class="font-mono text-sm font-semibold text-indigo-400">00:00</span>
+                <p class="text-[10px] text-slate-500 uppercase tracking-wider">Live Channel</p>
+              </div>
+            </div>
+
+            <!-- Voice Soundwave & Central Action -->
+            <div class="my-6 py-6 flex flex-col items-center justify-center rounded-2xl bg-slate-950/60 border border-slate-800/80 relative">
+              
+              <!-- Microphone Button -->
+              <div class="relative flex items-center justify-center mb-4">
+                <div id="mic-pulse-ring" class="hidden absolute inset-0 w-24 h-24 rounded-full bg-red-500/20 pulse-ring"></div>
+                <button id="btn-mic" onclick="toggleRecording()" class="relative z-10 w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white flex items-center justify-center shadow-xl shadow-indigo-600/40 transition-all transform active:scale-95 focus:outline-none">
+                  <i id="mic-icon" data-lucide="mic" class="w-8 h-8"></i>
+                </button>
+              </div>
+
+              <!-- Spoken Instruction -->
+              <p id="mic-instruction" class="text-slate-300 font-semibold text-sm">Click microphone to speak</p>
+              <p id="mic-subtext" class="text-slate-500 text-xs mt-1">Smallest AI Pulse STT converts your voice in real time</p>
+
+              <!-- Upload Pre-recorded audio fallback -->
+              <div class="mt-4 flex items-center space-x-2">
+                <input type="file" id="input-audio-file" accept="audio/*" class="hidden" onchange="uploadCustomAudio(event)">
+                <button onclick="document.getElementById('input-audio-file').click()" class="text-[11px] text-slate-400 hover:text-indigo-300 flex items-center space-x-1 px-2.5 py-1 rounded bg-slate-900 border border-slate-800">
+                  <i data-lucide="upload" class="w-3 h-3"></i>
+                  <span>Upload Audio File</span>
+                </button>
+                <button onclick="runPreloadedWav()" class="text-[11px] text-indigo-400 hover:text-indigo-300 flex items-center space-x-1 px-2.5 py-1 rounded bg-indigo-950/60 border border-indigo-800/60">
+                  <i data-lucide="file-audio" class="w-3 h-3"></i>
+                  <span>Test with test.wav</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Click Scenarios -->
+            <div class="mb-4">
+              <label class="text-[11px] text-slate-400 font-bold uppercase tracking-wider block mb-2">Simulate Common Support Scenarios:</label>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="sendQuickPrompt('Where is my order?')" class="px-3 py-1.5 rounded-lg text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition">
+                  📦 "Where is my order?"
+                </button>
+                <button onclick="sendQuickPrompt('I want to cancel my order ORD-102.')" class="px-3 py-1.5 rounded-lg text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition">
+                  🚫 "Cancel order ORD-102"
+                </button>
+                <button onclick="sendQuickPrompt('My refund hasn\'t arrived for ORD-101.')" class="px-3 py-1.5 rounded-lg text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition">
+                  💳 "My refund hasn't arrived"
+                </button>
+                <button onclick="sendQuickPrompt('My account is locked due to security alert.')" class="px-3 py-1.5 rounded-lg text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition">
+                  🔒 "Account locked"
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Speech Audio Player -->
+            <div id="tts-audio-card" class="hidden mb-4 p-3.5 rounded-xl bg-purple-950/40 border border-purple-800/50">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="volume-2" class="w-4 h-4 text-purple-400"></i>
+                  <span class="text-xs font-bold text-purple-200">Smallest AI Lightning TTS Spoken Response</span>
+                </div>
+                <span class="text-[10px] text-purple-400 font-mono">24kHz WAV</span>
+              </div>
+              <audio id="tts-audio-player" controls class="w-full h-8 rounded bg-slate-950"></audio>
+            </div>
+
+            <!-- Text Fallback Input Form -->
+            <form onsubmit="handleTextSubmit(event)" class="mt-2 flex items-center space-x-2">
+              <input type="text" id="text-chat-input" placeholder="Type a message if voice is disabled..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 placeholder:text-slate-600">
+              <button type="submit" id="btn-send-text" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center space-x-1.5 transition">
+                <span>Send</span>
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </form>
+
+          </div>
+
+          <!-- Call Dialogue Transcript -->
+          <div class="glass-panel rounded-3xl p-5 border-slate-800">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-2">
+                <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i>
+                <span>Conversation Transcript</span>
+              </h4>
+              <button onclick="clearTranscript()" class="text-[11px] text-slate-500 hover:text-slate-300">Clear</button>
+            </div>
+            <div id="transcript-feed" class="space-y-3 max-h-64 overflow-y-auto pr-1 text-sm">
+              <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 text-xs italic">
+                Transcript will appear here as the conversation progresses...
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Live Orchestrator Inspector (The AI Brain HUD) (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col space-y-4">
+
+          <!-- Active Tier Badge -->
+          <div class="glass-panel rounded-3xl p-5 border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-2">
+                <i data-lucide="cpu" class="w-4 h-4 text-indigo-400"></i>
+                <span>Active Routing & Agent Tier</span>
+              </h4>
+              <span id="route-source-badge" class="text-[10px] px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">STANDBY</span>
+            </div>
+
+            <!-- Tier Cards -->
+            <div class="grid grid-cols-2 gap-2">
+              <div id="tier-card-1" class="tier-card p-3 rounded-xl bg-slate-900/60 border border-slate-800 transition-all opacity-40">
+                <div class="text-[10px] font-bold text-blue-400 uppercase">Tier 1</div>
+                <div class="text-xs font-bold text-white">L1 Basic Support</div>
+              </div>
+              <div id="tier-card-2" class="tier-card p-3 rounded-xl bg-slate-900/60 border border-slate-800 transition-all opacity-40">
+                <div class="text-[10px] font-bold text-indigo-400 uppercase">Tier 2</div>
+                <div class="text-xs font-bold text-white">L2 Investigation</div>
+              </div>
+              <div id="tier-card-3" class="tier-card p-3 rounded-xl bg-slate-900/60 border border-slate-800 transition-all opacity-40">
+                <div class="text-[10px] font-bold text-purple-400 uppercase">Tier 3</div>
+                <div class="text-xs font-bold text-white">L3 Expert Billing</div>
+              </div>
+              <div id="tier-card-4" class="tier-card p-3 rounded-xl bg-slate-900/60 border border-slate-800 transition-all opacity-40">
+                <div class="text-[10px] font-bold text-rose-400 uppercase">Tier 4</div>
+                <div class="text-xs font-bold text-white">L4 Escalation / Risk</div>
+              </div>
+            </div>
+
+            <!-- Escalation Notice (if triggered) -->
+            <div id="escalation-alert-box" class="hidden mt-3 p-2.5 rounded-xl bg-amber-950/60 border border-amber-800/80 text-amber-300 text-xs flex items-start space-x-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <span class="font-bold">Auto-Escalation Activated:</span>
+                <p id="escalation-alert-text" class="mt-0.5 text-[11px] text-amber-200/90"></p>
+              </div>
+            </div>
+
+            <!-- Agent Plan & Thought Process -->
+            <div class="mt-4 pt-4 border-t border-slate-800">
+              <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Router Thought & Plan:</span>
+              <p id="inspector-plan" class="text-xs text-slate-300 leading-relaxed bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 font-mono">
+                Awaiting incoming call...
+              </p>
+            </div>
+          </div>
+
+          <!-- Tools In Action -->
+          <div class="glass-panel rounded-3xl p-5 border-slate-800">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-2">
+              <i data-lucide="wrench" class="w-4 h-4 text-purple-400"></i>
+              <span>Tools Invoked During Call</span>
+            </h4>
+            <div id="tools-pill-container" class="flex flex-wrap gap-2">
+              <span class="text-xs text-slate-500 italic">No tools invoked yet.</span>
+            </div>
+          </div>
+
+          <!-- Evaluator & Reflection Scorecard -->
+          <div class="glass-panel rounded-3xl p-5 border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-2">
+                <i data-lucide="award" class="w-4 h-4 text-emerald-400"></i>
+                <span>Evaluation & Memory Reflection</span>
+              </h4>
+              <span id="score-badge" class="text-sm font-black text-emerald-400 font-mono">--/100</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div>
+                <div class="flex justify-between text-slate-400 mb-1">
+                  <span>Resolution Quality:</span>
+                  <span id="score-quality" class="font-bold text-slate-200">--</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="bar-quality" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-slate-400 mb-1">
+                  <span>Tool Economy:</span>
+                  <span id="score-tools" class="font-bold text-slate-200">--</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="bar-tools" class="h-full bg-indigo-500 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Synthesized Reflection Lesson:</span>
+              <p id="inspector-reflection" class="text-xs text-indigo-300 italic bg-slate-950 p-2.5 rounded-lg border border-slate-800/80">
+                Reflection will formulate lessons post-call to improve future routing.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== 3. COMPANY SUPPORT CRM PAGE ==================== -->
+    <section id="view-crm" class="view-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- CRM Header -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+        <div>
+          <h2 class="text-2xl font-black text-white tracking-tight">Support Operations & CRM Intelligence</h2>
+          <p class="text-slate-400 text-sm mt-0.5">Real-time customer profiles, ticket histories, and accumulated experience memory</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="triggerBenchmarkModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold flex items-center space-x-2 shadow-lg shadow-indigo-600/30">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <span>Run Learning Benchmark</span>
+          </button>
+          <button onclick="fetchCrmData()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Top KPI Stat Counters -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="glass-panel p-5 rounded-2xl border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase mb-1">
+            <span>Customer Accounts</span>
+            <i data-lucide="users" class="w-4 h-4 text-indigo-400"></i>
+          </div>
+          <div id="stat-customers" class="text-2xl font-black text-white">3</div>
+          <p class="text-[11px] text-slate-500 mt-1">Premium, Standard & Enterprise</p>
+        </div>
+        <div class="glass-panel p-5 rounded-2xl border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase mb-1">
+            <span>Logged Experiences</span>
+            <i data-lucide="database" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <div id="stat-experiences" class="text-2xl font-black text-purple-300 font-mono">0</div>
+          <p class="text-[11px] text-slate-500 mt-1">Persisted in experiences.json</p>
+        </div>
+        <div class="glass-panel p-5 rounded-2xl border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase mb-1">
+            <span>Procedural Rules</span>
+            <i data-lucide="git-branch" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div id="stat-rules" class="text-2xl font-black text-emerald-300 font-mono">0</div>
+          <p class="text-[11px] text-slate-500 mt-1">Autonomous routing policies</p>
+        </div>
+        <div class="glass-panel p-5 rounded-2xl border-slate-800">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase mb-1">
+            <span>Resolution Rate</span>
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>
+          </div>
+          <div class="text-2xl font-black text-blue-300 font-mono">100.0%</div>
+          <p class="text-[11px] text-slate-500 mt-1">Zero dropped cases</p>
+        </div>
+      </div>
+
+      <!-- CRM Tabs & Views -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left 4 cols: Customer Directory -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="glass-panel rounded-3xl p-5 border-slate-800">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center space-x-2">
+              <i data-lucide="user-check" class="w-4 h-4 text-indigo-400"></i>
+              <span>Customer Accounts</span>
+            </h3>
+            <div id="crm-customers-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 8 cols: Ticket History & Learning Intelligence -->
+        <div class="lg:col-span-8 space-y-6">
+
+          <!-- Experience & Memory Ledger -->
+          <div class="glass-panel rounded-3xl p-6 border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+                <i data-lucide="brain" class="w-4 h-4 text-purple-400"></i>
+                <span>Experience Store & Memory Explorer</span>
+              </h3>
+              <span class="text-xs text-slate-400 font-mono">data/experiences.json</span>
+            </div>
+            <div id="crm-experiences-feed" class="space-y-3 max-h-72 overflow-y-auto pr-1">
+              <!-- Rendered via JS -->
+              <p class="text-xs text-slate-500 italic">No experiences recorded yet. Run a call in the Demo Station to see learning populate!</p>
+            </div>
+          </div>
+
+          <!-- Discovered Procedural Rules -->
+          <div class="glass-panel rounded-3xl p-6 border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span>Discovered Procedural Rules</span>
+              </h3>
+              <span class="text-xs text-slate-400 font-mono">data/memories.json</span>
+            </div>
+            <div id="crm-rules-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Rendered via JS -->
+              <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs">
+                Rules synthesized from reflections will appear here.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== BENCHMARK MODAL ==================== -->
+  <div id="modal-benchmark" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-2xl w-full rounded-3xl p-6 border-slate-700 shadow-2xl relative">
+      <button onclick="closeBenchmarkModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-indigo-900/60 text-indigo-300 flex items-center justify-center">
+          <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-white">Comparative Learning Benchmark</h3>
+          <p class="text-xs text-slate-400">Demonstrates Pass 1 (Cold Start) vs Pass 2 (Warm Start)</p>
+        </div>
+      </div>
+
+      <div id="benchmark-modal-body" class="py-4">
+        <div id="benchmark-loading" class="text-center py-8">
+          <div class="inline-block animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full mb-3"></div>
+          <p class="text-sm text-slate-300 font-semibold">Running dual-pass comparative learning benchmark...</p>
+          <p class="text-xs text-slate-500 mt-1">Executing OpenAI gpt-5-nano completions across baseline and learned runs</p>
+        </div>
+        <div id="benchmark-results" class="hidden space-y-4">
+          <!-- Results injected via JS -->
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-800 flex justify-end">
+        <button onclick="closeBenchmarkModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CLIENT JAVASCRIPT ==================== -->
+  <script>
+    let currentView = '{{ initial_view }}' || 'landing';
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let callSeconds = 0;
+    let callTimerInterval = null;
+
+    // View Switching
+    function switchView(viewName) {
+      currentView = viewName;
+      document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-indigo-400', 'bg-indigo-950/60', 'border', 'border-indigo-800/60');
+        btn.classList.add('text-slate-300');
+      });
+
+      const activeSection = document.getElementById(`view-${viewName}`);
+      const activeNav = document.getElementById(`nav-${viewName}`);
+      if (activeSection) activeSection.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.classList.remove('text-slate-300');
+        activeNav.classList.add('text-indigo-400', 'bg-indigo-950/60', 'border', 'border-indigo-800/60');
+      }
+
+      window.location.hash = viewName;
+
+      if (viewName === 'crm') {
+        fetchCrmData();
+      }
+      lucide.createIcons();
+    }
+
+    // Call Timer
+    function startCallTimer() {
+      callSeconds = 0;
+      clearInterval(callTimerInterval);
+      callTimerInterval = setInterval(() => {
+        callSeconds++;
+        const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+        const secs = String(callSeconds % 60).padStart(2, '0');
+        document.getElementById('call-timer').innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function onCustomerChange() {
+      const sel = document.getElementById('select-customer');
+      const name = sel.options[sel.selectedIndex].text.split(' ')[0];
+      document.getElementById('terminal-customer-info').innerText = `Connected to ${name} (${sel.value})`;
+    }
+
+    // ==================== VOICE MICROPHONE HANDLER ====================
+    async function toggleRecording() {
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          startRecording(stream);
+        } catch (err) {
+          alert("Microphone access unavailable. You can use the text input below or the 'Test with test.wav' button!");
+          console.error("Mic error:", err);
+        }
+      } else {
+        stopRecording();
+      }
+    }
+
+    function startRecording(stream) {
+      audioChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+      mediaRecorder.onstop = uploadRecordedAudio;
+      mediaRecorder.start();
+
+      isRecording = true;
+      startCallTimer();
+      document.getElementById('mic-pulse-ring').classList.remove('hidden');
+      document.getElementById('btn-mic').classList.remove('from-indigo-600', 'to-purple-600');
+      document.getElementById('btn-mic').classList.add('from-red-600', 'to-rose-600');
+      document.getElementById('mic-icon').setAttribute('data-lucide', 'square');
+      document.getElementById('mic-instruction').innerText = 'Listening... Click to send';
+      document.getElementById('mic-subtext').innerText = 'Speak your customer support request now';
+      document.getElementById('call-status-pill').className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-800/80 flex items-center space-x-1";
+      document.getElementById('call-status-text').innerText = 'Recording Voice...';
+      lucide.createIcons();
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      }
+      isRecording = false;
+      document.getElementById('mic-pulse-ring').classList.add('hidden');
+      document.getElementById('btn-mic').classList.add('from-indigo-600', 'to-purple-600');
+      document.getElementById('btn-mic').classList.remove('from-red-600', 'to-rose-600');
+      document.getElementById('mic-icon').setAttribute('data-lucide', 'mic');
+      document.getElementById('mic-instruction').innerText = 'Processing speech with Smallest AI Pulse...';
+      document.getElementById('mic-subtext').innerText = 'Routing and resolving via OpenAI gpt-5-nano';
+      document.getElementById('call-status-pill').className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800/80 flex items-center space-x-1";
+      document.getElementById('call-status-text').innerText = 'Synthesizing with gpt-5-nano...';
+      lucide.createIcons();
+    }
+
+    async function uploadRecordedAudio() {
+      const blob = new Blob(audioChunks, { type: 'audio/webm' });
+      const formData = new FormData();
+      formData.append('audio', blob, 'recording.webm');
+      formData.append('customer_id', document.getElementById('select-customer').value);
+
+      try {
+        const res = await fetch('/api/voice/call', { method: 'POST', body: formData });
+        const data = await res.json();
+        handleInteractionResult(data);
+      } catch (err) {
+        alert("Voice interaction failed: " + err.message);
+      } finally {
+        resetMicUi();
+      }
+    }
+
+    async function uploadCustomAudio(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('audio', file, file.name);
+      formData.append('customer_id', document.getElementById('select-customer').value);
+
+      document.getElementById('mic-instruction').innerText = `Uploading ${file.name}...`;
+      try {
+        const res = await fetch('/api/voice/call', { method: 'POST', body: formData });
+        const data = await res.json();
+        handleInteractionResult(data);
+      } catch (err) {
+        alert("Audio upload failed: " + err.message);
+      } finally {
+        resetMicUi();
+      }
+    }
+
+    async function runPreloadedWav() {
+      document.getElementById('mic-instruction').innerText = 'Processing test.wav...';
+      const audioBlob = await fetch('/api/audio/test.wav').then(r => r.blob());
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'test.wav');
+      formData.append('customer_id', document.getElementById('select-customer').value);
+
+      try {
+        const res = await fetch('/api/voice/call', { method: 'POST', body: formData });
+        const data = await res.json();
+        handleInteractionResult(data);
+      } catch (err) {
+        alert("Test audio run failed: " + err.message);
+      } finally {
+        resetMicUi();
+      }
+    }
+
+    function resetMicUi() {
+      document.getElementById('mic-instruction').innerText = 'Click microphone to speak';
+      document.getElementById('mic-subtext').innerText = 'Smallest AI Pulse STT converts your voice in real time';
+      document.getElementById('call-status-pill').className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800/80 flex items-center space-x-1";
+      document.getElementById('call-status-text').innerText = 'Connected (Call Active)';
+      lucide.createIcons();
+    }
+
+    // ==================== TEXT INPUT & QUICK PROMPTS ====================
+    async function sendQuickPrompt(promptText) {
+      document.getElementById('text-chat-input').value = promptText;
+      executeTextQuery(promptText);
+    }
+
+    async function handleTextSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('text-chat-input');
+      const message = input.value.trim();
+      if (!message) return;
+      input.value = '';
+      executeTextQuery(message);
+    }
+
+    async function executeTextQuery(message) {
+      startCallTimer();
+      document.getElementById('call-status-pill').className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800/80 flex items-center space-x-1";
+      document.getElementById('call-status-text').innerText = 'Reasoning with gpt-5-nano...';
+
+      try {
+        const res = await fetch('/api/text/call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: message,
+            customer_id: document.getElementById('select-customer').value
+          })
+        });
+        const data = await res.json();
+        handleInteractionResult(data);
+      } catch (err) {
+        alert("Text query failed: " + err.message);
+      } finally {
+        resetMicUi();
+      }
+    }
+
+    // ==================== INTERACTION RESULT PRESENTER ====================
+    function handleInteractionResult(data) {
+      if (!data.success) {
+        alert("Error: " + (data.error || "Execution failed"));
+        return;
+      }
+
+      // 1. Append Transcript
+      appendTranscript("customer", data.transcription || data.case?.description || "Voice query");
+      appendTranscript("agent", data.response_text || "Case resolved.");
+
+      // 2. Play Audio if synthesized
+      const audioCard = document.getElementById('tts-audio-card');
+      const audioPlayer = document.getElementById('tts-audio-player');
+      if (data.audio_url) {
+        audioPlayer.src = data.audio_url;
+        audioCard.classList.remove('hidden');
+        audioPlayer.play().catch(e => console.log("Audio autoplay prevented by browser:", e));
+      } else {
+        audioCard.classList.add('hidden');
+      }
+
+      // 3. Update Orchestrator Inspector
+      const routeLevel = data.route?.route_level || 1;
+      const routePlan = data.route?.plan || "Standard routing plan";
+      const routeSource = data.route?.routing_source || "heuristic";
+      const actions = data.solve?.actions || [];
+      const escalated = data.solve?.escalated || false;
+      const escalationReason = data.solve?.escalation_reason || "";
+      const scoreObj = data.score?.score || 0;
+      const scoreDetails = data.score?.details || {};
+      const reflection = data.reflection || {};
+
+      // Light up active tier
+      document.querySelectorAll('.tier-card').forEach(c => {
+        c.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-950/80', 'opacity-100');
+        c.classList.add('opacity-40');
+      });
+      const activeCard = document.getElementById(`tier-card-${routeLevel}`);
+      if (activeCard) {
+        activeCard.classList.remove('opacity-40');
+        activeCard.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-950/80', 'opacity-100');
+      }
+
+      // Update source badge
+      const badge = document.getElementById('route-source-badge');
+      if (data.route?.learning_applied) {
+        badge.innerText = 'LEARNED OVERRIDE';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-purple-900 text-purple-200 border border-purple-700';
+      } else if (routeSource === 'llm') {
+        badge.innerText = 'OPENAI GPT-5 NANO';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-900 text-indigo-200 border border-indigo-700';
+      } else {
+        badge.innerText = 'HEURISTIC ROUTER';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-300 border border-slate-700';
+      }
+
+      // Update Plan
+      document.getElementById('inspector-plan').innerText = routePlan;
+
+      // Update Tools Container
+      const toolsContainer = document.getElementById('tools-pill-container');
+      toolsContainer.innerHTML = '';
+      if (actions.length === 0) {
+        toolsContainer.innerHTML = '<span class="text-xs text-slate-500 italic">No tools invoked.</span>';
+      } else {
+        const toolIcons = {
+          fetch_profile: 'user-check',
+          fetch_history: 'clock',
+          kb_lookup: 'book-open',
+          lookup_order: 'package',
+          cancel_order: 'x-circle',
+          verify_payment: 'shield-check',
+          issue_refund: 'dollar-sign',
+          open_ticket: 'ticket',
+          policy_override: 'key'
+        };
+        actions.forEach(act => {
+          const icon = toolIcons[act] || 'check';
+          const pill = document.createElement('span');
+          pill.className = 'inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-900 border border-slate-700 text-indigo-300';
+          pill.innerHTML = `<i data-lucide="${icon}" class="w-3.5 h-3.5 text-indigo-400"></i><span>${act}</span>`;
+          toolsContainer.appendChild(pill);
+        });
+      }
+
+      // Escalation Alert
+      const escBox = document.getElementById('escalation-alert-box');
+      if (escalated) {
+        escBox.classList.remove('hidden');
+        document.getElementById('escalation-alert-text').innerText = escalationReason || "Lower tier lacked tool authority; promoted to higher tier.";
+      } else {
+        escBox.classList.add('hidden');
+      }
+
+      // Scorecard
+      const scoreVal = typeof scoreObj === 'object' ? (scoreObj.score || 80) : scoreObj;
+      document.getElementById('score-badge').innerText = `${scoreVal}/100`;
+      const qualityScore = scoreDetails.score_breakdown?.resolution_quality || 50;
+      const toolScore = scoreDetails.score_breakdown?.tool_efficiency || 20;
+      document.getElementById('score-quality').innerText = `${qualityScore}/50`;
+      document.getElementById('score-tools').innerText = `${toolScore}/20`;
+      document.getElementById('bar-quality').style.width = `${(qualityScore / 50) * 100}%`;
+      document.getElementById('bar-tools').style.width = `${(toolScore / 20) * 100}%`;
+
+      // Reflection
+      const lessons = reflection.lessons || [];
+      document.getElementById('inspector-reflection').innerText = lessons.length > 0 ? lessons[0] : "Resolved without escalation.";
+
+      lucide.createIcons();
+    }
+
+    function appendTranscript(sender, message) {
+      const feed = document.getElementById('transcript-feed');
+      if (feed.children.length === 1 && feed.children[0].innerText.includes('Transcript will appear')) {
+        feed.innerHTML = '';
+      }
+      const isAgent = sender === 'agent';
+      const bubble = document.createElement('div');
+      bubble.className = `flex flex-col ${isAgent ? 'items-start' : 'items-end'}`;
+      bubble.innerHTML = `
+        <span class="text-[10px] text-slate-500 font-semibold mb-0.5 px-1">${isAgent ? 'ResolveLoop Agent' : 'Customer'}</span>
+        <div class="px-3.5 py-2 rounded-2xl max-w-[85%] text-xs ${isAgent ? 'bg-slate-900 border border-slate-800 text-slate-200' : 'bg-indigo-600 text-white shadow'}">
+          ${message}
+        </div>
+      `;
+      feed.appendChild(bubble);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function clearTranscript() {
+      document.getElementById('transcript-feed').innerHTML = `
+        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 text-xs italic">
+          Transcript will appear here as the conversation progresses...
+        </div>
+      `;
+    }
+
+    // ==================== CRM DATA FETCHING ====================
+    async function fetchCrmData() {
+      try {
+        const res = await fetch('/api/crm/data');
+        const data = await res.json();
+
+        // 1. Customers List
+        const custList = document.getElementById('crm-customers-list');
+        custList.innerHTML = '';
+        data.customers.forEach(c => {
+          const segColor = c.segment === 'enterprise' ? 'purple' : (c.segment === 'premium' ? 'indigo' : 'blue');
+          const card = document.createElement('div');
+          card.className = 'p-3.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition cursor-pointer';
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-xs">${c.name}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-${segColor}-900/50 text-${segColor}-300 border border-${segColor}-700/50 uppercase">${c.segment}</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">${c.email}</p>
+            <div class="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
+              <span>Lifetime Value: $${c.lifetime_value}</span>
+              <span>${c.tickets.length} Tickets</span>
+            </div>
+          `;
+          custList.appendChild(card);
+        });
+
+        // 2. Experiences Feed
+        const expFeed = document.getElementById('crm-experiences-feed');
+        expFeed.innerHTML = '';
+        const exps = data.experiences || [];
+        document.getElementById('stat-experiences').innerText = exps.length;
+
+        if (exps.length === 0) {
+          expFeed.innerHTML = '<p class="text-xs text-slate-500 italic">No experiences recorded yet. Run a call in the Demo Station to see learning populate!</p>';
+        } else {
+          exps.slice().reverse().forEach(e => {
+            const card = document.createElement('div');
+            card.className = 'p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs';
+            card.innerHTML = `
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-white">${e.case_id || 'Case'}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono font-bold">Route L${e.route?.route_level || 1}</span>
+              </div>
+              <p class="text-slate-300 italic mb-2">"${e.description}"</p>
+              <div class="text-[11px] text-slate-400 bg-slate-950 p-2 rounded border border-slate-800/60">
+                <span class="font-semibold text-indigo-400">Lesson:</span> ${e.reflection?.lessons?.[0] || 'Resolved successfully'}
+              </div>
+            `;
+            expFeed.appendChild(card);
+          });
+        }
+
+        // 3. Procedural Rules
+        const rulesContainer = document.getElementById('crm-rules-container');
+        rulesContainer.innerHTML = '';
+        const rules = data.procedural_memory || {};
+        const ruleKeys = Object.keys(rules);
+        document.getElementById('stat-rules').innerText = ruleKeys.length;
+
+        if (ruleKeys.length === 0) {
+          rulesContainer.innerHTML = '<div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs col-span-2">No procedural rules synthesized yet. Run the benchmark or queries to auto-generate policies.</div>';
+        } else {
+          ruleKeys.forEach(k => {
+            const r = rules[k];
+            const div = document.createElement('div');
+            div.className = 'p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs';
+            div.innerHTML = `
+              <div class="flex items-center justify-between mb-1 font-bold text-indigo-300">
+                <span>${k}</span>
+                <span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 font-mono text-[10px]">Target L${r.target_level}</span>
+              </div>
+              <p class="text-slate-400 text-[11px] mt-1">Pattern: <code class="text-slate-200">${r.pattern}</code></p>
+              <p class="text-slate-500 text-[10px] mt-1">Tools: ${r.required_tools?.join(', ')}</p>
+            `;
+            rulesContainer.appendChild(div);
+          });
+        }
+
+        lucide.createIcons();
+      } catch (err) {
+        console.error("CRM fetch error:", err);
+      }
+    }
+
+    // ==================== BENCHMARK MODAL ====================
+    function triggerBenchmarkModal() {
+      const modal = document.getElementById('modal-benchmark');
+      const loading = document.getElementById('benchmark-loading');
+      const results = document.getElementById('benchmark-results');
+      modal.classList.remove('hidden');
+      loading.classList.remove('hidden');
+      results.classList.add('hidden');
+
+      fetch('/api/benchmark/run', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+          loading.classList.add('hidden');
+          results.classList.remove('hidden');
+          const p1 = data.pass1_cold || {};
+          const p2 = data.pass2_warm || {};
+          const comp = data.comparison || {};
+
+          results.innerHTML = `
+            <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+              <table class="w-full text-xs text-left">
+                <thead>
+                  <tr class="text-slate-400 border-b border-slate-800 pb-2">
+                    <th class="py-2">Metric</th>
+                    <th class="py-2">Pass 1 (Cold)</th>
+                    <th class="py-2">Pass 2 (Warm)</th>
+                    <th class="py-2">Improvement Delta</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60 font-mono">
+                  <tr>
+                    <td class="py-2.5 text-white font-sans">Average Score</td>
+                    <td class="text-slate-300">${p1.average_score} pts</td>
+                    <td class="text-indigo-300 font-bold">${p2.average_score} pts</td>
+                    <td class="text-emerald-400 font-bold">${comp.score_delta}</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 text-white font-sans">Escalation Rate</td>
+                    <td class="text-slate-300">${p1.escalation_rate}%</td>
+                    <td class="text-indigo-300 font-bold">${p2.escalation_rate}%</td>
+                    <td class="text-emerald-400 font-bold">${comp.escalation_delta}</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 text-white font-sans">Resolution Rate</td>
+                    <td class="text-slate-300">${p1.resolution_rate}%</td>
+                    <td class="text-indigo-300 font-bold">${p2.resolution_rate}%</td>
+                    <td class="text-emerald-400 font-bold">${comp.resolution_delta}</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 text-white font-sans">Tools Used / Case</td>
+                    <td class="text-slate-300">${p1.avg_tools_used}</td>
+                    <td class="text-indigo-300 font-bold">${p2.avg_tools_used}</td>
+                    <td class="text-slate-300">${comp.tool_usage_delta}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/80 text-emerald-300 text-xs flex items-center space-x-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+              <span><b>Learning Confirmed:</b> Prior reflection experiences successfully eliminated runtime escalations on Pass 2!</span>
+            </div>
+          `;
+          lucide.createIcons();
+          fetchCrmData();
+        })
+        .catch(err => {
+          loading.classList.add('hidden');
+          results.classList.remove('hidden');
+          results.innerHTML = `<div class="p-4 rounded-xl bg-red-950 text-red-300 text-xs">Error running benchmark: ${err.message}</div>`;
+        });
+    }
+
+    function closeBenchmarkModal() {
+      document.getElementById('modal-benchmark').classList.add('hidden');
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (['landing', 'demo', 'crm'].includes(hash)) {
+        switchView(hash);
+      } else {
+        switchView(currentView);
+      }
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

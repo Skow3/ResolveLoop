@@ -53,9 +53,42 @@ SMALLEST_API_KEY=your_smallest_ai_api_key_here
 
 ---
 
-## 4. Running the P0 Learning Loop Benchmark
+## 4. Starting the 3-Page Interactive Web Application
 
-Execute the full 2-pass comparative learning benchmark:
+Launch the full-fledged demo web app:
+
+```bash
+python -m resolve_loop.main --web
+# Or directly run:
+python -m resolve_loop.web_app
+```
+
+Navigate to `http://localhost:5000` in your web browser.
+
+### The 3 Core Pages:
+1. **Landing Page (`http://localhost:5000/`)**:
+   - Hero banner with tagline: *"Every resolution makes the next one better."*
+   - Visual architecture map of the autonomous closed learning loop.
+   - Live system status indicators (OpenAI `gpt-5-nano`, Smallest AI Voice).
+   - "Start Demo Call" and "Open Support CRM" direct call-to-action buttons.
+2. **Demo Voice Call Station (`http://localhost:5000/demo`)**:
+   - Simulated customer care call center phone console.
+   - Switch active caller persona (Alice - Premium, Bob - Standard, Charlie - Enterprise).
+   - Real-time microphone speech capture (transcribed via Smallest AI Pulse STT).
+   - Audio response player streaming Smallest AI Lightning TTS generated WAV speech.
+   - Text fallback chat input and one-click common support scenario buttons.
+   - Real-time Orchestrator HUD: lights up active tier (L1-L4), displays routing source (`gpt-5-nano` or `Experience-Learned`), live router thought plan, tools invoked, auto-escalation alerts, and evaluation scorecard.
+3. **Company Support CRM (`http://localhost:5000/crm`)**:
+   - Customer account overview with lifetime values, emails, and ticket counts.
+   - Live `ExperienceStore` explorer displaying accumulated case reflections (`data/experiences.json`).
+   - Procedural memory rule inspector (`data/memories.json`).
+   - One-click interactive "Run Learning Benchmark" modal demonstrating Pass 1 (Cold) vs Pass 2 (Warm) improvements.
+
+---
+
+## 5. Running the P0 Learning Loop Benchmark via CLI
+
+Execute the full 2-pass comparative learning benchmark from the terminal:
 
 ```bash
 python -m resolve_loop.main
