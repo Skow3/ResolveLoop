@@ -187,9 +187,9 @@
 <body class="h-full flex flex-col font-sans antialiased bg-app selection:bg-indigo-500 selection:text-white transition-colors duration-200">
 
   <!-- ==================== GLOBAL FLOATING GLASS HEADER ==================== -->
-  <header class="sticky top-0 z-50 w-full pt-3 pb-2 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto pointer-events-none transition-all duration-200">
-    <div class="pointer-events-auto h-14 px-3.5 sm:px-5 rounded-2xl flex items-center justify-between backdrop-blur-xl border transition-all duration-200
-                dark:bg-slate-900/80 bg-white/80
+  <header class="sticky top-3 z-50 w-full px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto pointer-events-none transition-all duration-200">
+    <div class="pointer-events-auto h-16 px-4 sm:px-6 rounded-2xl flex items-center justify-between backdrop-blur-xl border transition-all duration-200
+                dark:bg-slate-900/85 bg-white/85
                 dark:border-white/[0.08] border-slate-900/[0.08]
                 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_30px_-4px_rgba(0,0,0,0.45)]">
       
@@ -201,46 +201,76 @@
         <span class="text-base sm:text-lg font-bold tracking-tight text-slate-950 dark:text-white">ResolveLoop</span>
       </div>
 
-      <!-- CENTER: Navigation Destinations -->
-      <nav class="flex items-center p-1 rounded-xl dark:bg-slate-950/40 bg-slate-100/80 border dark:border-white/[0.04] border-slate-900/[0.04] space-x-0.5 overflow-x-auto no-scrollbar">
-        <button id="nav-demo" onclick="switchView('demo')" class="nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60">
-          <span class="flex items-center space-x-1.5 whitespace-nowrap">
-            <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+      <!-- CENTER: Desktop Navigation Destinations -->
+      <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+        <button id="nav-demo" onclick="switchView('demo')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05]">
+          <span class="flex items-center space-x-2 whitespace-nowrap">
+            <i data-lucide="phone-call" class="w-3.5 h-3.5 opacity-70"></i>
             <span>Customer Call</span>
           </span>
         </button>
-        <button id="nav-finance" onclick="switchView('finance')" class="nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60">
-          <span class="flex items-center space-x-1.5 whitespace-nowrap">
-            <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+        <button id="nav-finance" onclick="switchView('finance')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05]">
+          <span class="flex items-center space-x-2 whitespace-nowrap">
+            <i data-lucide="wallet" class="w-3.5 h-3.5 opacity-70"></i>
             <span>Finance Ops</span>
           </span>
         </button>
-        <button id="nav-executive" onclick="switchView('executive')" class="nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60">
-          <span class="flex items-center space-x-1.5 whitespace-nowrap">
-            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+        <button id="nav-executive" onclick="switchView('executive')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05]">
+          <span class="flex items-center space-x-2 whitespace-nowrap">
+            <i data-lucide="users" class="w-3.5 h-3.5 opacity-70"></i>
             <span>Customer Executive</span>
           </span>
         </button>
-        <button id="nav-learning" onclick="switchView('learning')" class="nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60">
-          <span class="flex items-center space-x-1.5 whitespace-nowrap">
-            <i data-lucide="brain-circuit" class="w-3.5 h-3.5"></i>
+        <button id="nav-learning" onclick="switchView('learning')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05]">
+          <span class="flex items-center space-x-2 whitespace-nowrap">
+            <i data-lucide="brain-circuit" class="w-3.5 h-3.5 opacity-70"></i>
             <span>Learning Lab</span>
           </span>
         </button>
-        <button id="nav-landing" onclick="switchView('landing')" class="nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-950 dark:text-white bg-white dark:bg-slate-800 shadow-sm border border-slate-900/[0.06] dark:border-white/[0.08]">
-          <span class="flex items-center space-x-1.5 whitespace-nowrap">
+        <button id="nav-landing" onclick="switchView('landing')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors text-slate-950 dark:text-white bg-slate-900/[0.06] dark:bg-white/[0.08]">
+          <span class="flex items-center space-x-2 whitespace-nowrap">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500"></i>
             <span>Overview</span>
           </span>
         </button>
       </nav>
 
-      <!-- RIGHT: Theme Toggle (No model/database/status indicators) -->
-      <div class="flex items-center">
-        <button id="btn-theme-toggle" onclick="toggleTheme()" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/70 border border-transparent hover:border-slate-200 dark:hover:border-slate-700/60 transition-all" title="Toggle Light/Dark Theme">
+      <!-- RIGHT: Theme Toggle & Responsive Mobile Menu Trigger -->
+      <div class="flex items-center space-x-1.5">
+        <button id="btn-theme-toggle" onclick="toggleTheme()" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.06] transition-colors" title="Toggle Light/Dark Theme">
           <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
         </button>
+        <button id="btn-mobile-menu" onclick="toggleMobileNav()" class="md:hidden p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.06] transition-colors" title="Toggle Navigation Menu">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile Collapsible Navigation Menu -->
+    <div id="mobile-nav-drawer" class="hidden md:hidden mt-2 p-2 rounded-2xl backdrop-blur-xl border transition-all duration-200
+                dark:bg-slate-900/95 bg-white/95
+                dark:border-white/[0.08] border-slate-900/[0.08]
+                shadow-xl pointer-events-auto flex flex-col space-y-1">
+      <button id="mobile-nav-demo" onclick="switchView('demo'); toggleMobileNav();" class="mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-medium flex items-center space-x-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05] transition-colors">
+        <i data-lucide="phone-call" class="w-4 h-4 opacity-70"></i>
+        <span>Customer Call</span>
+      </button>
+      <button id="mobile-nav-finance" onclick="switchView('finance'); toggleMobileNav();" class="mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-medium flex items-center space-x-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05] transition-colors">
+        <i data-lucide="wallet" class="w-4 h-4 opacity-70"></i>
+        <span>Finance Ops</span>
+      </button>
+      <button id="mobile-nav-executive" onclick="switchView('executive'); toggleMobileNav();" class="mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-medium flex items-center space-x-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05] transition-colors">
+        <i data-lucide="users" class="w-4 h-4 opacity-70"></i>
+        <span>Customer Executive</span>
+      </button>
+      <button id="mobile-nav-learning" onclick="switchView('learning'); toggleMobileNav();" class="mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-medium flex items-center space-x-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05] transition-colors">
+        <i data-lucide="brain-circuit" class="w-4 h-4 opacity-70"></i>
+        <span>Learning Lab</span>
+      </button>
+      <button id="mobile-nav-landing" onclick="switchView('landing'); toggleMobileNav();" class="mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center space-x-2.5 text-slate-900 dark:text-white bg-slate-900/[0.06] dark:bg-white/[0.08] transition-colors">
+        <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+        <span>Overview</span>
+      </button>
     </div>
   </header>
 
@@ -2576,11 +2606,19 @@
       if (target) target.classList.remove('hidden');
 
       document.querySelectorAll('.nav-btn').forEach(b => {
-        b.className = "nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60";
+        b.className = "nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05]";
       });
       const activeNav = document.getElementById(`nav-${viewName}`);
       if (activeNav) {
-        activeNav.className = "nav-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-950 dark:text-white bg-white dark:bg-slate-800 shadow-sm border border-slate-900/[0.06] dark:border-white/[0.08]";
+        activeNav.className = "nav-btn px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors text-slate-950 dark:text-white bg-slate-900/[0.06] dark:bg-white/[0.08]";
+      }
+
+      document.querySelectorAll('.mobile-nav-btn').forEach(b => {
+        b.className = "mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-medium flex items-center space-x-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/[0.04] dark:hover:bg-white/[0.05] transition-colors";
+      });
+      const activeMobileNav = document.getElementById(`mobile-nav-${viewName}`);
+      if (activeMobileNav) {
+        activeMobileNav.className = "mobile-nav-btn px-3.5 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center space-x-2.5 text-slate-950 dark:text-white bg-slate-900/[0.06] dark:bg-white/[0.08] transition-colors";
       }
 
       window.location.hash = viewName;
@@ -2595,6 +2633,14 @@
         loadLearningLab();
       }
       lucide.createIcons();
+    }
+
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      if (drawer) {
+        drawer.classList.toggle('hidden');
+        lucide.createIcons();
+      }
     }
 
     function onCustomerChange() {
