@@ -1,6 +1,10 @@
 """Core ResolveLoop engine orchestrating CASE -> ROUTE -> SOLVE -> TOOLS -> EVALUATE -> REFLECT -> REMEMBER -> IMPROVE -> NEXT CASE.
 
-Supports both Maximor AI Finance Operations (PostgreSQL-backed) and benchmark cases.
+Implements realistic Multi-Agent Warm Handoff architecture:
+- Orchestrator (Call Director) acts as the front door: answers conversational/general queries directly.
+- Warm Handoff: explains transfer, creates structured handoff context, specialist receives context before speaking,
+  acknowledges handoff, and continues case without asking customer to repeat information.
+- Multi-hop escalations: Orchestrator -> L1 -> L2 -> L3 -> L4 (Human Review).
 """
 import time
 import json
@@ -43,6 +47,18 @@ from .finance_tools import (
     search_experiences,
     record_audit_event,
 )
+from .handoff import (
+    AgentDescriptor,
+    HandoffContext,
+    CallSessionState,
+    AGENT_ORCHESTRATOR,
+    AGENT_L1_TRIAGE,
+    AGENT_L2_AR,
+    AGENT_L2_ORDER,
+    AGENT_L3_ACCOUNTING,
+    AGENT_L3_TREASURY,
+    AGENT_L4_EXECUTIVE,
+)
 from .db import db
 from .case import Case
 from .evaluator import Evaluator
@@ -54,7 +70,8 @@ FINANCE_KEYWORDS = [
     "invoice", "payment", "short payment", "short-pay", "billing", "bill", "vendor",
     "accrual", "journal entry", "reconciliation", "variance", "budget", "flux",
     "asc 606", "revenue", "contract", "terms", "2/10", "net 30", "cash", "treasury",
-    "forecast", "runway", "ebitda", "ar", "ap", "remittance", "inv-", "pmt-", "bill-"
+    "forecast", "runway", "ebitda", "ar", "ap", "remittance", "inv-", "pmt-", "bill-",
+    "who are you", "what is maximor", "what can you help"
 ]
 
 class ResolveLoopEngine:
@@ -73,6 +90,39 @@ class ResolveLoopEngine:
         except Exception:
             return []
 
+    def is_general_conversational(self, text: str) -> bool:
+        """Check if user inquiry should be answered directly by the Orchestrator without specialist transfer."""
+        t = text.lower().strip().rstrip("?.!")
+        general_patterns = [
+            "who are you",
+            "who am i speaking with",
+            "what is your name",
+            "what is maximor",
+            "what is this",
+            "what can you help me with",
+            "what can you help with",
+            "what do you do",
+            "how can you help",
+            "what services do you provide",
+            "what services",
+            "tell me about yourself",
+            "hello",
+            "hi",
+            "good morning",
+            "good afternoon",
+            "good evening",
+            "hey there",
+            "what can you do",
+        ]
+        specific_keywords = [
+            "inv-", "pmt-", "bill-", "short", "variance", "4471", "7701", "8821",
+            "order", "cancel", "refund", "accrual", "journal", "runway", "cash position",
+            "overdue", "aging", "rec-", "ctr-", "discount", "2/10", "net 30"
+        ]
+        if any(k in t for k in specific_keywords):
+            return False
+        return any(p in t for p in general_patterns)
+
     def is_finance_case(self, case: Case) -> bool:
         desc_lower = case.description.lower()
         domain = getattr(case, "domain", None) or case.metadata.get("domain", "")
@@ -82,6 +132,20 @@ class ResolveLoopEngine:
 
     def route_case(self, case: Case, similar_experiences: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         """Route case to appropriate agent level (L1-L4) with experience-informed learning."""
+        desc_lower = case.description.lower()
+
+        # Check if direct Orchestrator front-door question
+        if self.is_general_conversational(case.description):
+            return {
+                "route_level": 1,
+                "is_orchestrator": True,
+                "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+                "routing_source": "orchestrator_direct",
+                "learning_applied": False,
+                "learning_reason": None,
+                "confidence": 0.98,
+            }
+
         similar_experiences = similar_experiences or []
         learning_applied = False
         learning_reason = None
@@ -107,7 +171,6 @@ class ResolveLoopEngine:
                 db_exps = search_experiences(situation_query=case.description)
                 if db_exps:
                     top_exp = db_exps[0]
-                    # If high confidence experience exists, recommend L2 or L3 directly
                     recommended_route = 2 if "short" in case.description.lower() else 3
                     learning_applied = True
                     learning_reason = f"Retrieved prior experience '{top_exp.get('id')}': {top_exp.get('lesson')[:60]}..."
@@ -116,7 +179,6 @@ class ResolveLoopEngine:
 
         # Check procedural memory rules learned from reflections
         procedural_rules = self.mem.procedural_memory
-        desc_lower = case.description.lower()
         for rule_key, rule in procedural_rules.items():
             pattern = rule.get("pattern", "")
             if pattern == "billing_or_refund" and any(k in desc_lower for k in ["refund", "billing", "charge", "dispute", "payment"]):
@@ -178,7 +240,7 @@ class ResolveLoopEngine:
             elif any(k in desc_lower for k in ["refund", "money", "charged", "billing", "dispute"]):
                 lvl = 1 if not learning_applied and case.priority == "low" else 3
                 plan = f"Billing/financial inquiry routed to L{lvl}."
-            elif any(k in desc_lower for k in ["cancel", "tracking", "status", "shipment", "where is", "order", "invoice"]):
+            elif any(k in desc_lower for k in ["cancel", "tracking", "status", "shipment", "where is", "order"]):
                 lvl = 1 if (not learning_applied and case.priority == "low") else 2
                 plan = "Status/tracking inquiry routed to L1 Basic Support." if lvl == 1 else "Status/tracking inquiry routed to L2 Investigation."
             else:
@@ -206,13 +268,44 @@ class ResolveLoopEngine:
         route: Dict[str, Any],
         similar_experiences: Optional[List[Dict[str, Any]]] = None
     ) -> Dict[str, Any]:
-        """Execute tiered agent logic with tool invocation, auto-escalation, and resolution synthesis."""
+        """Execute tiered agent logic with tool invocation, warm handoff, and resolution synthesis."""
         route_level = route.get("route_level", 1)
         actions = []
         escalated = False
         escalation_reason = None
         desc_lower = case.description.lower()
         is_fin = self.is_finance_case(case)
+
+        # 1. Check if direct Orchestrator front-door conversation (NO handoff required)
+        if self.is_general_conversational(case.description):
+            orchestrator_reply = (
+                "You're speaking with Maximor AI. I'm a finance operations assistant. "
+                "I can help with invoices, payments, revenue, cash, reporting, and other finance operations. "
+                "What can I help you with today?"
+            )
+            record_audit_event(case.id, "ORCHESTRATOR_DIRECT_REPLY", {"response": orchestrator_reply})
+            resolution = {
+                "resolved": True,
+                "domain": "general_finance",
+                "ticket": f"MX-{uuid.uuid4().hex[:6].upper()}",
+                "response_text": orchestrator_reply,
+                "evidence": [],
+                "acting_agent": AGENT_ORCHESTRATOR.name,
+                "final_agent_level": 1,
+                "confidence": 0.98,
+            }
+            return {
+                "actions": [],
+                "acting_agent": resolution.get("acting_agent", AGENT_ORCHESTRATOR.name),
+                "handoff_required": False,
+                "orchestrator_speech": orchestrator_reply,
+                "specialist_speech": None,
+                "specialist_role": None,
+                "handoff_context": None,
+                "resolution": resolution,
+                "escalated": False,
+                "escalation_reason": None,
+            }
 
         # Record audit event
         record_audit_event(case.id, "CASE_PROCESSING_STARTED", {"route_level": route_level, "domain": getattr(case, "domain", "general_finance")})
@@ -222,6 +315,7 @@ class ResolveLoopEngine:
             cust = get_customer(case.customer_id, case_id=case.id)
             actions.append("get_customer")
             customer_name = cust.get("name", "Caller")
+            org_name = cust.get("organization_name", "Corporate Account")
 
             # Check policies
             policies = search_policy("SHORT-PAY" if "short" in desc_lower else ("REV-REC" if "revenue" in desc_lower else "AP-MATCH"), case_id=case.id)
@@ -231,87 +325,241 @@ class ResolveLoopEngine:
             invoice_data = None
             payment_data = None
             evidence_summary = []
-            resolution_notes = ""
+            specialist_resolution = ""
+            specialist_ack = ""
+            orchestrator_statement = ""
+            receiving_agent = AGENT_L2_AR
+            target_domain = "accounts_receivable"
+            issue_type = "general"
+            entities_identified = {}
+            relevant_records = []
+            relevant_policy = None
+            unresolved = []
+            rec_action = ""
 
-            # Detect short payment or invoice query
-            if any(k in desc_lower for k in ["inv-4471", "short", "4471", "invoice", "payment", "discount"]):
-                # L1 level check
-                invoice_data = get_invoice("INV-4471", case_id=case.id)
-                actions.append("get_invoice")
+            # ----------------------------------------------------
+            # Scenario A: Short payment / AR inquiry (L2)
+            # ----------------------------------------------------
+            if any(k in desc_lower for k in ["inv-4471", "short", "4471", "discount"]):
+                target_domain = "accounts_receivable"
+                issue_type = "short_payment"
+                receiving_agent = AGENT_L2_AR
+                entities_identified = {"invoice_id": "INV-4471", "payment_id": "PMT-8821", "short_amount": 250.00}
 
-                if route_level == 1:
-                    # L1 cannot resolve short-payments or approve discounts -> auto-escalate!
-                    escalated = True
-                    escalation_reason = "Short-payment deduction detected on INV-4471 ($250 difference). L1 lacks discount authority; promoted to L2."
-                    route_level = 2
-
-                if route_level >= 2:
-                    payment_data = get_payment("PMT-8821", case_id=case.id)
-                    actions.append("get_payment")
-                    history = get_fin_customer_history(case.customer_id, case_id=case.id)
-                    actions.append("get_customer_history")
-                    pol = get_policy_version("SHORT-PAY-01", "v2.1", case_id=case.id)
-                    actions.append("get_policy_version")
-
-                    evidence_summary = ["INV-4471 ($12,500)", "PMT-8821 ($12,250)", "SHORT-PAY-01 v2.1", "2/10 Net 30 Terms Verified"]
-                    resolution_notes = (
-                        f"Hello {customer_name}, we have reviewed invoice INV-4471 and remittance PMT-8821. "
-                        f"The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. "
-                        f"In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. "
-                        f"Your account balance for invoice INV-4471 is now settled in full with $0 remaining."
-                    )
-
-            elif any(k in desc_lower for k in ["bill", "aws", "hosting", "variance", "7701"]):
-                bill_data = get_bill("BILL-7701", case_id=case.id)
-                actions.append("get_bill")
-                if route_level < 3:
-                    escalated = True
-                    escalation_reason = "Budget variance >15% on BILL-7701 requires L3 Accounting Authority."
-                    route_level = 3
-                je_data = get_journal_entry("JE-2026-03", case_id=case.id)
-                actions.append("get_journal_entry")
-                evidence_summary = ["BILL-7701 ($68,400)", "Budget ($58,000)", "JE-2026-03 ($10,400 Accrual)", "Datadog Token Metrics"]
-                resolution_notes = (
-                    f"Hello {customer_name}, regarding AWS bill BILL-7701: the $10,400 (17.9%) variance over budget "
-                    f"was driven by increased GPU inference compute during enterprise customer trials. "
-                    f"Accrual journal entry JE-2026-03 has been verified and posted to software hosting expenses."
+                # Orchestrator explains handoff & promises no repetition
+                orchestrator_statement = (
+                    "I've got the details. This requires checking your invoice, payment history, "
+                    "and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. "
+                    "I'll pass along what you've already told me so you won't have to repeat yourself."
                 )
 
+                # Fetch invoice & payment records
+                invoice_data = get_invoice("INV-4471", case_id=case.id)
+                actions.append("get_invoice")
+                payment_data = get_payment("PMT-8821", case_id=case.id)
+                actions.append("get_payment")
+                history = get_fin_customer_history(case.customer_id, case_id=case.id)
+                actions.append("get_customer_history")
+                pol = get_policy_version("SHORT-PAY-01", "v2.1", case_id=case.id)
+                actions.append("get_policy_version")
+
+                relevant_records = [invoice_data, payment_data]
+                relevant_policy = pol
+                evidence_summary = ["INV-4471 ($12,500)", "PMT-8821 ($12,250)", "SHORT-PAY-01 v2.1", "2/10 Net 30 Terms Verified"]
+
+                # Receiving agent acknowledges handoff context BEFORE continuing
+                specialist_ack = (
+                    f"Hi {customer_name}, I've received the context from the previous assistant. "
+                    "I understand you're calling about the Acme payment that was short by $250. "
+                    "I'll check the invoice, payment, and account history to determine what caused the difference."
+                )
+
+                # Receiving agent performs resolution
+                specialist_resolution = (
+                    "I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. "
+                    "The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. "
+                    "In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. "
+                    "Your account balance for invoice INV-4471 is now settled in full with $0 remaining."
+                )
+                rec_action = "Approve $250 early payment discount credit and mark invoice settled"
+
+            # ----------------------------------------------------
+            # Scenario B: Simple Invoice Lookup (L1 Triage)
+            # ----------------------------------------------------
+            elif any(k in desc_lower for k in ["inv-4472", "status of invoice", "where is invoice", "overdue"]):
+                target_domain = "accounts_receivable"
+                issue_type = "invoice_status_lookup"
+                receiving_agent = AGENT_L1_TRIAGE
+                entities_identified = {"invoice_id": "INV-4472"}
+
+                orchestrator_statement = (
+                    "I've got the invoice number. Let me bring in our Finance Triage specialist "
+                    "to check the current status in NetSuite ERP."
+                )
+
+                invoice_data = get_invoice("INV-4472", case_id=case.id)
+                actions.append("get_invoice")
+                relevant_records = [invoice_data]
+                evidence_summary = ["INV-4472 ($4,800)", "NetSuite ERP", "Status: Overdue"]
+
+                specialist_ack = (
+                    f"Hi {customer_name}, I've received the invoice number from the call director. "
+                    "Let me check the current status."
+                )
+                specialist_resolution = (
+                    "I've checked our NetSuite ERP records. Invoice INV-4472 for Nexus Logistics in the amount "
+                    "of $4,800 is currently overdue (due August 19, 2026 under Net 30 terms). "
+                    "A payment link and account statement are available in your portal."
+                )
+                rec_action = "Provide invoice balance and payment link"
+
+            # ----------------------------------------------------
+            # Scenario C: AWS Hosting Budget Variance (L3 Accounting Authority)
+            # ----------------------------------------------------
+            elif any(k in desc_lower for k in ["bill", "aws", "hosting", "variance", "7701"]):
+                target_domain = "accounts_payable"
+                issue_type = "budget_variance"
+                receiving_agent = AGENT_L3_ACCOUNTING
+                route_level = max(route_level, 3)
+                entities_identified = {"bill_id": "BILL-7701", "vendor": "AWS", "variance_pct": 17.93}
+
+                orchestrator_statement = (
+                    "I've got the details. This requires analyzing vendor expense schedules, cloud compute telemetry, "
+                    "and month-end general ledger accruals, so I'm bringing in our Accounting Authority specialist. "
+                    "I'll pass along what you've told me so you won't have to repeat yourself."
+                )
+
+                bill_data = get_bill("BILL-7701", case_id=case.id)
+                actions.append("get_bill")
+                je_data = get_journal_entry("JE-2026-03", case_id=case.id)
+                actions.append("get_journal_entry")
+                relevant_records = [bill_data, je_data]
+                evidence_summary = ["BILL-7701 ($68,400)", "Budget ($58,000)", "JE-2026-03 ($10,400 Accrual)", "Datadog Token Metrics"]
+
+                specialist_ack = (
+                    f"Hi {customer_name}, I've received the context from the previous assistant regarding the 18% variance "
+                    "on AWS hosting bill BILL-7701. I'll pull the vendor bill, telemetry metrics, and general ledger journal entries."
+                )
+                specialist_resolution = (
+                    "Regarding AWS bill BILL-7701: the $10,400 (17.9%) variance over budget was driven by increased GPU "
+                    "inference compute during enterprise customer trials. Accrual journal entry JE-2026-03 has been verified "
+                    "and posted to software hosting expenses."
+                )
+                rec_action = "Validate accrual journal entry against Datadog inference telemetry"
+
+            # ----------------------------------------------------
+            # Scenario D: Treasury & Cash Position (L3 Treasury)
+            # ----------------------------------------------------
             elif any(k in desc_lower for k in ["cash", "runway", "treasury", "position"]):
+                target_domain = "cash"
+                issue_type = "treasury_liquidity"
+                receiving_agent = AGENT_L3_TREASURY
+                route_level = max(route_level, 3)
+                entities_identified = {"bank": "JPMorgan Chase Treasury", "metric": "liquidity_and_runway"}
+
+                orchestrator_statement = (
+                    "I've got the details. This requires querying our live JPMorgan Chase treasury accounts and 13-week runway forecast, "
+                    "so I'm bringing in our Treasury Operations specialist. I'll pass along what you've told me so you won't have to repeat yourself."
+                )
+
                 cash_data = get_cash_position(case_id=case.id)
                 actions.append("get_cash_position")
                 forecast_data = get_forecast("13_week", case_id=case.id)
                 actions.append("get_forecast")
+                relevant_records = [cash_data, forecast_data]
                 evidence_summary = ["JPMC Operating ($8.2M)", "Treasury MM ($10.25M)", "Runway (28.4 Months)"]
-                resolution_notes = (
-                    f"Hello {customer_name}, Maximor Finance Treasury currently holds $18.45M in total cash ($8.2M operating, "
-                    f"$10.25M treasury money market at 5.12% yield). Current runway is 28.4 months with stable 13-week cash projections."
-                )
 
+                specialist_ack = (
+                    f"Hi {customer_name}, I've received the context from the previous assistant regarding our treasury cash position. "
+                    "I'll pull our real-time balances and 13-week runway forecast."
+                )
+                specialist_resolution = (
+                    "Maximor Finance Treasury currently holds $18.45M in total cash ($8.2M operating checking, "
+                    "$10.25M treasury money market at 5.12% yield). Current runway is 28.4 months with stable 13-week cash projections."
+                )
+                rec_action = "Extract real-time treasury balances and 13-week cash runway"
+
+            # ----------------------------------------------------
+            # Scenario E: General Finance Operations inquiry
+            # ----------------------------------------------------
             else:
-                # General finance inquiry
+                target_domain = "general_finance"
+                issue_type = "records_query"
+                receiving_agent = AGENT_L1_TRIAGE
+                orchestrator_statement = (
+                    "I've got the details. This requires querying our customer ledger and ERP system in NetSuite, "
+                    "so I'm bringing in our Finance Operations specialist. I'll pass along what you've told me so you won't have to repeat yourself."
+                )
                 records = search_finance_records(case.description, case_id=case.id)
                 actions.append("search_finance_records")
                 evidence_summary = ["NetSuite ERP", "Customer Ledger"]
-                resolution_notes = (
-                    f"Hello {customer_name}, your financial inquiry has been logged in NetSuite ERP and verified against "
-                    f"our corporate ledger. All active records remain in good standing."
-                )
 
-            record_audit_event(case.id, "CASE_RESOLVED", {"escalated": escalated, "route_level": route_level, "actions": actions})
+                specialist_ack = (
+                    f"Hi {customer_name}, I've received the context from the previous assistant. "
+                    "I'll verify your financial records in NetSuite ERP."
+                )
+                specialist_resolution = (
+                    "All active financial records have been verified against our corporate ledger and remain in good standing."
+                )
+                rec_action = "Query customer ledger and report account health"
+
+            # Build Complete HandoffContext Object
+            handoff_ctx = HandoffContext(
+                handoff_id=f"hnd_{uuid.uuid4().hex[:8]}",
+                case_id=case.id,
+                customer={"id": case.customer_id, "name": customer_name, "organization": org_name},
+                organization={"id": "org_apex", "name": org_name, "industry": "B2B Enterprise Software"},
+                original_customer_request=case.description,
+                conversation_summary=f"Inquiry regarding {issue_type} in {target_domain}",
+                detected_domain=target_domain,
+                issue_type=issue_type,
+                priority=case.priority,
+                current_agent={"id": AGENT_ORCHESTRATOR.id, "name": AGENT_ORCHESTRATOR.name, "tier": AGENT_ORCHESTRATOR.tier},
+                receiving_agent={"id": receiving_agent.id, "name": receiving_agent.name, "tier": receiving_agent.tier},
+                reason_for_handoff=f"Domain {target_domain} and issue {issue_type} require {receiving_agent.role} tool authority",
+                information_already_collected=[{"key": k, "value": v} for k, v in entities_identified.items()],
+                entities_already_identified=entities_identified,
+                tools_already_used=actions,
+                relevant_finance_records=relevant_records,
+                relevant_policy=relevant_policy,
+                relevant_retrieved_experiences=[e.get("lesson") for e in (similar_experiences or []) if e.get("lesson")],
+                previous_agent_outcome="Identified caller identity and routed to specialist",
+                unresolved_questions=unresolved,
+                recommended_next_action=rec_action,
+                routing_confidence=0.94,
+                resolution_confidence=0.95,
+            )
+
+            # Record Handoff Audit Event
+            record_audit_event(case.id, "WARM_HANDOFF_INITIATED", handoff_ctx.to_dict(), actor_type="orchestrator", actor_id="call_director")
+            record_audit_event(case.id, "CASE_RESOLVED", {"escalated": escalated, "route_level": receiving_agent.tier, "actions": actions})
+
+            specialist_full_speech = f"{specialist_ack} {specialist_resolution}"
+            combined_spoken_text = f"{orchestrator_statement} ... {specialist_full_speech}"
 
             resolution = {
                 "resolved": True,
-                "domain": getattr(case, "domain", "accounts_receivable"),
+                "domain": target_domain,
                 "ticket": f"MX-{uuid.uuid4().hex[:6].upper()}",
-                "response_text": resolution_notes,
+                "response_text": combined_spoken_text,
+                "orchestrator_speech": orchestrator_statement,
+                "specialist_speech": specialist_full_speech,
+                "specialist_acknowledgement": specialist_ack,
+                "specialist_role": receiving_agent.role,
+                "acting_agent": f"L{receiving_agent.tier} {receiving_agent.role}",
                 "evidence": evidence_summary,
-                "final_agent_level": route_level,
+                "final_agent_level": receiving_agent.tier,
                 "confidence": 0.94,
             }
 
             return {
                 "actions": actions,
+                "acting_agent": resolution.get("acting_agent", receiving_agent.role),
+                "handoff_required": True,
+                "orchestrator_speech": orchestrator_statement,
+                "specialist_speech": specialist_full_speech,
+                "specialist_role": receiving_agent.role,
+                "handoff_context": handoff_ctx.to_dict(),
                 "resolution": resolution,
                 "escalated": escalated,
                 "escalation_reason": escalation_reason,
@@ -402,6 +650,7 @@ class ResolveLoopEngine:
 
             return {
                 "actions": actions,
+                "handoff_required": False,
                 "resolution": resolution,
                 "escalated": escalated,
                 "escalation_reason": escalation_reason,

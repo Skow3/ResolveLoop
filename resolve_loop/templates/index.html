@@ -255,7 +255,10 @@
                   <i data-lucide="headset" class="w-5 h-5"></i>
                 </div>
                 <div>
-                  <h3 class="dark:text-white text-slate-900 font-bold text-sm">Maximor AI Dispatcher</h3>
+                  <div class="flex items-center space-x-2">
+                    <h3 id="active-agent-heading" class="dark:text-white text-slate-900 font-bold text-sm">Connected to Orchestrator</h3>
+                    <span id="active-agent-tier-badge" class="text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-950 text-indigo-400 border border-indigo-800">Tier 0</span>
+                  </div>
                   <p id="in-call-customer-info" class="text-xs dark:text-slate-400 text-slate-500">Active Call with Alice Morgan (cust1)</p>
                 </div>
               </div>
@@ -727,6 +730,10 @@
       const customerId = document.getElementById('select-customer').value;
       updateVoiceStatus("Connecting call...", "Requesting personalized greeting from Maximor AI...");
 
+      document.getElementById('active-agent-heading').innerText = "Connected to Orchestrator (Call Director)";
+      document.getElementById('active-agent-tier-badge').innerText = "Tier 0";
+      document.getElementById('active-agent-tier-badge').className = "text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-950 text-indigo-400 border border-indigo-800";
+
       try {
         // Step 1: Request Spoken Greeting via /api/voice/greet
         const res = await fetch('/api/voice/greet', {
@@ -737,7 +744,7 @@
         const data = await res.json();
 
         // Step 2: Append Greeting to Transcript
-        appendTranscript("agent", data.greeting_text || "Thanks for calling Maximor AI. How can I help you today?");
+        appendTranscript("agent", data.greeting_text || "Thanks for calling Maximor AI. How can I help you today?", null, "Orchestrator (Call Director)");
 
         // Step 3: Play Greeting Audio, then enter Hands-Free Listening Loop
         if (data.audio_url) {
@@ -1027,9 +1034,56 @@
 
       currentCaseId = data.case_id || data.case?.id || `CASE-${Date.now()}`;
 
-      // 1. Append Transcript (User query + Agent response with Feedback Widget)
+      // 0. Update Active Agent in Workstation Header
+      const activeAgentName = data.acting_agent || (data.handoff_required ? (data.specialist_role || "Finance Specialist") : "Orchestrator (Call Director)");
+      const agentHeading = document.getElementById('active-agent-heading');
+      if (agentHeading) {
+        agentHeading.innerText = `Connected to ${activeAgentName}`;
+      }
+      const agentBadge = document.getElementById('active-agent-tier-badge');
+      if (agentBadge) {
+        const tier = data.route?.route_level ?? (data.handoff_required ? 2 : 0);
+        if (!data.handoff_required && activeAgentName.includes("Orchestrator")) {
+          agentBadge.innerText = "Tier 0";
+          agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-300 border border-slate-700";
+        } else {
+          agentBadge.innerText = `Tier ${tier}`;
+          agentBadge.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-indigo-900 text-indigo-200 border border-indigo-700";
+        }
+      }
+
+      // 1. Append Customer Query
       appendTranscript("customer", data.transcription || data.case?.description || "Voice query");
-      appendTranscript("agent", data.response_text || "Case resolved.", currentCaseId);
+
+      // Warm handoff conversational flow vs. direct orchestrator answer
+      if (data.handoff_required && data.orchestrator_speech) {
+        // Step A: Orchestrator warm handoff statement
+        appendTranscript("agent", data.orchestrator_speech, null, "Orchestrator (Call Director)");
+
+        // Step B: Warm Handoff Divider Banner
+        appendHandoffDivider(
+          "Orchestrator (Call Director)",
+          data.specialist_role || data.acting_agent || "Specialist",
+          data.handoff_context?.reason_for_handoff || "Specialist escalation",
+          data.handoff_context
+        );
+
+        // Step C: Receiving Specialist response with feedback widget
+        appendTranscript(
+          "agent",
+          data.specialist_speech || data.response_text || "Case resolved.",
+          currentCaseId,
+          data.acting_agent || data.specialist_role || "Finance Specialist"
+        );
+      } else {
+        // Direct Orchestrator answer with feedback widget
+        appendTranscript(
+          "agent",
+          data.response_text || "Case resolved.",
+          currentCaseId,
+          data.acting_agent || "Orchestrator (Call Director)"
+        );
+      }
 
       // 2. Play Audio if synthesized & auto-resume hands-free listening
       if (data.audio_url) {
@@ -1061,15 +1115,20 @@
         c.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-950/80', 'opacity-100');
         c.classList.add('opacity-40');
       });
-      const activeCard = document.getElementById(`tier-card-${routeLevel}`);
-      if (activeCard) {
-        activeCard.classList.remove('opacity-40');
-        activeCard.classList.add('ring-2', 'ring-indigo-500', 'dark:bg-indigo-950/80', 'bg-indigo-50', 'opacity-100');
+      if (data.handoff_required) {
+        const activeCard = document.getElementById(`tier-card-${routeLevel}`);
+        if (activeCard) {
+          activeCard.classList.remove('opacity-40');
+          activeCard.classList.add('ring-2', 'ring-indigo-500', 'dark:bg-indigo-950/80', 'bg-indigo-50', 'opacity-100');
+        }
       }
 
       // Update source badge
       const badge = document.getElementById('route-source-badge');
-      if (data.route?.learning_applied) {
+      if (!data.handoff_required) {
+        badge.innerText = 'ORCHESTRATOR DIRECT';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-teal-900 text-teal-200 border border-teal-700';
+      } else if (data.route?.learning_applied) {
         badge.innerText = 'LEARNED OVERRIDE';
         badge.className = 'text-[10px] px-2 py-0.5 rounded font-bold bg-purple-900 text-purple-200 border border-purple-700';
       } else if (routeSource === 'llm') {
@@ -1138,19 +1197,21 @@
     }
 
     // ==================== TRANSCRIPT & FEEDBACK COMPONENT ====================
-    function appendTranscript(sender, message, caseId = null) {
+    function appendTranscript(sender, message, caseId = null, roleTitle = null) {
       const feed = document.getElementById('transcript-feed');
-      if (feed.children.length === 1 && feed.children[0].innerText.includes('Awaiting start')) {
+      if (feed.children.length === 1 && (feed.children[0].innerText.includes('Awaiting start') || feed.children[0].innerText.includes('Awaiting conversation'))) {
         feed.innerHTML = '';
       }
       const isAgent = sender === 'agent';
       const bubble = document.createElement('div');
       bubble.className = `flex flex-col ${isAgent ? 'items-start' : 'items-end'}`;
 
+      const senderLabel = roleTitle || (isAgent ? 'Maximor AI Agent' : 'Customer');
+
       let feedbackWidgetHtml = '';
       if (isAgent && caseId) {
         feedbackWidgetHtml = `
-          <div id="fb-widget-${caseId}" class="mt-2 flex items-center space-x-2 text-[11px] text-slate-400">
+          <div id="fb-widget-${caseId}" class="mt-2.5 pt-2 border-t dark:border-slate-800/80 border-slate-200/80 flex items-center space-x-2 text-[11px] text-slate-400">
             <span>Was this answer accurate?</span>
             <button onclick="submitFeedback('${caseId}', 'positive')" class="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-emerald-400 transition" title="Thumbs Up">
               <i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i>
@@ -1163,13 +1224,56 @@
       }
 
       bubble.innerHTML = `
-        <span class="text-[10px] dark:text-slate-500 text-slate-400 font-semibold mb-0.5 px-1">${isAgent ? 'Maximor AI Agent' : 'Customer'}</span>
+        <div class="flex items-center space-x-1.5 mb-1 px-1">
+          <span class="text-[10px] dark:text-slate-400 text-slate-500 font-bold">${senderLabel}</span>
+          ${isAgent ? `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>` : ''}
+        </div>
         <div class="px-4 py-2.5 rounded-2xl max-w-[85%] text-xs leading-relaxed ${isAgent ? 'dark:bg-slate-900 bg-white border dark:border-slate-800 border-slate-200 dark:text-slate-200 text-slate-800 shadow-sm' : 'bg-indigo-600 text-white shadow'}">
           ${message}
           ${feedbackWidgetHtml}
         </div>
       `;
       feed.appendChild(bubble);
+      feed.scrollTop = feed.scrollHeight;
+      lucide.createIcons();
+    }
+
+    function appendHandoffDivider(fromAgent, toAgent, reason, handoffContext) {
+      const feed = document.getElementById('transcript-feed');
+      const divider = document.createElement('div');
+      divider.className = 'my-3 w-full flex flex-col items-center';
+
+      const ctxId = `handoff-ctx-${Date.now()}`;
+      let contextHtml = '';
+      if (handoffContext) {
+        const entities = handoffContext.entities_already_identified || handoffContext.information_already_collected || [];
+        const records = handoffContext.relevant_finance_records || [];
+        contextHtml = `
+          <div id="${ctxId}" class="hidden mt-2 p-3 w-full max-w-[90%] rounded-xl dark:bg-slate-950 bg-slate-50 border dark:border-indigo-900/60 border-indigo-200 text-[11px] space-y-1.5 font-mono text-left shadow-inner">
+            <div class="text-indigo-400 font-bold font-sans flex items-center justify-between border-b dark:border-slate-800 border-slate-300 pb-1">
+              <span class="flex items-center space-x-1"><i data-lucide="file-text" class="w-3.5 h-3.5"></i><span>Warm Handoff Dossier</span></span>
+              <span class="text-[10px] text-slate-400 font-mono">${handoffContext.case_id || ''}</span>
+            </div>
+            <div><span class="text-slate-400 font-sans">Domain:</span> <span class="dark:text-indigo-300 text-indigo-700 font-semibold">${handoffContext.detected_domain || 'Finance Operations'}</span></div>
+            <div><span class="text-slate-400 font-sans">Reason:</span> <span class="dark:text-slate-200 text-slate-800">${handoffContext.reason_for_handoff || reason || 'Tier Escalation'}</span></div>
+            <div><span class="text-slate-400 font-sans">Summary:</span> <span class="dark:text-slate-300 text-slate-600">${handoffContext.conversation_summary || handoffContext.original_customer_request || ''}</span></div>
+            ${handoffContext.relevant_policy ? `<div><span class="text-slate-400 font-sans">Policy:</span> <span class="text-amber-400 font-semibold">${handoffContext.relevant_policy}</span></div>` : ''}
+            ${entities.length > 0 ? `<div><span class="text-slate-400 font-sans">Entities Identified:</span> <span class="text-emerald-400">${JSON.stringify(entities)}</span></div>` : ''}
+            ${records.length > 0 ? `<div><span class="text-slate-400 font-sans">Finance Records:</span> <span class="text-cyan-400">${records.join(', ')}</span></div>` : ''}
+          </div>
+        `;
+      }
+
+      divider.innerHTML = `
+        <button type="button" onclick="${handoffContext ? `const el = document.getElementById('${ctxId}'); if(el) el.classList.toggle('hidden');` : ''}" class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full dark:bg-indigo-950/80 bg-indigo-50 border dark:border-indigo-800/80 border-indigo-300 text-xs shadow-sm hover:border-indigo-500 transition group cursor-pointer">
+          <i data-lucide="arrow-right-left" class="w-3.5 h-3.5 text-indigo-400 group-hover:rotate-180 transition-transform duration-300"></i>
+          <span class="font-bold text-indigo-400">Warm Transfer:</span>
+          <span class="dark:text-slate-200 text-slate-700 font-medium">${fromAgent} → ${toAgent}</span>
+          ${handoffContext ? `<span class="text-[10px] text-slate-400 font-normal underline decoration-dotted ml-1">(View Dossier)</span>` : ''}
+        </button>
+        ${contextHtml}
+      `;
+      feed.appendChild(divider);
       feed.scrollTop = feed.scrollHeight;
       lucide.createIcons();
     }

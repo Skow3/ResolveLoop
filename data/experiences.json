@@ -660,6 +660,2559 @@
       ],
       "escalated": false,
       "timestamp": 1788680864.1098764
+    },
+    {
+      "case_id": "MX-1788681021",
+      "description": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/fees/discounts, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-A2B89E",
+          "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "The case was resolved efficiently \u2014 the $250 short on PMT-8821 for INV-4471 was investigated with the appropriate data (payment, invoice, customer history, policy/version) and corrected without escalation."
+      },
+      "reflection": {
+        "case_id": "MX-1788681021",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: Adopt an L2-led, data-forward routing for payment-invoice discrepancies that auto-aggregates payment, invoice, customer history, and policy/version data and only escalates if reconciliation fails, minimizing tool-switching and speeding first-contact resolution."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788681033.4085994
+    },
+    {
+      "case_id": "VOICE-1788681121",
+      "description": "Hi, what is my balance?",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's current balance from the billing system and present it to the customer, with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788681121",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 2,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Effective Level-1 resolution with no escalation, employing appropriate tools to address the balance inquiry."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788681121",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar balance inquiries, keep Level-1 routing but default to automatic profile fetch and balance retrieval via account services, escalating only for anomalies or sensitive data to maximize first-contact resolution and tool efficiency."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788681132.1343622
+    },
+    {
+      "case_id": "VOICE-1788681321",
+      "description": "Tell me my account details.",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's account details from billing/CRM and present them, with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788681121'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "kb_lookup",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788681321",
+          "response_text": "Hello Alice, regarding your inquiry: Locked accounts require L3/L4 identity verification and manual unlock procedure.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 1,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 3,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at L1: account details were successfully retrieved via fetch_profile and kb_lookup, with an open_ticket action completed and no escalation needed."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788681321",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, kb_lookup, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For straightforward account-detail requests, favor L1 routing with the minimal effective toolset (e.g., fetch_profile and KB_lookup) and only initiate open_ticket when indicated, to maximize first-contact resolution and minimize unnecessary tool usage."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "kb_lookup",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "kb_lookup",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788681331.4822562
+    },
+    {
+      "case_id": "VOICE-1788683796",
+      "description": "Can you tell me my balance count balance?",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Route to L1 Basic Support to fetch cust1's current balance from the billing system and present it to the customer, with self-service options; escalate if access or data issues arise.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788681321'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "kb_lookup",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788683796",
+          "response_text": "Hello Alice, regarding your inquiry: Users can reset passwords via profile security tab or email link.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 3,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 3,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Efficient L1 resolution of the balance inquiry using fetch_profile and the knowledge base, with no escalation and a successful closure."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788683796",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, kb_lookup, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar straightforward balance inquiries, prefer an L1 route that leverages quick profile fetch and KB lookup, with escalation or ticketing reserved for follow-up issues or missing data."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "kb_lookup",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "kb_lookup",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788683805.8797963
+    },
+    {
+      "case_id": "VOICE-1788684140",
+      "description": "Who are you?",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Greet cust1 and provide access to the FAQ/Knowledge Base for basic questions.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "search_finance_records"
+        ],
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-CEC48E",
+          "response_text": "Hello Alice Morgan, your financial inquiry has been logged in NetSuite ERP and verified against our corporate ledger. All active records remain in good standing.",
+          "evidence": [
+            "NetSuite ERP",
+            "Customer Ledger"
+          ],
+          "final_agent_level": 1,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 3,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Effective handling: the inquiry was resolved at Level 1 without escalation, using appropriate tools to verify context and customer details, yielding a satisfactory outcome."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788684140",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: get_customer, search_policy, search_finance_records.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Strategically, for similar identity inquiries, route at Level 1 with rapid customer-context verification and lightweight policy/finance lookups, reserving deeper or more sensitive checks and escalation only when verification fails or ambiguity remains."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "search_finance_records"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "search_finance_records"
+      ],
+      "escalated": false,
+      "timestamp": 1788684151.9670632
+    },
+    {
+      "case_id": "VOICE-1788684172",
+      "description": "Stop.",
+      "route": {
+        "route_level": 1,
+        "plan": "level: 1; plan: Acknowledge the stop request and direct the customer to self-serve cancellation/opt-out options in the FAQ; collect any necessary account details for verification if needed.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L1 based on past similar case 'VOICE-1788676603'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "resolution": {
+          "resolved": true,
+          "ticket": "T-CUST1-VOICE-1788684172",
+          "response_text": "Hello Alice, your support request has been logged and assigned to our specialist team.",
+          "order_data": null,
+          "payment_data": null,
+          "refund_data": null,
+          "kb_hits": 0,
+          "final_agent_level": 1
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 90,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 20,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 2,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolution achieved at L1 with no escalation using standard workflows, though the ambiguous 'Stop.' should be followed up to confirm the customer's intent was fully satisfied."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788684172",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: fetch_profile, open_ticket.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Ensure L1 routing for ambiguous or terse inputs (like \"Stop.\") includes a quick intent-clarification step and default to minimal tooling (e.g., fetch_profile, open_ticket), escalating only if the customer\u2019s true intent remains unclear after confirmation."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [
+          "fetch_profile",
+          "open_ticket"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [
+        "fetch_profile",
+        "open_ticket"
+      ],
+      "escalated": false,
+      "timestamp": 1788684188.2468753
+    },
+    {
+      "case_id": "MX-1788684711",
+      "description": "Who are you?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-0A5423",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 75,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at Level 1 without escalation; appropriate handling for a medium-priority identity query."
+      },
+      "reflection": {
+        "case_id": "MX-1788684711",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar straightforward identity queries, route to Level 1 with lightweight tooling and prompt-driven guidance to maximize first-contact resolution and speed, reserving escalation for cases with ambiguity or verification requirements."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788684718.1993477
+    },
+    {
+      "case_id": "MX-1788684721",
+      "description": "Why was our payment PMT-8821 short by 50 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250 on invoice INV-4471. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_5989f378",
+          "from_agent": "Orchestrator (Call Director)",
+          "to_agent": "L2 Accounts Receivable Specialist",
+          "target_tier": 2,
+          "specialist_role": "Accounts Receivable Specialist",
+          "customer_id": "cust1",
+          "customer_name": "Alice Morgan",
+          "domain": "accounts_receivable",
+          "summary": "Why was our payment PMT-8821 short by 50 on invoice INV-4471?",
+          "orchestrator_statement": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250 on invoice INV-4471. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "evidence_keys": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "timestamp": 1788684725.6119606
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-C96E0C",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250 on invoice INV-4471. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250 on invoice INV-4471. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "The case was resolved successfully at Level 2 with no escalation, using data-driven checks (invoice and payment details) to address the 50 discrepancy on PMT-8821 for INV-4471."
+      },
+      "reflection": {
+        "case_id": "MX-1788684721",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: Adopt a tiered routing strategy where small discrepancies trigger an automated L1 path with core checks (invoice, payment, basic customer lookup) and larger or policy-sensitive cases escalate to L2 for policy/version validation and deeper history checks, using an integrated toolkit (get_invoice, get_payment, get_customer, get_customer_history, get_policy_version) to reduce escalation and speed resolution."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788684732.6006694
+    },
+    {
+      "case_id": "TEST-GEN-01",
+      "description": "Who are you and what can you help me with?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-99B2DD",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Maximor AI Call Director",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Effective resolution: a low-priority introductory query was resolved at Level 1 without escalation or tools, aligning with expected SOP for clarifying identity and capabilities."
+      },
+      "reflection": {
+        "case_id": "TEST-GEN-01",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For straightforward identity and capability clarifications, route to Level 1 with no tools and a brief capabilities summary, and include an explicit escalation or tool-enabled path only if the user asks for deeper functionality."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685086.8405912
+    },
+    {
+      "case_id": "TEST-GEN-01",
+      "description": "Who are you and what can you help me with?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-C27CC0",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Maximor AI Call Director",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at L1 with a concise introduction and clear outline of capabilities; no escalation or tools required, meeting the low-priority onboarding objective."
+      },
+      "reflection": {
+        "case_id": "TEST-GEN-01",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Maintain L1 routing for straightforward onboarding questions using a lightweight, pre-approved introductory template (no tools needed), and only escalate or invoke tools when the user requests deeper capabilities or the template fails to address the query."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 1,
+            "is_orchestrator": true,
+            "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+            "routing_source": "orchestrator_direct",
+            "learning_applied": false,
+            "learning_reason": null,
+            "confidence": 0.98
+          },
+          "solve": {
+            "actions": [],
+            "handoff_required": false,
+            "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+            "specialist_speech": null,
+            "specialist_role": null,
+            "handoff_context": null,
+            "resolution": {
+              "resolved": true,
+              "domain": "general_finance",
+              "ticket": "MX-99B2DD",
+              "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+              "evidence": [],
+              "acting_agent": "Maximor AI Call Director",
+              "final_agent_level": 1,
+              "confidence": 0.98
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 1,
+                "tools_used": 0,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Effective resolution: a low-priority introductory query was resolved at Level 1 without escalation or tools, aligning with expected SOP for clarifying identity and capabilities."
+            }
+          },
+          "timestamp": 1788685086.838141
+        }
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685151.5175557
+    },
+    {
+      "case_id": "VOICE-1788685171",
+      "description": "Hello from our hackathon agent",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-8A6373",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Maximor AI Call Director",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 75,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Successful resolution at Level 1 without escalation for a medium-priority hackathon inquiry."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788685171",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Adopt a Level-1, light-touch routing for simple hackathon inquiries, relying on KB-driven canned responses with no tools, and reserve escalation or more capable tooling for cases that cannot be resolved in a single interaction."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685178.1301033
+    },
+    {
+      "case_id": "TEST-FIN-01",
+      "description": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_8e94dd14",
+          "case_id": "TEST-FIN-01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "search_policy",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788685401.0422397
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-DC523E",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Excellent data-driven L2 handling; the team thoroughly used invoice, payment, and customer history tools to reach a clear, non-escalated resolution."
+      },
+      "reflection": {
+        "case_id": "TEST-FIN-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: For similar short-payment inquiries, adjust routing to trigger automatic, parallel retrieval of related data (invoice, payment, customer history, policy version) at L2 or even L1 when the discrepancy is small, to quickly identify root causes without escalations."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 2,
+            "plan": "level: 2; plan: Reconcile PMT-8821 against INV-4471 (remittance, allocation, credits/fees, terms history), identify root cause, and prepare correction or customer communication; escalate to Level 3 if unresolved.",
+            "routing_source": "llm",
+            "learning_applied": true,
+            "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+            "confidence": 0.94
+          },
+          "solve": {
+            "actions": [
+              "get_customer",
+              "search_policy",
+              "get_invoice",
+              "get_payment",
+              "get_customer_history",
+              "get_policy_version"
+            ],
+            "resolution": {
+              "resolved": true,
+              "domain": "accounts_receivable",
+              "ticket": "MX-B940C5",
+              "response_text": "Hello Alice Morgan, we have reviewed invoice INV-4471 and remittance PMT-8821. The payment of $12,250 was received on August 23, within the 10-day early discount window of the 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "evidence": [
+                "INV-4471 ($12,500)",
+                "PMT-8821 ($12,250)",
+                "SHORT-PAY-01 v2.1",
+                "2/10 Net 30 Terms Verified"
+              ],
+              "final_agent_level": 2,
+              "confidence": 0.94
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 2,
+                "tools_used": 6,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Efficient L2 handling with appropriate tool usage to verify the short payment against the invoice; no escalation and resolution achieved, though the root cause and preventive actions should be documented for future reference."
+            }
+          },
+          "timestamp": 1788680777.947305
+        }
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788685408.918344
+    },
+    {
+      "case_id": "TEST-GEN-01",
+      "description": "Who are you and what can you help me with?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-7775B8",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Clear and appropriate L1 resolution: the customer was informed about who we are and what we can help with; no escalation or tools used, and the case is resolved."
+      },
+      "reflection": {
+        "case_id": "TEST-GEN-01",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar cases, default to L1 with a prepared, concise introductory script about who we are and what we can help with, and reserve tools or higher routing only if the user asks for details beyond the standard capabilities."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 1,
+            "is_orchestrator": true,
+            "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+            "routing_source": "orchestrator_direct",
+            "learning_applied": false,
+            "learning_reason": null,
+            "confidence": 0.98
+          },
+          "solve": {
+            "actions": [],
+            "handoff_required": false,
+            "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+            "specialist_speech": null,
+            "specialist_role": null,
+            "handoff_context": null,
+            "resolution": {
+              "resolved": true,
+              "domain": "general_finance",
+              "ticket": "MX-C27CC0",
+              "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+              "evidence": [],
+              "acting_agent": "Maximor AI Call Director",
+              "final_agent_level": 1,
+              "confidence": 0.98
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 1,
+                "tools_used": 0,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Resolved at L1 with a concise introduction and clear outline of capabilities; no escalation or tools required, meeting the low-priority onboarding objective."
+            }
+          },
+          "timestamp": 1788685151.5169942
+        }
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685416.325129
+    },
+    {
+      "case_id": "TEST-SPEC-01",
+      "description": "Why was payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_f1fbb99c",
+          "case_id": "TEST-SPEC-01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was payment PMT-8821 short by $250 on invoice INV-4471?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "search_policy",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788685420.9652991
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-95EB81",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Efficiently resolved without escalation, using the relevant data (invoice, payment, customer history, and policy version) to identify and close the short-payment issue."
+      },
+      "reflection": {
+        "case_id": "TEST-SPEC-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: To improve similar cases, route to L2 with a concise, data-focused toolkit (invoice, payment, customer history, policy version) to rapidly reconcile short payments, escalating only when data gaps or inconsistencies are detected."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788685428.600342
+    },
+    {
+      "case_id": "TEST-FIN-01",
+      "description": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/fees/discounts, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_cc4c14aa",
+          "case_id": "TEST-FIN-01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "search_policy",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788685538.821333
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-CA0D5F",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "The resolution was effective: a thorough, data-driven investigation using invoice, payment, customer history, and policy context was conducted without escalation, and the payment discrepancy was resolved."
+      },
+      "reflection": {
+        "case_id": "TEST-FIN-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: Route similar payment-discrepancy cases to L2 with a consolidated, data-driven toolkit (invoice, payment, customer history, policy context) to cross-reference and resolve quickly, and escalate sooner if any critical data is missing."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 2,
+            "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+            "routing_source": "llm",
+            "learning_applied": true,
+            "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+            "confidence": 0.94
+          },
+          "solve": {
+            "actions": [
+              "get_customer",
+              "search_policy",
+              "get_invoice",
+              "get_payment",
+              "get_customer_history",
+              "get_policy_version"
+            ],
+            "acting_agent": "L2 Accounts Receivable Specialist",
+            "handoff_required": true,
+            "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+            "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+            "specialist_role": "Accounts Receivable Specialist",
+            "handoff_context": {
+              "handoff_id": "hnd_8e94dd14",
+              "case_id": "TEST-FIN-01",
+              "customer": {
+                "id": "cust1",
+                "name": "Alice Morgan",
+                "organization": "Apex Global Technologies"
+              },
+              "organization": {
+                "id": "org_apex",
+                "name": "Apex Global Technologies",
+                "industry": "B2B Enterprise Software"
+              },
+              "original_customer_request": "Why was our payment PMT-8821 short by $250 on invoice INV-4471?",
+              "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+              "detected_domain": "accounts_receivable",
+              "issue_type": "short_payment",
+              "priority": "medium",
+              "current_agent": {
+                "id": "agent_orchestrator",
+                "name": "Orchestrator (Call Director)",
+                "tier": 0
+              },
+              "receiving_agent": {
+                "id": "agent_l2_ar",
+                "name": "Accounts Receivable Specialist",
+                "tier": 2
+              },
+              "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+              "information_already_collected": [
+                {
+                  "key": "invoice_id",
+                  "value": "INV-4471"
+                },
+                {
+                  "key": "payment_id",
+                  "value": "PMT-8821"
+                },
+                {
+                  "key": "short_amount",
+                  "value": 250.0
+                }
+              ],
+              "entities_already_identified": {
+                "invoice_id": "INV-4471",
+                "payment_id": "PMT-8821",
+                "short_amount": 250.0
+              },
+              "tools_already_used": [
+                "get_customer",
+                "search_policy",
+                "get_invoice",
+                "get_payment",
+                "get_customer_history",
+                "get_policy_version"
+              ],
+              "relevant_finance_records": [
+                {
+                  "id": "rec_inv_4471",
+                  "external_id": "INV-4471",
+                  "entity_name": "Acme Corp",
+                  "amount": 12500.0,
+                  "currency": "USD",
+                  "status": "partially_paid",
+                  "transaction_date": "2026-08-15",
+                  "data": {
+                    "items": [
+                      {
+                        "qty": 1,
+                        "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                        "rate": 12500.0
+                      }
+                    ],
+                    "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                    "terms": "2/10 Net 30",
+                    "due_date": "2026-09-14",
+                    "po_number": "PO-99120",
+                    "balance_due": 250.0,
+                    "customer_id": "cust1",
+                    "paid_amount": 12250.0
+                  }
+                },
+                {
+                  "id": "rec_pmt_8821",
+                  "external_id": "PMT-8821",
+                  "entity_name": "Acme Corp",
+                  "amount": 12250.0,
+                  "currency": "USD",
+                  "status": "settled",
+                  "transaction_date": "2026-08-23",
+                  "data": {
+                    "status": "short_payment_identified",
+                    "customer_id": "cust1",
+                    "invoice_total": 12500.0,
+                    "matched_invoice": "INV-4471",
+                    "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                    "resolution_policy": "SHORT-PAY-01",
+                    "short_payment_amount": 250.0
+                  }
+                }
+              ],
+              "relevant_policy": {
+                "policy_code": "SHORT-PAY-01",
+                "name": "Short-Payment Resolution & Cash Application Policy",
+                "domain": "accounts_receivable",
+                "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+                "rules": {
+                  "required_tier": 2,
+                  "max_auto_discount": 500.0,
+                  "term_tolerance_days": 2
+                },
+                "version": "v2.1",
+                "source": "corporate_treasury",
+                "active": true
+              },
+              "relevant_retrieved_experiences": [],
+              "previous_agent_outcome": "Identified caller identity and routed to specialist",
+              "unresolved_questions": [],
+              "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+              "routing_confidence": 0.94,
+              "resolution_confidence": 0.95,
+              "timestamp": 1788685401.0422397
+            },
+            "resolution": {
+              "resolved": true,
+              "domain": "accounts_receivable",
+              "ticket": "MX-DC523E",
+              "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+              "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+              "specialist_role": "Accounts Receivable Specialist",
+              "acting_agent": "L2 Accounts Receivable Specialist",
+              "evidence": [
+                "INV-4471 ($12,500)",
+                "PMT-8821 ($12,250)",
+                "SHORT-PAY-01 v2.1",
+                "2/10 Net 30 Terms Verified"
+              ],
+              "final_agent_level": 2,
+              "confidence": 0.94
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 2,
+                "tools_used": 6,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Excellent data-driven L2 handling; the team thoroughly used invoice, payment, and customer history tools to reach a clear, non-escalated resolution."
+            }
+          },
+          "timestamp": 1788685408.917612
+        }
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788685546.3721416
+    },
+    {
+      "case_id": "TEST-GEN-01",
+      "description": "Who are you and what can you help me with?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-789797",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Adequate first-line resolution: the user received a concise introduction of the assistant and its capabilities, with no escalation needed for this low-priority introductory query."
+      },
+      "reflection": {
+        "case_id": "TEST-GEN-01",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Route similar introductory queries to Level 1 with a pre-approved, concise self-introduction of capabilities, and only invoke tools or escalate if the user explicitly requests task-specific assistance or deeper information."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 1,
+            "is_orchestrator": true,
+            "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+            "routing_source": "orchestrator_direct",
+            "learning_applied": false,
+            "learning_reason": null,
+            "confidence": 0.98
+          },
+          "solve": {
+            "actions": [],
+            "acting_agent": "Orchestrator (Call Director)",
+            "handoff_required": false,
+            "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+            "specialist_speech": null,
+            "specialist_role": null,
+            "handoff_context": null,
+            "resolution": {
+              "resolved": true,
+              "domain": "general_finance",
+              "ticket": "MX-7775B8",
+              "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+              "evidence": [],
+              "acting_agent": "Orchestrator (Call Director)",
+              "final_agent_level": 1,
+              "confidence": 0.98
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 1,
+                "tools_used": 0,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Clear and appropriate L1 resolution: the customer was informed about who we are and what we can help with; no escalation or tools used, and the case is resolved."
+            }
+          },
+          "timestamp": 1788685416.3244572
+        }
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685554.8764434
+    },
+    {
+      "case_id": "TEST-SPEC-01",
+      "description": "Why was payment PMT-8821 short by $250 on invoice INV-4471?",
+      "route": {
+        "route_level": 2,
+        "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, any credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+        "routing_source": "llm",
+        "learning_applied": true,
+        "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+        "confidence": 0.94
+      },
+      "solve": {
+        "actions": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "acting_agent": "L2 Accounts Receivable Specialist",
+        "handoff_required": true,
+        "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+        "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+        "specialist_role": "Accounts Receivable Specialist",
+        "handoff_context": {
+          "handoff_id": "hnd_2c90dc65",
+          "case_id": "TEST-SPEC-01",
+          "customer": {
+            "id": "cust1",
+            "name": "Alice Morgan",
+            "organization": "Apex Global Technologies"
+          },
+          "organization": {
+            "id": "org_apex",
+            "name": "Apex Global Technologies",
+            "industry": "B2B Enterprise Software"
+          },
+          "original_customer_request": "Why was payment PMT-8821 short by $250 on invoice INV-4471?",
+          "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+          "detected_domain": "accounts_receivable",
+          "issue_type": "short_payment",
+          "priority": "medium",
+          "current_agent": {
+            "id": "agent_orchestrator",
+            "name": "Orchestrator (Call Director)",
+            "tier": 0
+          },
+          "receiving_agent": {
+            "id": "agent_l2_ar",
+            "name": "Accounts Receivable Specialist",
+            "tier": 2
+          },
+          "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+          "information_already_collected": [
+            {
+              "key": "invoice_id",
+              "value": "INV-4471"
+            },
+            {
+              "key": "payment_id",
+              "value": "PMT-8821"
+            },
+            {
+              "key": "short_amount",
+              "value": 250.0
+            }
+          ],
+          "entities_already_identified": {
+            "invoice_id": "INV-4471",
+            "payment_id": "PMT-8821",
+            "short_amount": 250.0
+          },
+          "tools_already_used": [
+            "get_customer",
+            "search_policy",
+            "get_invoice",
+            "get_payment",
+            "get_customer_history",
+            "get_policy_version"
+          ],
+          "relevant_finance_records": [
+            {
+              "id": "rec_inv_4471",
+              "external_id": "INV-4471",
+              "entity_name": "Acme Corp",
+              "amount": 12500.0,
+              "currency": "USD",
+              "status": "partially_paid",
+              "transaction_date": "2026-08-15",
+              "data": {
+                "items": [
+                  {
+                    "qty": 1,
+                    "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                    "rate": 12500.0
+                  }
+                ],
+                "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                "terms": "2/10 Net 30",
+                "due_date": "2026-09-14",
+                "po_number": "PO-99120",
+                "balance_due": 250.0,
+                "customer_id": "cust1",
+                "paid_amount": 12250.0
+              }
+            },
+            {
+              "id": "rec_pmt_8821",
+              "external_id": "PMT-8821",
+              "entity_name": "Acme Corp",
+              "amount": 12250.0,
+              "currency": "USD",
+              "status": "settled",
+              "transaction_date": "2026-08-23",
+              "data": {
+                "status": "short_payment_identified",
+                "customer_id": "cust1",
+                "invoice_total": 12500.0,
+                "matched_invoice": "INV-4471",
+                "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                "resolution_policy": "SHORT-PAY-01",
+                "short_payment_amount": 250.0
+              }
+            }
+          ],
+          "relevant_policy": {
+            "policy_code": "SHORT-PAY-01",
+            "name": "Short-Payment Resolution & Cash Application Policy",
+            "domain": "accounts_receivable",
+            "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+            "rules": {
+              "required_tier": 2,
+              "max_auto_discount": 500.0,
+              "term_tolerance_days": 2
+            },
+            "version": "v2.1",
+            "source": "corporate_treasury",
+            "active": true
+          },
+          "relevant_retrieved_experiences": [],
+          "previous_agent_outcome": "Identified caller identity and routed to specialist",
+          "unresolved_questions": [],
+          "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+          "routing_confidence": 0.94,
+          "resolution_confidence": 0.95,
+          "timestamp": 1788685560.244559
+        },
+        "resolution": {
+          "resolved": true,
+          "domain": "accounts_receivable",
+          "ticket": "MX-164B7D",
+          "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+          "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+          "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+          "specialist_role": "Accounts Receivable Specialist",
+          "acting_agent": "L2 Accounts Receivable Specialist",
+          "evidence": [
+            "INV-4471 ($12,500)",
+            "PMT-8821 ($12,250)",
+            "SHORT-PAY-01 v2.1",
+            "2/10 Net 30 Terms Verified"
+          ],
+          "final_agent_level": 2,
+          "confidence": 0.94
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 85,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 15
+        },
+        "metrics": {
+          "route_level": 2,
+          "tools_used": 6,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "The case was resolved satisfactorily without escalation, following thorough data review (invoice, payment, customer history, and policy version) to identify and address the $250 discrepancy."
+      },
+      "reflection": {
+        "case_id": "TEST-SPEC-01",
+        "lessons": [
+          "Initial route: L2.",
+          "Tools invoked: get_customer, search_policy, get_invoice, get_payment, get_customer_history, get_policy_version.",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L2.",
+          "LLM Reflection: Route such payment-discrepancy cases to Level 2 with a focused data-collection toolkit (invoice, payment, customer history, and policy version) to quickly cross-check ledger entries against policy terms and determine if escalation is needed."
+        ],
+        "recommended_route": 2,
+        "recommended_tools": [
+          "get_customer",
+          "search_policy",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "procedural_rule": null,
+        "memory_snapshot": {
+          "route": {
+            "route_level": 2,
+            "plan": "level: 2; plan: Conduct contextual investigation to reconcile PMT-8821 with INV-4471: verify remittance details, payment allocation, credits/discounts/fees, and terms history; identify root cause (partial payment, misapplied funds, or deductions) and prepare the correction or customer communication; escalate to Level 3 if unresolved.",
+            "routing_source": "llm",
+            "learning_applied": true,
+            "learning_reason": "Adapted route to L2 based on past similar case 'TEST-FIN-01'",
+            "confidence": 0.94
+          },
+          "solve": {
+            "actions": [
+              "get_customer",
+              "search_policy",
+              "get_invoice",
+              "get_payment",
+              "get_customer_history",
+              "get_policy_version"
+            ],
+            "acting_agent": "L2 Accounts Receivable Specialist",
+            "handoff_required": true,
+            "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+            "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+            "specialist_role": "Accounts Receivable Specialist",
+            "handoff_context": {
+              "handoff_id": "hnd_f1fbb99c",
+              "case_id": "TEST-SPEC-01",
+              "customer": {
+                "id": "cust1",
+                "name": "Alice Morgan",
+                "organization": "Apex Global Technologies"
+              },
+              "organization": {
+                "id": "org_apex",
+                "name": "Apex Global Technologies",
+                "industry": "B2B Enterprise Software"
+              },
+              "original_customer_request": "Why was payment PMT-8821 short by $250 on invoice INV-4471?",
+              "conversation_summary": "Inquiry regarding short_payment in accounts_receivable",
+              "detected_domain": "accounts_receivable",
+              "issue_type": "short_payment",
+              "priority": "medium",
+              "current_agent": {
+                "id": "agent_orchestrator",
+                "name": "Orchestrator (Call Director)",
+                "tier": 0
+              },
+              "receiving_agent": {
+                "id": "agent_l2_ar",
+                "name": "Accounts Receivable Specialist",
+                "tier": 2
+              },
+              "reason_for_handoff": "Domain accounts_receivable and issue short_payment require Accounts Receivable Specialist tool authority",
+              "information_already_collected": [
+                {
+                  "key": "invoice_id",
+                  "value": "INV-4471"
+                },
+                {
+                  "key": "payment_id",
+                  "value": "PMT-8821"
+                },
+                {
+                  "key": "short_amount",
+                  "value": 250.0
+                }
+              ],
+              "entities_already_identified": {
+                "invoice_id": "INV-4471",
+                "payment_id": "PMT-8821",
+                "short_amount": 250.0
+              },
+              "tools_already_used": [
+                "get_customer",
+                "search_policy",
+                "get_invoice",
+                "get_payment",
+                "get_customer_history",
+                "get_policy_version"
+              ],
+              "relevant_finance_records": [
+                {
+                  "id": "rec_inv_4471",
+                  "external_id": "INV-4471",
+                  "entity_name": "Acme Corp",
+                  "amount": 12500.0,
+                  "currency": "USD",
+                  "status": "partially_paid",
+                  "transaction_date": "2026-08-15",
+                  "data": {
+                    "items": [
+                      {
+                        "qty": 1,
+                        "name": "Enterprise ResolveLoop Cloud Platform - Q3",
+                        "rate": 12500.0
+                      }
+                    ],
+                    "notes": "Customer claimed $250 early payment discount per 2/10 Net 30 terms.",
+                    "terms": "2/10 Net 30",
+                    "due_date": "2026-09-14",
+                    "po_number": "PO-99120",
+                    "balance_due": 250.0,
+                    "customer_id": "cust1",
+                    "paid_amount": 12250.0
+                  }
+                },
+                {
+                  "id": "rec_pmt_8821",
+                  "external_id": "PMT-8821",
+                  "entity_name": "Acme Corp",
+                  "amount": 12250.0,
+                  "currency": "USD",
+                  "status": "settled",
+                  "transaction_date": "2026-08-23",
+                  "data": {
+                    "status": "short_payment_identified",
+                    "customer_id": "cust1",
+                    "invoice_total": 12500.0,
+                    "matched_invoice": "INV-4471",
+                    "remittance_advice": "Remitted $12,250 net of $250 discount for payment within 10 days of invoice date.",
+                    "resolution_policy": "SHORT-PAY-01",
+                    "short_payment_amount": 250.0
+                  }
+                }
+              ],
+              "relevant_policy": {
+                "policy_code": "SHORT-PAY-01",
+                "name": "Short-Payment Resolution & Cash Application Policy",
+                "domain": "accounts_receivable",
+                "description": "Governs customer payment deductions. Permits automated discount credit if payment arrived within early payment discount terms (e.g. 2/10 Net 30). Disputed deductions under $500 can be resolved by L2. Deductions > $500 require customer statement verification.",
+                "rules": {
+                  "required_tier": 2,
+                  "max_auto_discount": 500.0,
+                  "term_tolerance_days": 2
+                },
+                "version": "v2.1",
+                "source": "corporate_treasury",
+                "active": true
+              },
+              "relevant_retrieved_experiences": [],
+              "previous_agent_outcome": "Identified caller identity and routed to specialist",
+              "unresolved_questions": [],
+              "recommended_next_action": "Approve $250 early payment discount credit and mark invoice settled",
+              "routing_confidence": 0.94,
+              "resolution_confidence": 0.95,
+              "timestamp": 1788685420.9652991
+            },
+            "resolution": {
+              "resolved": true,
+              "domain": "accounts_receivable",
+              "ticket": "MX-95EB81",
+              "response_text": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself. ... Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "orchestrator_speech": "I've got the details. This requires checking your invoice, payment history, and Accounts Receivable policy, so I'm going to bring in our Accounts Receivable specialist. I'll pass along what you've already told me so you won't have to repeat yourself.",
+              "specialist_speech": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference. I have reviewed invoice INV-4471 for $12,500 and remittance PMT-8821 for $12,250. The payment was received on August 23, within the 10-day early discount window under 2/10 Net 30 terms. In accordance with policy SHORT-PAY-01, the $250 prompt payment discount has been approved and applied. Your account balance for invoice INV-4471 is now settled in full with $0 remaining.",
+              "specialist_acknowledgement": "Hi Alice Morgan, I've received the context from the previous assistant. I understand you're calling about the Acme payment that was short by $250. I'll check the invoice, payment, and account history to determine what caused the difference.",
+              "specialist_role": "Accounts Receivable Specialist",
+              "acting_agent": "L2 Accounts Receivable Specialist",
+              "evidence": [
+                "INV-4471 ($12,500)",
+                "PMT-8821 ($12,250)",
+                "SHORT-PAY-01 v2.1",
+                "2/10 Net 30 Terms Verified"
+              ],
+              "final_agent_level": 2,
+              "confidence": 0.94
+            },
+            "escalated": false,
+            "escalation_reason": null
+          },
+          "score": {
+            "score": 85,
+            "details": {
+              "score_breakdown": {
+                "resolution_quality": 50,
+                "tool_efficiency": 5,
+                "first_contact_resolution": 15,
+                "route_appropriateness": 15
+              },
+              "metrics": {
+                "route_level": 2,
+                "tools_used": 6,
+                "escalated": false,
+                "resolved": true
+              },
+              "llm_verdict": "Efficiently resolved without escalation, using the relevant data (invoice, payment, customer history, and policy version) to identify and close the short-payment issue."
+            }
+          },
+          "timestamp": 1788685428.599618
+        }
+      },
+      "recommended_route": 2,
+      "recommended_tools": [
+        "get_customer",
+        "search_policy",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalated": false,
+      "timestamp": 1788685568.1183393
+    },
+    {
+      "case_id": "MX-1788685694",
+      "description": "Who are you?",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-E72217",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 75,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at Level 1 without escalation; the agent adequately clarified their identity and addressed the customer's inquiry."
+      },
+      "reflection": {
+        "case_id": "MX-1788685694",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: For similar cases, route to Level 1 using a lightweight identity-disclosure prompt with no tools, ensuring a concise, transparent agent identity statement, and only escalate or deploy additional tools if the user requests more detail or questions authenticity."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685700.419993
+    },
+    {
+      "case_id": "VOICE-1788685822",
+      "description": "Hello from our hackathon agent",
+      "route": {
+        "route_level": 1,
+        "is_orchestrator": true,
+        "plan": "General conversational query handled directly by Orchestrator / Call Director (no transfer).",
+        "routing_source": "orchestrator_direct",
+        "learning_applied": false,
+        "learning_reason": null,
+        "confidence": 0.98
+      },
+      "solve": {
+        "actions": [],
+        "acting_agent": "Orchestrator (Call Director)",
+        "handoff_required": false,
+        "orchestrator_speech": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+        "specialist_speech": null,
+        "specialist_role": null,
+        "handoff_context": null,
+        "resolution": {
+          "resolved": true,
+          "domain": "general_finance",
+          "ticket": "MX-6610BF",
+          "response_text": "You're speaking with Maximor AI. I'm a finance operations assistant. I can help with invoices, payments, revenue, cash, reporting, and other finance operations. What can I help you with today?",
+          "evidence": [],
+          "acting_agent": "Orchestrator (Call Director)",
+          "final_agent_level": 1,
+          "confidence": 0.98
+        },
+        "escalated": false,
+        "escalation_reason": null
+      },
+      "score": 75,
+      "score_details": {
+        "score_breakdown": {
+          "resolution_quality": 50,
+          "tool_efficiency": 5,
+          "first_contact_resolution": 15,
+          "route_appropriateness": 5
+        },
+        "metrics": {
+          "route_level": 1,
+          "tools_used": 0,
+          "escalated": false,
+          "resolved": true
+        },
+        "llm_verdict": "Resolved at Level 1 without escalation, indicating satisfactory handling of a medium-priority case."
+      },
+      "reflection": {
+        "case_id": "VOICE-1788685822",
+        "lessons": [
+          "Initial route: L1.",
+          "Tools invoked: .",
+          "Escalation status: No.",
+          "Successful resolution confirmed at L1.",
+          "LLM Reflection: Adopt a default Level-1 routing with a lean toolkit (quick knowledge-base search and templated responses) for similar medium-priority hackathon inquiries, reserving escalation only when knowledge gaps or sentiment signals indicate missing context."
+        ],
+        "recommended_route": 1,
+        "recommended_tools": [],
+        "procedural_rule": null,
+        "memory_snapshot": {}
+      },
+      "recommended_route": 1,
+      "recommended_tools": [],
+      "escalated": false,
+      "timestamp": 1788685828.918494
     }
   ]
 }

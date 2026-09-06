@@ -35,7 +35,7 @@ class MemoryStore:
             "procedural_memory": self.procedural_memory,
             "failure_memory": self.failure_memory,
         }
-        self.path.write_text(json.dumps(data, indent=2))
+        self.path.write_text(json.dumps(data, indent=2, default=str))
 
     # Customer memory
     def get_customer_history(self, customer_id: str) -> Dict[str, Any]:
