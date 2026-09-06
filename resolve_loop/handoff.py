@@ -114,6 +114,8 @@ class HandoffContext:
     recommended_next_action: str = ""
     routing_confidence: float = 0.94
     resolution_confidence: float = 0.95
+    strategy_id: str = "strat_l1_triage_v0"
+    strategy_version: str = "v0"
     timestamp: float = field(default_factory=time.time)
 
     def to_dict(self) -> Dict[str, Any]:

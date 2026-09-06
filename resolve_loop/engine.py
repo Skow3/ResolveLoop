@@ -47,7 +47,10 @@ from .finance_tools import (
     search_experiences,
     record_audit_event,
     record_case_interaction,
+    set_case_execution_context,
+    clear_case_execution_context,
 )
+from .strategy import strategy_registry, AgentStrategy
 from .handoff import (
     AgentDescriptor,
     HandoffContext,
@@ -340,9 +343,14 @@ class ResolveLoopEngine:
                 "final_agent_level": 1,
                 "confidence": 0.98,
             }
+            strat = strategy_registry.get_active_strategy(agent_id=AGENT_ORCHESTRATOR.id, tier=1, domain="general_finance")
             return {
                 "actions": [],
                 "acting_agent": resolution.get("acting_agent", AGENT_ORCHESTRATOR.name),
+                "acting_agent_id": AGENT_ORCHESTRATOR.id,
+                "strategy_id": strat.strategy_id,
+                "strategy_version": strat.version,
+                "agent_run_id": f"run_{uuid.uuid4().hex[:12]}",
                 "handoff_required": False,
                 "orchestrator_speech": orchestrator_reply,
                 "specialist_speech": None,
@@ -373,6 +381,12 @@ class ResolveLoopEngine:
                 if case.metadata.get("force_specialist_failure"):
                     raise RuntimeError("Simulated specialist initialization network timeout")
 
+                agent_run_id = f"run_{uuid.uuid4().hex[:12]}"
+                target_domain = getattr(case, "domain", "accounts_receivable")
+                receiving_agent = AGENT_L2_AR if route_level == 2 else (AGENT_L3_ACCOUNTING if route_level == 3 else (AGENT_L4_EXECUTIVE if route_level == 4 else AGENT_L1_TRIAGE))
+                active_strategy = strategy_registry.get_active_strategy(agent_id=receiving_agent.id, tier=route_level, domain=target_domain)
+                set_case_execution_context(case.id, agent_id=receiving_agent.id, strategy_version=active_strategy.version, agent_run_id=agent_run_id)
+
                 cust = get_customer(case.customer_id, case_id=case.id)
                 actions.append("get_customer")
                 customer_name = cust.get("name", "Caller")
@@ -384,8 +398,6 @@ class ResolveLoopEngine:
                 specialist_resolution = ""
                 specialist_ack = ""
                 orchestrator_statement = ""
-                receiving_agent = AGENT_L2_AR
-                target_domain = "accounts_receivable"
                 issue_type = "general"
                 entities_identified = {}
                 relevant_records = []
@@ -482,14 +494,21 @@ class ResolveLoopEngine:
                         "I'll pass along what you've already told me so you won't have to repeat yourself."
                     )
 
-                    invoice_data = get_invoice("INV-4471", case_id=case.id)
-                    actions.append("get_invoice")
-                    payment_data = get_payment("PMT-8821", case_id=case.id)
-                    actions.append("get_payment")
-                    history = get_fin_customer_history(case.customer_id, case_id=case.id)
-                    actions.append("get_customer_history")
-                    pol = get_policy_version("SHORT-PAY-01", "v2.1", case_id=case.id)
-                    actions.append("get_policy_version")
+                    # Dynamic tool execution sequence guided by active_strategy
+                    tool_order = [t for t in (active_strategy.preferred_tool_order or ["get_invoice", "get_payment", "get_customer_history", "get_policy_version"]) if t != "get_customer"]
+                    for tool_name in tool_order:
+                        if tool_name == "get_invoice":
+                            invoice_data = get_invoice("INV-4471", case_id=case.id)
+                            actions.append("get_invoice")
+                        elif tool_name == "get_payment":
+                            payment_data = get_payment("PMT-8821", case_id=case.id)
+                            actions.append("get_payment")
+                        elif tool_name == "get_customer_history":
+                            history = get_fin_customer_history(case.customer_id, case_id=case.id)
+                            actions.append("get_customer_history")
+                        elif tool_name == "get_policy_version":
+                            pol = get_policy_version("SHORT-PAY-01", "v2.1", case_id=case.id)
+                            actions.append("get_policy_version")
 
                     relevant_records = [invoice_data, payment_data]
                     relevant_policy = pol
@@ -623,6 +642,8 @@ class ResolveLoopEngine:
                     recommended_next_action=rec_action,
                     routing_confidence=0.94,
                     resolution_confidence=0.95,
+                    strategy_id=active_strategy.strategy_id,
+                    strategy_version=active_strategy.version,
                 )
 
                 # ==================== COMPLETE AUDIT TRAIL LOGGING ====================
@@ -648,11 +669,12 @@ class ResolveLoopEngine:
                     "confidence": 0.94,
                     "context_summary": f"Routed to {receiving_agent.role} (Tier {receiving_agent.tier})",
                     "timestamp": time.time(),
-                    "outcome": "Routed to specialist",
-                    "route_level": receiving_agent.tier,
+                    "outcome": "Specialist selected",
+                    "tier": receiving_agent.tier,
+                    "role": receiving_agent.role,
                 }, actor_type="orchestrator", actor_id="call_director")
 
-                # Warm handoff initiated
+                # Handoff context dispatched
                 record_audit_event(case.id, "WARM_HANDOFF_INITIATED", {
                     "source_agent": AGENT_ORCHESTRATOR.name,
                     "destination_agent": receiving_agent.name,
@@ -762,6 +784,10 @@ class ResolveLoopEngine:
                 return {
                     "actions": actions,
                     "acting_agent": resolution.get("acting_agent", receiving_agent.role),
+                    "acting_agent_id": receiving_agent.id,
+                    "strategy_id": active_strategy.strategy_id,
+                    "strategy_version": active_strategy.version,
+                    "agent_run_id": agent_run_id,
                     "handoff_required": True,
                     "orchestrator_speech": orchestrator_statement,
                     "specialist_speech": specialist_full_speech,
@@ -813,9 +839,14 @@ class ResolveLoopEngine:
                     "acting_agent": AGENT_ORCHESTRATOR.name,
                 }, actor_type="orchestrator", actor_id="call_director")
 
+                fallback_strat = strategy_registry.get_active_strategy(agent_id=AGENT_ORCHESTRATOR.id, tier=0, domain="general_finance")
                 return {
                     "actions": actions,
                     "acting_agent": AGENT_ORCHESTRATOR.name,
+                    "acting_agent_id": AGENT_ORCHESTRATOR.id,
+                    "strategy_id": fallback_strat.strategy_id,
+                    "strategy_version": fallback_strat.version,
+                    "agent_run_id": f"run_{uuid.uuid4().hex[:12]}",
                     "handoff_required": False,
                     "orchestrator_speech": orchestrator_fallback_speech,
                     "specialist_speech": None,
@@ -828,6 +859,11 @@ class ResolveLoopEngine:
 
         else:
             # ==================== LEGACY E-COMMERCE / BENCHMARK PIPELINE ====================
+            agent_run_id = f"run_{uuid.uuid4().hex[:12]}"
+            legacy_agent_id = f"tier_{route_level}_specialist"
+            legacy_strat = strategy_registry.get_active_strategy(agent_id=legacy_agent_id, tier=route_level, domain="customer_service")
+            set_case_execution_context(case.id, agent_id=legacy_agent_id, strategy_version=legacy_strat.version, agent_run_id=agent_run_id)
+
             permissions = LEVEL_PERMISSIONS.get(route_level, LEVEL_PERMISSIONS[1])
             profile = fetch_customer_profile(case.customer_id)
             actions.append("fetch_profile")
@@ -911,6 +947,11 @@ class ResolveLoopEngine:
 
             return {
                 "actions": actions,
+                "acting_agent": f"L{route_level} Support",
+                "acting_agent_id": legacy_agent_id,
+                "strategy_id": legacy_strat.strategy_id,
+                "strategy_version": legacy_strat.version,
+                "agent_run_id": agent_run_id,
                 "handoff_required": False,
                 "resolution": resolution,
                 "escalated": escalated,
@@ -929,6 +970,19 @@ class ResolveLoopEngine:
         escalated = solve_result.get("escalated", False)
         resolution_success = solve_result.get("resolution", {}).get("resolved", False)
         response_text = solve_result.get("resolution", {}).get("response_text", "")
+        strategy_id = solve_result.get("strategy_id")
+        strategy_version = solve_result.get("strategy_version") or "v0"
+        acting_agent_id = solve_result.get("acting_agent_id") or f"tier_{route_level}_specialist"
+
+        strategy_obj = None
+        if strategy_id:
+            strategy_obj = strategy_registry.get_strategy(strategy_id)
+        if not strategy_obj:
+            strategy_obj = strategy_registry.get_active_strategy(
+                agent_id=acting_agent_id,
+                tier=route_level,
+                domain=getattr(case, "domain", "accounts_receivable")
+            )
 
         score_obj = self.ev.evaluate(
             case=case.to_dict(),
@@ -937,6 +991,9 @@ class ResolveLoopEngine:
             escalated=escalated,
             resolution_success=resolution_success,
             resolution_notes=response_text,
+            strategy=strategy_obj,
+            affected_agent=acting_agent_id,
+            strategy_version=strategy_version,
         )
 
         lessons = [
@@ -961,179 +1018,246 @@ class ResolveLoopEngine:
 
     def run_once(self, case: Case) -> Dict[str, Any]:
         """Execute one complete cycle: CASE -> RETRIEVE -> ROUTE -> SOLVE -> EVALUATE -> REFLECT -> STORE -> IMPROVE."""
-        # 0. Record CASE_CREATED audit event
-        record_audit_event(case.id, "CASE_CREATED", {
-            "source_agent": "Customer",
-            "destination_agent": AGENT_ORCHESTRATOR.name,
-            "handoff_reason": "Inbound customer inquiry",
-            "confidence": 1.0,
-            "context_summary": case.description,
-            "timestamp": time.time(),
-            "outcome": "Open",
-            "case_id": case.id,
-            "customer_id": case.customer_id,
-            "priority": case.priority,
-        }, actor_type="system", actor_id="resolve_loop")
-
-        similar = self.store.find_similar_experiences(case.description, limit=3)
-        route = self.route_case(case, similar_experiences=similar)
-        solve_result = self.solve_case(case, route, similar_experiences=similar)
-        eval_reflect = self.evaluate_and_reflect(case, route, solve_result)
-        reflection = eval_reflect["reflection"]
-        score = eval_reflect["score"]
-
-        # 1. Update case memory
-        self.mem.update_case_memory(case.id, {
-            "route": route,
-            "solve": solve_result,
-            "score": score,
-            "timestamp": time.time(),
-        })
-
-        # 2. Update procedural memory
-        proc_rule = reflection.get("procedural_rule")
-        if proc_rule:
-            rule_key = f"rule_{proc_rule.get('pattern')}"
-            self.mem.update_procedural_memory(rule_key, proc_rule)
-
-        # 3. Update failure memory
-        if solve_result.get("escalated") or score.get("score", 0) < 50:
-            self.mem.log_failure({
+        try:
+            # 0. Record CASE_CREATED audit event
+            record_audit_event(case.id, "CASE_CREATED", {
+                "source_agent": "Customer",
+                "destination_agent": AGENT_ORCHESTRATOR.name,
+                "handoff_reason": "Inbound customer inquiry",
+                "confidence": 1.0,
+                "context_summary": case.description,
+                "timestamp": time.time(),
+                "outcome": "Open",
                 "case_id": case.id,
-                "description": case.description,
-                "initial_route": route.get("route_level"),
-                "reason": solve_result.get("escalation_reason", "Low score or escalation"),
+                "customer_id": case.customer_id,
+                "priority": case.priority,
+            }, actor_type="system", actor_id="resolve_loop")
+
+            similar = self.store.find_similar_experiences(case.description, limit=3)
+            route = self.route_case(case, similar_experiences=similar)
+            solve_result = self.solve_case(case, route, similar_experiences=similar)
+            eval_reflect = self.evaluate_and_reflect(case, route, solve_result)
+            reflection = eval_reflect["reflection"]
+            score = eval_reflect["score"]
+
+            # 1. Update case memory
+            self.mem.update_case_memory(case.id, {
+                "route": route,
+                "solve": solve_result,
+                "score": score,
                 "timestamp": time.time(),
             })
 
-        # 4. Store experience in ExperienceStore
-        experience_record = {
-            "case_id": case.id,
-            "description": case.description,
-            "route": route,
-            "solve": solve_result,
-            "score": score.get("score", 0),
-            "score_details": score.get("details"),
-            "reflection": reflection,
-            "recommended_route": reflection.get("recommended_route"),
-            "recommended_tools": reflection.get("recommended_tools"),
-            "escalated": solve_result.get("escalated", False),
-            "timestamp": time.time(),
-        }
-        self.store.add_experience(experience_record)
+            # 2. Update procedural memory
+            proc_rule = reflection.get("procedural_rule")
+            if proc_rule:
+                rule_key = f"rule_{proc_rule.get('pattern')}"
+                self.mem.update_procedural_memory(rule_key, proc_rule)
 
-        # 5. Persist into PostgreSQL experiences & cases if DB available
-        try:
-            exp_id = f"exp_{uuid.uuid4().hex[:12]}"
-            db.execute(
-                """INSERT INTO cases (id, organization_id, customer_id, title, description, domain, status, agent_level, routing_confidence, resolution_confidence, resolution, escalation_required, escalation_reason)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                   ON CONFLICT (id) DO UPDATE SET
-                       customer_id = EXCLUDED.customer_id,
-                       title = EXCLUDED.title,
-                       description = EXCLUDED.description,
-                       domain = EXCLUDED.domain,
-                       status = EXCLUDED.status,
-                       agent_level = EXCLUDED.agent_level,
-                       routing_confidence = EXCLUDED.routing_confidence,
-                       resolution_confidence = EXCLUDED.resolution_confidence,
-                       resolution = EXCLUDED.resolution,
-                       escalation_required = EXCLUDED.escalation_required,
-                       escalation_reason = EXCLUDED.escalation_reason;""",
-                (
-                    case.id, "org_apex", case.customer_id if case.customer_id in ["cust1", "cust2", "cust3"] else "cust1",
-                    case.description[:50], case.description, getattr(case, "domain", "accounts_receivable"),
-                    "resolved" if not solve_result.get("escalated") else "escalated",
-                    solve_result.get("resolution", {}).get("final_agent_level", route.get("route_level", 1)),
-                    route.get("confidence", 0.90), 0.95, json.dumps(solve_result.get("resolution", {})),
-                    solve_result.get("escalated", False), solve_result.get("escalation_reason")
-                )
-            )
-            db.execute(
-                """INSERT INTO experiences (id, organization_id, case_id, domain, situation, context, action_taken, outcome, what_worked, what_failed, lesson, tags, confidence, reusable)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                   ON CONFLICT (id) DO NOTHING;""",
-                (
-                    exp_id, "org_apex", case.id, getattr(case, "domain", "accounts_receivable"),
-                    case.description, json.dumps({"route": route, "actions": solve_result.get("actions")}),
-                    f"Routed to L{route.get('route_level')}, executed {len(solve_result.get('actions'))} tools",
-                    "Resolved" if not solve_result.get("escalated") else "Escalated to higher tier",
-                    f"Tools {', '.join(solve_result.get('actions'))} succeeded",
-                    solve_result.get("escalation_reason"),
-                    reflection.get("lessons", ["Resolved case"])[0],
-                    json.dumps(["finance", getattr(case, "domain", "accounts_receivable")]),
-                    0.95, True
-                )
-            )
-            # Record speaker turns into case_interactions
+            # 3. Update failure memory
+            if solve_result.get("escalated") or score.get("score", 0) < 50:
+                self.mem.log_failure({
+                    "case_id": case.id,
+                    "description": case.description,
+                    "initial_route": route.get("route_level"),
+                    "reason": solve_result.get("escalation_reason", "Low score or escalation"),
+                    "timestamp": time.time(),
+                })
+
+            # 4. Extract structured failure and strategy change from evaluation/reflection
+            primary_failure = None
+            eval_failures = eval_reflect.get("score", {}).get("failures", []) or eval_reflect.get("score", {}).get("details", {}).get("failures", [])
+            if eval_failures:
+                primary_failure = eval_failures[0]
+
+            rec_strat_change = reflection.get("recommended_strategy_change")
+            case_type = getattr(case, "issue_type", None) or case.metadata.get("issue_type", "general")
+            lesson_text = reflection.get("lessons", ["Case resolved"])[0] if reflection.get("lessons") else "Case resolved"
+            acting_agent_id = solve_result.get("acting_agent_id") or f"tier_{route.get('route_level', 1)}_agent"
+
+            # Store experience in ExperienceStore
+            experience_record = {
+                "case_id": case.id,
+                "description": case.description,
+                "situation": case.description,
+                "domain": getattr(case, "domain", "accounts_receivable"),
+                "case_type": case_type,
+                "failure": primary_failure,
+                "action_taken": f"Routed to L{route.get('route_level')}, executed {len(solve_result.get('actions'))} tools",
+                "outcome": "Resolved" if not solve_result.get("escalated") else "Escalated to higher tier",
+                "lesson": lesson_text,
+                "recommended_strategy_change": rec_strat_change,
+                "affected_agent": acting_agent_id,
+                "source_case": case.id,
+                "confidence": 0.95,
+                "reusable": True,
+                "route": route,
+                "solve": solve_result,
+                "score": score.get("score", 0),
+                "score_details": score.get("details"),
+                "reflection": reflection,
+                "recommended_route": reflection.get("recommended_route"),
+                "recommended_tools": reflection.get("recommended_tools"),
+                "escalated": solve_result.get("escalated", False),
+                "timestamp": time.time(),
+            }
+            self.store.add_experience(experience_record)
+
+            # Synthesize Candidate Strategy if reflection produced an actionable recommendation
+            if rec_strat_change and primary_failure:
+                try:
+                    from .strategy import generate_candidate_from_reflection
+                    strat_obj = None
+                    if solve_result.get("strategy_id"):
+                        strat_obj = strategy_registry.get_strategy(solve_result.get("strategy_id"))
+                    generate_candidate_from_reflection(reflection, base_strategy=strat_obj)
+                except Exception:
+                    pass
+
+            # 5. Persist into PostgreSQL experiences, agent_runs & cases if DB available
             try:
-                # 1. Customer utterance
-                record_case_interaction(
-                    case_id=case.id,
-                    speaker="customer",
-                    transcript=case.description,
-                    agent_tier=0,
-                    latency_ms=120.0
+                strat_id = solve_result.get("strategy_id")
+                strat_ver = solve_result.get("strategy_version", "v0")
+                agent_run_id = solve_result.get("agent_run_id") or f"run_{uuid.uuid4().hex[:12]}"
+
+                exp_id = f"exp_{uuid.uuid4().hex[:12]}"
+                db.execute(
+                    """INSERT INTO cases (id, organization_id, customer_id, title, description, domain, status, agent_level, routing_confidence, resolution_confidence, resolution, escalation_required, escalation_reason, strategy_id, strategy_version)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       ON CONFLICT (id) DO UPDATE SET
+                           customer_id = EXCLUDED.customer_id,
+                           title = EXCLUDED.title,
+                           description = EXCLUDED.description,
+                           domain = EXCLUDED.domain,
+                           status = EXCLUDED.status,
+                           agent_level = EXCLUDED.agent_level,
+                           routing_confidence = EXCLUDED.routing_confidence,
+                           resolution_confidence = EXCLUDED.resolution_confidence,
+                           resolution = EXCLUDED.resolution,
+                           escalation_required = EXCLUDED.escalation_required,
+                           escalation_reason = EXCLUDED.escalation_reason,
+                           strategy_id = EXCLUDED.strategy_id,
+                           strategy_version = EXCLUDED.strategy_version;""",
+                    (
+                        case.id, "org_apex", case.customer_id if case.customer_id in ["cust1", "cust2", "cust3"] else "cust1",
+                        case.description[:50], case.description, getattr(case, "domain", "accounts_receivable"),
+                        "resolved" if not solve_result.get("escalated") else "escalated",
+                        solve_result.get("resolution", {}).get("final_agent_level", route.get("route_level", 1)),
+                        route.get("confidence", 0.90), 0.95, json.dumps(solve_result.get("resolution", {})),
+                        solve_result.get("escalated", False), solve_result.get("escalation_reason"),
+                        strat_id, strat_ver
+                    )
                 )
-                # 2. Orchestrator utterance
-                orch_speech = solve_result.get("orchestrator_speech") or solve_result.get("resolution", {}).get("response_text", "")
-                if orch_speech:
+                db.execute(
+                    """INSERT INTO agent_runs (id, case_id, agent_level, model, plan, status, agent_id, strategy_id, strategy_version)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       ON CONFLICT (id) DO UPDATE SET
+                           status = EXCLUDED.status,
+                           agent_level = EXCLUDED.agent_level,
+                           agent_id = EXCLUDED.agent_id,
+                           strategy_id = EXCLUDED.strategy_id,
+                           strategy_version = EXCLUDED.strategy_version;""",
+                    (
+                        agent_run_id,
+                        case.id,
+                        solve_result.get("resolution", {}).get("final_agent_level", route.get("route_level", 1)),
+                        "gpt-5-nano",
+                        route.get("plan", ""),
+                        "completed",
+                        acting_agent_id,
+                        strat_id,
+                        strat_ver,
+                    )
+                )
+                db.execute(
+                    """INSERT INTO experiences (id, organization_id, case_id, domain, situation, case_type, context, action_taken, outcome, what_worked, what_failed, lesson, recommended_strategy_change, affected_agent, tags, confidence, reusable)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       ON CONFLICT (id) DO NOTHING;""",
+                    (
+                        exp_id, "org_apex", case.id, getattr(case, "domain", "accounts_receivable"),
+                        case.description, case_type, json.dumps({"route": route, "actions": solve_result.get("actions")}),
+                        f"Routed to L{route.get('route_level')}, executed {len(solve_result.get('actions'))} tools",
+                        "Resolved" if not solve_result.get("escalated") else "Escalated to higher tier",
+                        f"Tools {', '.join(solve_result.get('actions'))} succeeded",
+                        solve_result.get("escalation_reason"),
+                        lesson_text,
+                        json.dumps(rec_strat_change) if rec_strat_change else None,
+                        acting_agent_id,
+                        json.dumps(["finance", getattr(case, "domain", "accounts_receivable")]),
+                        0.95, True
+                    )
+                )
+                # Record speaker turns into case_interactions
+                try:
+                    # 1. Customer utterance
                     record_case_interaction(
                         case_id=case.id,
-                        speaker="orchestrator",
-                        transcript=orch_speech,
-                        agent_id="tier_0_orchestrator",
+                        speaker="customer",
+                        transcript=case.description,
                         agent_tier=0,
-                        latency_ms=280.0
+                        latency_ms=120.0
                     )
-                # 3. Specialist utterance if warm handoff took place
-                if solve_result.get("handoff_required") and solve_result.get("specialist_speech"):
-                    spec_tier = route.get("route_level", 2)
-                    record_case_interaction(
-                        case_id=case.id,
-                        speaker="specialist",
-                        transcript=solve_result.get("specialist_speech"),
-                        agent_id=f"tier_{spec_tier}_specialist",
-                        agent_tier=spec_tier,
-                        latency_ms=450.0
-                    )
+                    # 2. Orchestrator utterance
+                    orch_speech = solve_result.get("orchestrator_speech") or solve_result.get("resolution", {}).get("response_text", "")
+                    if orch_speech:
+                        record_case_interaction(
+                            case_id=case.id,
+                            speaker="orchestrator",
+                            transcript=orch_speech,
+                            agent_id="tier_0_orchestrator",
+                            agent_tier=0,
+                            latency_ms=280.0
+                        )
+                    # 3. Specialist utterance if warm handoff took place
+                    if solve_result.get("handoff_required") and solve_result.get("specialist_speech"):
+                        spec_tier = route.get("route_level", 2)
+                        record_case_interaction(
+                            case_id=case.id,
+                            speaker="specialist",
+                            transcript=solve_result.get("specialist_speech"),
+                            agent_id=f"tier_{spec_tier}_specialist",
+                            agent_tier=spec_tier,
+                            latency_ms=450.0
+                        )
+                except Exception:
+                    pass
             except Exception:
                 pass
-        except Exception:
-            pass
 
-        # 5b. Record EXPERIENCE_STORED audit event
-        lesson_str = reflection.get("lessons", ["Case resolved"])[0] if reflection.get("lessons") else "Case resolved"
-        record_audit_event(case.id, "EXPERIENCE_STORED", {
-            "source_agent": "Eval Reflection Engine",
-            "destination_agent": "Experience Store",
-            "handoff_reason": "Closed-loop feedback learning",
-            "confidence": 0.95,
-            "context_summary": lesson_str,
-            "timestamp": time.time(),
-            "outcome": "Experience indexed",
-            "case_id": case.id,
-            "score": score.get("score", 0),
-            "route_level": route.get("route_level"),
-        }, actor_type="system", actor_id="experience_store")
+            # 5b. Record EXPERIENCE_STORED audit event
+            lesson_str = reflection.get("lessons", ["Case resolved"])[0] if reflection.get("lessons") else "Case resolved"
+            record_audit_event(case.id, "EXPERIENCE_STORED", {
+                "source_agent": "Eval Reflection Engine",
+                "destination_agent": "Experience Store",
+                "handoff_reason": "Closed-loop feedback learning",
+                "confidence": 0.95,
+                "context_summary": lesson_str,
+                "timestamp": time.time(),
+                "outcome": "Experience indexed",
+                "case_id": case.id,
+                "score": score.get("score", 0),
+                "route_level": route.get("route_level"),
+            }, actor_type="system", actor_id="experience_store")
 
-        # 6. Record into benchmark
-        self.bench.record({
-            **case.to_dict(),
-            "route": route,
-            "solve": solve_result,
-            "score": score,
-            "escalated": solve_result.get("escalated", False),
-        })
+            # 6. Record into benchmark
+            self.bench.record({
+                **case.to_dict(),
+                "route": route,
+                "solve": solve_result,
+                "score": score,
+                "escalated": solve_result.get("escalated", False),
+            })
 
-        return {
-            "case": case.to_dict(),
-            "route": route,
-            "solve": solve_result,
-            "score": score,
-            "reflection": reflection,
-            "experience_retrieval": similar,
-        }
+            return {
+                "case": case.to_dict(),
+                "route": route,
+                "solve": solve_result,
+                "score": score,
+                "reflection": reflection,
+                "experience_retrieval": similar,
+            }
+        finally:
+            clear_case_execution_context(case.id)
 
 def run_demo_loop(cases: Optional[List[Case]] = None) -> Dict[str, Any]:
     engine = ResolveLoopEngine()

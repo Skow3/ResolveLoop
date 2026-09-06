@@ -185,12 +185,15 @@ CREATE TABLE IF NOT EXISTS experiences (
     case_id VARCHAR(64) REFERENCES cases(id) ON DELETE SET NULL,
     domain VARCHAR(64) NOT NULL,
     situation TEXT NOT NULL,
+    case_type VARCHAR(64),
     context JSONB DEFAULT '{}'::jsonb,
     action_taken TEXT NOT NULL,
     outcome TEXT NOT NULL,
     what_worked TEXT,
     what_failed TEXT,
     lesson TEXT NOT NULL,
+    recommended_strategy_change JSONB DEFAULT '{}'::jsonb,
+    affected_agent VARCHAR(64),
     tags JSONB DEFAULT '[]'::jsonb,
     confidence NUMERIC(5, 2) DEFAULT 0.90,
     reusable BOOLEAN DEFAULT TRUE,
@@ -222,6 +225,9 @@ CREATE TABLE IF NOT EXISTS feedback (
     id VARCHAR(64) PRIMARY KEY,
     case_id VARCHAR(64) NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
     interaction_id VARCHAR(128),
+    agent_id VARCHAR(64),
+    strategy_id VARCHAR(64),
+    strategy_version VARCHAR(32) DEFAULT 'v0',
     rating VARCHAR(16) NOT NULL, -- positive, negative
     reason VARCHAR(255),
     comment TEXT,
@@ -240,6 +246,41 @@ CREATE TABLE IF NOT EXISTS audit_events (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 15. Agent Strategies (Versioned operational strategy representations)
+CREATE TABLE IF NOT EXISTS agent_strategies (
+    id VARCHAR(64) PRIMARY KEY,
+    organization_id VARCHAR(64) DEFAULT 'org_apex' REFERENCES organizations(id) ON DELETE CASCADE,
+    agent_id VARCHAR(64) NOT NULL,
+    agent_tier INTEGER NOT NULL,
+    domain VARCHAR(64) NOT NULL,
+    version VARCHAR(32) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE', -- ACTIVE, CANDIDATE, REJECTED, ARCHIVED
+    configuration JSONB NOT NULL DEFAULT '{}'::jsonb,
+    source_or_reason TEXT,
+    parent_strategy_id VARCHAR(64) REFERENCES agent_strategies(id) ON DELETE SET NULL,
+    promoted_by VARCHAR(128),
+    promoted_at TIMESTAMPTZ,
+    rejected_by VARCHAR(128),
+    rejected_at TIMESTAMPTZ,
+    rejection_reason TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 16. Structured Failures (Captured evaluation failures feeding the learning loop)
+CREATE TABLE IF NOT EXISTS structured_failures (
+    id VARCHAR(64) PRIMARY KEY,
+    case_id VARCHAR(64) NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    failure_type VARCHAR(64) NOT NULL, -- WRONG_ROUTING, WRONG_ANSWER, MISSING_EVIDENCE, WRONG_TOOL, UNNECESSARY_TOOL, TOOL_ORDER, EXCESSIVE_TOOL_USE, WRONG_ESCALATION, MISSED_ESCALATION, POLICY_ERROR, LOW_CONFIDENCE, OTHER
+    description TEXT NOT NULL,
+    evidence TEXT,
+    affected_agent VARCHAR(64) NOT NULL,
+    strategy_version VARCHAR(32) NOT NULL DEFAULT 'v0',
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB DEFAULT '{}'::jsonb
+);
+
 -- Indexes for lightning fast operations
 CREATE INDEX IF NOT EXISTS idx_finance_records_type_ext ON finance_records(organization_id, record_type, external_id);
 CREATE INDEX IF NOT EXISTS idx_finance_records_date ON finance_records(transaction_date);
@@ -249,6 +290,9 @@ CREATE INDEX IF NOT EXISTS idx_experiences_domain ON experiences(organization_id
 CREATE INDEX IF NOT EXISTS idx_feedback_case ON feedback(case_id);
 CREATE INDEX IF NOT EXISTS idx_interactions_case ON case_interactions(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_audit_case ON audit_events(case_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_agent_strategies_tier_domain_status ON agent_strategies(agent_tier, domain, status);
+CREATE INDEX IF NOT EXISTS idx_structured_failures_case ON structured_failures(case_id);
+CREATE INDEX IF NOT EXISTS idx_structured_failures_type ON structured_failures(failure_type);
 """
 
 class Database:
@@ -335,6 +379,26 @@ class Database:
                     "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS rationale TEXT;",
                     "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS created_by VARCHAR(128) DEFAULT 'Human Supervisor';",
                     "ALTER TABLE learned_policies ADD COLUMN IF NOT EXISTS approval_status VARCHAR(32) DEFAULT 'approved';",
+                    "ALTER TABLE agent_runs ADD COLUMN IF NOT EXISTS agent_id VARCHAR(64);",
+                    "ALTER TABLE agent_runs ADD COLUMN IF NOT EXISTS strategy_id VARCHAR(64);",
+                    "ALTER TABLE agent_runs ADD COLUMN IF NOT EXISTS strategy_version VARCHAR(32) DEFAULT 'v0';",
+                    "ALTER TABLE tool_calls ADD COLUMN IF NOT EXISTS agent_id VARCHAR(64);",
+                    "ALTER TABLE tool_calls ADD COLUMN IF NOT EXISTS strategy_version VARCHAR(32) DEFAULT 'v0';",
+                    "ALTER TABLE tool_calls ADD COLUMN IF NOT EXISTS execution_order INTEGER DEFAULT 1;",
+                    "ALTER TABLE cases ADD COLUMN IF NOT EXISTS strategy_id VARCHAR(64);",
+                    "ALTER TABLE cases ADD COLUMN IF NOT EXISTS strategy_version VARCHAR(32) DEFAULT 'v0';",
+                    "ALTER TABLE agent_strategies ADD COLUMN IF NOT EXISTS promoted_by VARCHAR(128);",
+                    "ALTER TABLE agent_strategies ADD COLUMN IF NOT EXISTS promoted_at TIMESTAMPTZ;",
+                    "ALTER TABLE agent_strategies ADD COLUMN IF NOT EXISTS rejected_by VARCHAR(128);",
+                    "ALTER TABLE agent_strategies ADD COLUMN IF NOT EXISTS rejected_at TIMESTAMPTZ;",
+                    "ALTER TABLE agent_strategies ADD COLUMN IF NOT EXISTS rejection_reason TEXT;",
+                    "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS agent_id VARCHAR(64);",
+                    "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS strategy_id VARCHAR(64);",
+                    "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS strategy_version VARCHAR(32) DEFAULT 'v0';",
+                    "ALTER TABLE experiences ADD COLUMN IF NOT EXISTS case_type VARCHAR(64);",
+                    "ALTER TABLE experiences ADD COLUMN IF NOT EXISTS failure JSONB DEFAULT '{}'::jsonb;",
+                    "ALTER TABLE experiences ADD COLUMN IF NOT EXISTS recommended_strategy_change JSONB DEFAULT '{}'::jsonb;",
+                    "ALTER TABLE experiences ADD COLUMN IF NOT EXISTS affected_agent VARCHAR(64);",
                 ]
                 for m in migrations:
                     try:

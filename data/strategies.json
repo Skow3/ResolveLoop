@@ -1,0 +1,893 @@
+{
+  "strategies": [
+    {
+      "strategy_id": "strat_orchestrator_v0",
+      "agent_id": "agent_orchestrator",
+      "agent_tier": 0,
+      "domain": "general_finance",
+      "version": "v0",
+      "name": "Call Director Orchestrator Strategy",
+      "status": "ACTIVE",
+      "source_or_reason": "Initial production baseline specification",
+      "parent_strategy_id": null,
+      "goal": "Front-door intent detection, natural greeting, customer recognition, conversational FAQs, and warm handoff dispatch.",
+      "routing_signals": [
+        "who are you",
+        "what is maximor",
+        "what can you help",
+        "hello",
+        "hi"
+      ],
+      "preferred_tools": [
+        "get_customer",
+        "search_policy"
+      ],
+      "preferred_tool_order": [
+        "get_customer",
+        "search_policy"
+      ],
+      "escalation_rules": [
+        "Transfer immediately to L1 for standard invoice status queries.",
+        "Transfer immediately to L2 for short payments, early discounts, and AR disputes.",
+        "Transfer to L3 for vendor billing variances, GL journal entries, and treasury runways.",
+        "Transfer to L4 for overrides, ambiguous policies, or amounts > $50,000."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "intent",
+          "triage"
+        ],
+        "domains": [
+          "general_finance"
+        ]
+      },
+      "evaluation_priorities": [
+        "routing_accuracy",
+        "greeting_quality",
+        "zero_repetition"
+      ],
+      "strategy_instructions": "Welcome caller warmly. Accurately detect domain and entity identifiers. Package structured handoff context and perform seamless warm transfer without repeating questions.",
+      "created_at": 1788708053.909165,
+      "metadata": {},
+      "configuration": {
+        "goal": "Front-door intent detection, natural greeting, customer recognition, conversational FAQs, and warm handoff dispatch.",
+        "routing_signals": [
+          "who are you",
+          "what is maximor",
+          "what can you help",
+          "hello",
+          "hi"
+        ],
+        "preferred_tools": [
+          "get_customer",
+          "search_policy"
+        ],
+        "preferred_tool_order": [
+          "get_customer",
+          "search_policy"
+        ],
+        "escalation_rules": [
+          "Transfer immediately to L1 for standard invoice status queries.",
+          "Transfer immediately to L2 for short payments, early discounts, and AR disputes.",
+          "Transfer to L3 for vendor billing variances, GL journal entries, and treasury runways.",
+          "Transfer to L4 for overrides, ambiguous policies, or amounts > $50,000."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "intent",
+            "triage"
+          ],
+          "domains": [
+            "general_finance"
+          ]
+        },
+        "evaluation_priorities": [
+          "routing_accuracy",
+          "greeting_quality",
+          "zero_repetition"
+        ],
+        "strategy_instructions": "Welcome caller warmly. Accurately detect domain and entity identifiers. Package structured handoff context and perform seamless warm transfer without repeating questions."
+      }
+    },
+    {
+      "strategy_id": "strat_l1_triage_v0",
+      "agent_id": "agent_l1_triage",
+      "agent_tier": 1,
+      "domain": "general_finance",
+      "version": "v0",
+      "name": "Finance Triage Baseline Strategy",
+      "status": "ACTIVE",
+      "source_or_reason": "Initial production baseline specification",
+      "parent_strategy_id": null,
+      "goal": "First-contact factual verification, open invoice status lookup, and FAQ answering.",
+      "routing_signals": [
+        "status of invoice",
+        "invoice status",
+        "where is invoice",
+        "overdue",
+        "inv-4472"
+      ],
+      "preferred_tools": [
+        "get_customer",
+        "get_invoice",
+        "search_policy",
+        "search_finance_records"
+      ],
+      "preferred_tool_order": [
+        "get_customer",
+        "get_invoice",
+        "search_policy"
+      ],
+      "escalation_rules": [
+        "Escalate to L2 if customer mentions payment discrepancies, discounts, or short payments.",
+        "Escalate to L3 if query involves cloud hosting bills (BILL-7701) or GL journal entries.",
+        "Escalate to L4 if transaction exceeds $50,000 or policy interpretation is ambiguous (ESC-400)."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "status",
+          "lookup"
+        ],
+        "domains": [
+          "general_finance",
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "first_contact_resolution",
+        "tool_efficiency",
+        "factual_accuracy"
+      ],
+      "strategy_instructions": "Query NetSuite ERP for the requested invoice. Provide balance, status (e.g. Overdue, Partially Paid), and due date directly to caller. Do not attempt to authorize credits or discounts.",
+      "created_at": 1788708053.9091234,
+      "metadata": {
+        "promoted_by": "supervisor",
+        "promoted_at": 1788708054.008077,
+        "promotion_notes": ""
+      },
+      "configuration": {
+        "goal": "First-contact factual verification, open invoice status lookup, and FAQ answering.",
+        "routing_signals": [
+          "status of invoice",
+          "invoice status",
+          "where is invoice",
+          "overdue",
+          "inv-4472"
+        ],
+        "preferred_tools": [
+          "get_customer",
+          "get_invoice",
+          "search_policy",
+          "search_finance_records"
+        ],
+        "preferred_tool_order": [
+          "get_customer",
+          "get_invoice",
+          "search_policy"
+        ],
+        "escalation_rules": [
+          "Escalate to L2 if customer mentions payment discrepancies, discounts, or short payments.",
+          "Escalate to L3 if query involves cloud hosting bills (BILL-7701) or GL journal entries.",
+          "Escalate to L4 if transaction exceeds $50,000 or policy interpretation is ambiguous (ESC-400)."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "status",
+            "lookup"
+          ],
+          "domains": [
+            "general_finance",
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "first_contact_resolution",
+          "tool_efficiency",
+          "factual_accuracy"
+        ],
+        "strategy_instructions": "Query NetSuite ERP for the requested invoice. Provide balance, status (e.g. Overdue, Partially Paid), and due date directly to caller. Do not attempt to authorize credits or discounts."
+      }
+    },
+    {
+      "strategy_id": "strat_l2_ar_v0",
+      "agent_id": "agent_l2_ar",
+      "agent_tier": 2,
+      "domain": "accounts_receivable",
+      "version": "v0",
+      "name": "Accounts Receivable Specialist Strategy",
+      "status": "ACTIVE",
+      "source_or_reason": "Initial production baseline specification",
+      "parent_strategy_id": null,
+      "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
+      "routing_signals": [
+        "short payment",
+        "short-pay",
+        "discount",
+        "2/10",
+        "net 30",
+        "difference",
+        "pmt-8821"
+      ],
+      "preferred_tools": [
+        "get_customer",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "preferred_tool_order": [
+        "get_customer",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalation_rules": [
+        "Escalate to L4 Executive Controller if short payment variance exceeds $50,000.",
+        "Escalate to L4 if customer claims discount outside of the 10-calendar-day settlement window.",
+        "Escalate only after required financial evidence (invoice + payment + policy) has been verified."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "short_payment",
+          "terms",
+          "2_10_net_30"
+        ],
+        "domains": [
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "policy_compliance",
+        "resolution_quality",
+        "calculation_accuracy"
+      ],
+      "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms.",
+      "created_at": 1788708053.9091384,
+      "metadata": {},
+      "configuration": {
+        "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
+        "routing_signals": [
+          "short payment",
+          "short-pay",
+          "discount",
+          "2/10",
+          "net 30",
+          "difference",
+          "pmt-8821"
+        ],
+        "preferred_tools": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "preferred_tool_order": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "escalation_rules": [
+          "Escalate to L4 Executive Controller if short payment variance exceeds $50,000.",
+          "Escalate to L4 if customer claims discount outside of the 10-calendar-day settlement window.",
+          "Escalate only after required financial evidence (invoice + payment + policy) has been verified."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "short_payment",
+            "terms",
+            "2_10_net_30"
+          ],
+          "domains": [
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "policy_compliance",
+          "resolution_quality",
+          "calculation_accuracy"
+        ],
+        "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms."
+      }
+    },
+    {
+      "strategy_id": "strat_l3_accounting_v0",
+      "agent_id": "agent_l3_accounting",
+      "agent_tier": 3,
+      "domain": "accounts_payable",
+      "version": "v0",
+      "name": "Accounting Authority Specialist Strategy",
+      "status": "ACTIVE",
+      "source_or_reason": "Initial production baseline specification",
+      "parent_strategy_id": null,
+      "goal": "Reconcile multi-system GL variances, cloud hosting budget flux, and general ledger accrual entries.",
+      "routing_signals": [
+        "bill",
+        "aws",
+        "hosting",
+        "variance",
+        "flux",
+        "journal entry",
+        "je-2026-03",
+        "bill-7701"
+      ],
+      "preferred_tools": [
+        "get_bill",
+        "get_journal_entry",
+        "get_finance_record",
+        "search_policy"
+      ],
+      "preferred_tool_order": [
+        "get_bill",
+        "get_journal_entry",
+        "get_finance_record"
+      ],
+      "escalation_rules": [
+        "Escalate to L4 if total variance exceeds $50,000 without corresponding unposted accrual.",
+        "Escalate if vendor dispute requires legal or contractual renegotiation."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "variance",
+          "accrual",
+          "gl"
+        ],
+        "domains": [
+          "accounts_payable",
+          "close"
+        ]
+      },
+      "evaluation_priorities": [
+        "variance_accuracy",
+        "journal_reconciliation",
+        "auditability"
+      ],
+      "strategy_instructions": "1. Retrieve vendor bill from accounts payable. 2. Query month-end general ledger for corresponding accrual journal entries. 3. Cross-reference operational usage drivers (e.g. Datadog GPU inference compute) to substantiate variance.",
+      "created_at": 1788708053.9091456,
+      "metadata": {},
+      "configuration": {
+        "goal": "Reconcile multi-system GL variances, cloud hosting budget flux, and general ledger accrual entries.",
+        "routing_signals": [
+          "bill",
+          "aws",
+          "hosting",
+          "variance",
+          "flux",
+          "journal entry",
+          "je-2026-03",
+          "bill-7701"
+        ],
+        "preferred_tools": [
+          "get_bill",
+          "get_journal_entry",
+          "get_finance_record",
+          "search_policy"
+        ],
+        "preferred_tool_order": [
+          "get_bill",
+          "get_journal_entry",
+          "get_finance_record"
+        ],
+        "escalation_rules": [
+          "Escalate to L4 if total variance exceeds $50,000 without corresponding unposted accrual.",
+          "Escalate if vendor dispute requires legal or contractual renegotiation."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "variance",
+            "accrual",
+            "gl"
+          ],
+          "domains": [
+            "accounts_payable",
+            "close"
+          ]
+        },
+        "evaluation_priorities": [
+          "variance_accuracy",
+          "journal_reconciliation",
+          "auditability"
+        ],
+        "strategy_instructions": "1. Retrieve vendor bill from accounts payable. 2. Query month-end general ledger for corresponding accrual journal entries. 3. Cross-reference operational usage drivers (e.g. Datadog GPU inference compute) to substantiate variance."
+      }
+    },
+    {
+      "strategy_id": "strat_l3_treasury_v0",
+      "agent_id": "agent_l3_treasury",
+      "agent_tier": 3,
+      "domain": "cash",
+      "version": "v0",
+      "name": "Treasury Operations Specialist Strategy",
+      "status": "ACTIVE",
+      "source_or_reason": "Initial production baseline specification",
+      "parent_strategy_id": null,
+      "goal": "Extract real-time treasury balances, cash positions, and 13-week operating runway forecasts.",
+      "routing_signals": [
+        "cash",
+        "runway",
+        "treasury",
+        "position",
+        "jpmc",
+        "forecast",
+        "liquidity"
+      ],
+      "preferred_tools": [
+        "get_cash_position",
+        "get_forecast",
+        "get_finance_record"
+      ],
+      "preferred_tool_order": [
+        "get_cash_position",
+        "get_forecast"
+      ],
+      "escalation_rules": [
+        "Escalate immediately to CFO / L4 if runway drops below 6 months.",
+        "Escalate if unhedged FX exposure exceeds $1,000,000."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "runway",
+          "liquidity",
+          "forecast"
+        ],
+        "domains": [
+          "cash"
+        ]
+      },
+      "evaluation_priorities": [
+        "factual_accuracy",
+        "speed",
+        "clarity"
+      ],
+      "strategy_instructions": "Query live JPMorgan Chase treasury feed for operating checking and treasury money market balances. Report aggregate liquidity and 13-week runway model.",
+      "created_at": 1788708053.9091535,
+      "metadata": {},
+      "configuration": {
+        "goal": "Extract real-time treasury balances, cash positions, and 13-week operating runway forecasts.",
+        "routing_signals": [
+          "cash",
+          "runway",
+          "treasury",
+          "position",
+          "jpmc",
+          "forecast",
+          "liquidity"
+        ],
+        "preferred_tools": [
+          "get_cash_position",
+          "get_forecast",
+          "get_finance_record"
+        ],
+        "preferred_tool_order": [
+          "get_cash_position",
+          "get_forecast"
+        ],
+        "escalation_rules": [
+          "Escalate immediately to CFO / L4 if runway drops below 6 months.",
+          "Escalate if unhedged FX exposure exceeds $1,000,000."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "runway",
+            "liquidity",
+            "forecast"
+          ],
+          "domains": [
+            "cash"
+          ]
+        },
+        "evaluation_priorities": [
+          "factual_accuracy",
+          "speed",
+          "clarity"
+        ],
+        "strategy_instructions": "Query live JPMorgan Chase treasury feed for operating checking and treasury money market balances. Report aggregate liquidity and 13-week runway model."
+      }
+    },
+    {
+      "strategy_id": "strat_l4_executive_v0",
+      "agent_id": "agent_l4_executive",
+      "agent_tier": 4,
+      "domain": "governance",
+      "version": "v0",
+      "name": "Executive Controller & Risk Strategy",
+      "status": "ACTIVE",
+      "source_or_reason": "Initial production baseline specification",
+      "parent_strategy_id": null,
+      "goal": "Prepare comprehensive audit dossiers for human CFO signoff under policy ESC-400 and handle material overrides.",
+      "routing_signals": [
+        "override",
+        "ambiguous",
+        "material",
+        "50k",
+        "$50,000",
+        "cfo",
+        "human review",
+        "controller",
+        "esc-400"
+      ],
+      "preferred_tools": [
+        "get_policy_version",
+        "search_policy",
+        "record_case_evidence",
+        "get_customer_credit_profile"
+      ],
+      "preferred_tool_order": [
+        "get_policy_version",
+        "search_policy",
+        "record_case_evidence"
+      ],
+      "escalation_rules": [
+        "Always package structured audit dossier for human Controller / CFO authorization.",
+        "Do not auto-settle any transaction > $50,000 without signed escrow release."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "esc-400",
+          "override",
+          "material"
+        ],
+        "domains": [
+          "governance",
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "risk_containment",
+        "audit_completeness",
+        "regulatory_compliance"
+      ],
+      "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow.",
+      "created_at": 1788708053.9091594,
+      "metadata": {},
+      "configuration": {
+        "goal": "Prepare comprehensive audit dossiers for human CFO signoff under policy ESC-400 and handle material overrides.",
+        "routing_signals": [
+          "override",
+          "ambiguous",
+          "material",
+          "50k",
+          "$50,000",
+          "cfo",
+          "human review",
+          "controller",
+          "esc-400"
+        ],
+        "preferred_tools": [
+          "get_policy_version",
+          "search_policy",
+          "record_case_evidence",
+          "get_customer_credit_profile"
+        ],
+        "preferred_tool_order": [
+          "get_policy_version",
+          "search_policy",
+          "record_case_evidence"
+        ],
+        "escalation_rules": [
+          "Always package structured audit dossier for human Controller / CFO authorization.",
+          "Do not auto-settle any transaction > $50,000 without signed escrow release."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "esc-400",
+            "override",
+            "material"
+          ],
+          "domains": [
+            "governance",
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "risk_containment",
+          "audit_completeness",
+          "regulatory_compliance"
+        ],
+        "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow."
+      }
+    },
+    {
+      "strategy_id": "strat_l2_ar_v1",
+      "agent_id": "agent_l2_ar",
+      "agent_tier": 2,
+      "domain": "accounts_receivable",
+      "version": "v1",
+      "name": "Accounts Receivable Specialist Strategy",
+      "status": "CANDIDATE",
+      "source_or_reason": "Reduce excessive tool overhead: Agent invoked 5 tools, exceeding standard operational efficiency threshold (1-3 tools).",
+      "parent_strategy_id": "strat_l2_ar_v0",
+      "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
+      "routing_signals": [
+        "short payment",
+        "short-pay",
+        "discount",
+        "2/10",
+        "net 30",
+        "difference",
+        "pmt-8821"
+      ],
+      "preferred_tools": [
+        "get_customer",
+        "get_invoice",
+        "get_payment"
+      ],
+      "preferred_tool_order": [
+        "get_customer",
+        "get_invoice",
+        "get_payment",
+        "get_customer_history",
+        "get_policy_version"
+      ],
+      "escalation_rules": [
+        "Escalate to L4 Executive Controller if short payment variance exceeds $50,000.",
+        "Escalate to L4 if customer claims discount outside of the 10-calendar-day settlement window.",
+        "Escalate only after required financial evidence (invoice + payment + policy) has been verified."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "short_payment",
+          "terms",
+          "2_10_net_30"
+        ],
+        "domains": [
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "policy_compliance",
+        "resolution_quality",
+        "calculation_accuracy"
+      ],
+      "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms.",
+      "created_at": 1788708065.6650681,
+      "metadata": {
+        "evolution_rationale": "Reduce excessive tool overhead: Agent invoked 5 tools, exceeding standard operational efficiency threshold (1-3 tools).",
+        "evolved_from": "v0"
+      },
+      "configuration": {
+        "goal": "Resolve invoice payment discrepancies, short payments, and 2/10 Net 30 prompt payment discount credits.",
+        "routing_signals": [
+          "short payment",
+          "short-pay",
+          "discount",
+          "2/10",
+          "net 30",
+          "difference",
+          "pmt-8821"
+        ],
+        "preferred_tools": [
+          "get_customer",
+          "get_invoice",
+          "get_payment"
+        ],
+        "preferred_tool_order": [
+          "get_customer",
+          "get_invoice",
+          "get_payment",
+          "get_customer_history",
+          "get_policy_version"
+        ],
+        "escalation_rules": [
+          "Escalate to L4 Executive Controller if short payment variance exceeds $50,000.",
+          "Escalate to L4 if customer claims discount outside of the 10-calendar-day settlement window.",
+          "Escalate only after required financial evidence (invoice + payment + policy) has been verified."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "short_payment",
+            "terms",
+            "2_10_net_30"
+          ],
+          "domains": [
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "policy_compliance",
+          "resolution_quality",
+          "calculation_accuracy"
+        ],
+        "strategy_instructions": "1. Retrieve invoice and payment remittance to establish exact dollar variance. 2. Calculate calendar days between invoice date and payment date. 3. Cross-reference corporate policy SHORT-PAY-01 for prompt payment discount window (2/10 Net 30). 4. If settled within 10 days, approve 2% discount credit ($250) and mark balance $0. Otherwise explain overdue terms."
+      }
+    },
+    {
+      "strategy_id": "strat_l1_triage_v1",
+      "agent_id": "agent_l1_triage",
+      "agent_tier": 1,
+      "domain": "general_finance",
+      "version": "v1",
+      "name": "Finance Triage Baseline Strategy",
+      "status": "REJECTED",
+      "source_or_reason": "API automated test candidate",
+      "parent_strategy_id": "strat_l1_triage_v0",
+      "goal": "First-contact factual verification, open invoice status lookup, and FAQ answering.",
+      "routing_signals": [
+        "status of invoice",
+        "invoice status",
+        "where is invoice",
+        "overdue",
+        "inv-4472"
+      ],
+      "preferred_tools": [
+        "get_customer",
+        "get_invoice",
+        "search_policy",
+        "search_finance_records"
+      ],
+      "preferred_tool_order": [
+        "get_customer",
+        "get_invoice",
+        "search_policy"
+      ],
+      "escalation_rules": [
+        "Escalate to L2 if customer mentions payment discrepancies, discounts, or short payments.",
+        "Escalate to L3 if query involves cloud hosting bills (BILL-7701) or GL journal entries.",
+        "Escalate to L4 if transaction exceeds $50,000 or policy interpretation is ambiguous (ESC-400)."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "status",
+          "lookup"
+        ],
+        "domains": [
+          "general_finance",
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "first_contact_resolution",
+        "tool_efficiency",
+        "factual_accuracy"
+      ],
+      "strategy_instructions": "API test candidate instructions",
+      "created_at": 1788708053.9113307,
+      "metadata": {
+        "evolution_rationale": "API automated test candidate",
+        "evolved_from": "v0",
+        "promoted_by": "api_test_suite",
+        "promoted_at": 1788708053.9391809,
+        "promotion_notes": "Promoted via automated test",
+        "rejected_by": "api_test_suite",
+        "rejected_at": 1788708053.9801555,
+        "rejection_reason": "Test rejection"
+      },
+      "configuration": {
+        "goal": "First-contact factual verification, open invoice status lookup, and FAQ answering.",
+        "routing_signals": [
+          "status of invoice",
+          "invoice status",
+          "where is invoice",
+          "overdue",
+          "inv-4472"
+        ],
+        "preferred_tools": [
+          "get_customer",
+          "get_invoice",
+          "search_policy",
+          "search_finance_records"
+        ],
+        "preferred_tool_order": [
+          "get_customer",
+          "get_invoice",
+          "search_policy"
+        ],
+        "escalation_rules": [
+          "Escalate to L2 if customer mentions payment discrepancies, discounts, or short payments.",
+          "Escalate to L3 if query involves cloud hosting bills (BILL-7701) or GL journal entries.",
+          "Escalate to L4 if transaction exceeds $50,000 or policy interpretation is ambiguous (ESC-400)."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "status",
+            "lookup"
+          ],
+          "domains": [
+            "general_finance",
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "first_contact_resolution",
+          "tool_efficiency",
+          "factual_accuracy"
+        ],
+        "strategy_instructions": "API test candidate instructions"
+      }
+    },
+    {
+      "strategy_id": "strat_l4_executive_v1",
+      "agent_id": "agent_l4_executive",
+      "agent_tier": 4,
+      "domain": "governance",
+      "version": "v1",
+      "name": "Executive Controller & Risk Strategy",
+      "status": "CANDIDATE",
+      "source_or_reason": "Prevent cold under-routing: Case initially routed to L4 requiring runtime escalation.",
+      "parent_strategy_id": "strat_l4_executive_v0",
+      "goal": "Prepare comprehensive audit dossiers for human CFO signoff under policy ESC-400 and handle material overrides.",
+      "routing_signals": [
+        "need",
+        "override",
+        "$65,000"
+      ],
+      "preferred_tools": [
+        "get_policy_version",
+        "search_policy",
+        "record_case_evidence",
+        "get_customer_credit_profile"
+      ],
+      "preferred_tool_order": [
+        "get_policy_version",
+        "search_policy",
+        "record_case_evidence"
+      ],
+      "escalation_rules": [
+        "Always package structured audit dossier for human Controller / CFO authorization.",
+        "Do not auto-settle any transaction > $50,000 without signed escrow release."
+      ],
+      "memory_retrieval_preferences": {
+        "tags": [
+          "esc-400",
+          "override",
+          "material"
+        ],
+        "domains": [
+          "governance",
+          "accounts_receivable"
+        ]
+      },
+      "evaluation_priorities": [
+        "risk_containment",
+        "audit_completeness",
+        "regulatory_compliance"
+      ],
+      "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow.",
+      "created_at": 1788708053.9091876,
+      "metadata": {},
+      "configuration": {
+        "goal": "Prepare comprehensive audit dossiers for human CFO signoff under policy ESC-400 and handle material overrides.",
+        "routing_signals": [
+          "need",
+          "override",
+          "$65,000"
+        ],
+        "preferred_tools": [
+          "get_policy_version",
+          "search_policy",
+          "record_case_evidence",
+          "get_customer_credit_profile"
+        ],
+        "preferred_tool_order": [
+          "get_policy_version",
+          "search_policy",
+          "record_case_evidence"
+        ],
+        "escalation_rules": [
+          "Always package structured audit dossier for human Controller / CFO authorization.",
+          "Do not auto-settle any transaction > $50,000 without signed escrow release."
+        ],
+        "memory_retrieval_preferences": {
+          "tags": [
+            "esc-400",
+            "override",
+            "material"
+          ],
+          "domains": [
+            "governance",
+            "accounts_receivable"
+          ]
+        },
+        "evaluation_priorities": [
+          "risk_containment",
+          "audit_completeness",
+          "regulatory_compliance"
+        ],
+        "strategy_instructions": "Review high-impact transaction against governance policy ESC-400. Assemble structured audit dossier including customer history, exposure amount, and risk indicators. Dispatch case to Human Review Escrow."
+      }
+    }
+  ]
+}

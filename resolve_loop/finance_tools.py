@@ -13,6 +13,47 @@ from .db import db
 
 logger = logging.getLogger("maximor.finance")
 
+# Case execution context tracking for precise tool attribution
+_active_case_contexts: Dict[str, Dict[str, Any]] = {}
+
+def set_case_execution_context(
+    case_id: str,
+    agent_id: str,
+    strategy_version: str = "v0",
+    agent_run_id: Optional[str] = None,
+) -> None:
+    """Set active execution context for a case, tracking agent, strategy version, and sequence counter."""
+    _active_case_contexts[case_id] = {
+        "agent_id": agent_id,
+        "strategy_version": strategy_version,
+        "agent_run_id": agent_run_id,
+        "counter": 0,
+        "tool_sequence": [],
+    }
+
+def clear_case_execution_context(case_id: str) -> Optional[Dict[str, Any]]:
+    """Clear and return the execution context for a case."""
+    return _active_case_contexts.pop(case_id, None)
+
+def get_case_execution_context(case_id: str) -> Optional[Dict[str, Any]]:
+    return _active_case_contexts.get(case_id)
+
+def _sanitize_metadata(data: Any, max_len: int = 500) -> Any:
+    """Ensure safe structured execution evidence without sensitive credentials or bloated tokens."""
+    if isinstance(data, dict):
+        sanitized = {}
+        for k, v in data.items():
+            k_lower = str(k).lower()
+            if any(s in k_lower for s in ["password", "secret", "token", "prompt_raw", "thought"]):
+                continue
+            sanitized[str(k)] = _sanitize_metadata(v, max_len)
+        return sanitized
+    elif isinstance(data, (list, tuple)):
+        return [_sanitize_metadata(x, max_len) for x in data[:20]]
+    elif isinstance(data, str):
+        return data[:max_len]
+    return data
+
 def log_tool_call(
     case_id: Optional[str],
     tool_name: str,
@@ -22,19 +63,50 @@ def log_tool_call(
     success: bool = True,
     error: Optional[str] = None,
     agent_run_id: Optional[str] = None,
+    agent_id: Optional[str] = None,
+    strategy_version: Optional[str] = None,
+    execution_order: Optional[int] = None,
 ) -> None:
-    """Record auditable tool call with latency measurement into PostgreSQL."""
+    """Record auditable tool call with latency measurement, execution order, and strategy version into PostgreSQL."""
     latency_ms = round((time.time() - start_time) * 1000, 2)
     if not case_id:
         return
     call_id = f"tc_{uuid.uuid4().hex[:12]}"
+
+    # Enrich from active context if not explicitly provided
+    ctx = _active_case_contexts.get(case_id)
+    if ctx:
+        if not agent_id:
+            agent_id = ctx.get("agent_id")
+        if not strategy_version:
+            strategy_version = ctx.get("strategy_version", "v0")
+        if not agent_run_id:
+            agent_run_id = ctx.get("agent_run_id")
+        if execution_order is None:
+            ctx["counter"] += 1
+            execution_order = ctx["counter"]
+        ctx["tool_sequence"].append({
+            "order": execution_order,
+            "tool_name": tool_name,
+            "latency_ms": latency_ms,
+            "success": success,
+        })
+    else:
+        if execution_order is None:
+            execution_order = 1
+        if not strategy_version:
+            strategy_version = "v0"
+
+    sanitized_input = _sanitize_metadata(tool_input)
+    sanitized_output = _sanitize_metadata(tool_output) if isinstance(tool_output, (dict, list)) else {"result": str(tool_output)[:500]}
+
     try:
         db.execute(
-            """INSERT INTO tool_calls (id, case_id, agent_run_id, tool_name, input, output, success, error, latency_ms)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""",
+            """INSERT INTO tool_calls (id, case_id, agent_run_id, agent_id, strategy_version, execution_order, tool_name, input, output, success, error, latency_ms)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
             (
-                call_id, case_id, agent_run_id, tool_name,
-                json.dumps(tool_input), json.dumps(tool_output) if isinstance(tool_output, (dict, list)) else json.dumps({"result": str(tool_output)}),
+                call_id, case_id, agent_run_id, agent_id, strategy_version, execution_order,
+                tool_name, json.dumps(sanitized_input), json.dumps(sanitized_output),
                 success, error, latency_ms
             )
         )
@@ -303,11 +375,42 @@ def search_experiences(domain: Optional[str] = None, situation_query: Optional[s
     log_tool_call(case_id, "search_experiences", {"domain": domain, "query": situation_query}, rows, t0, success=True)
     return rows
 
-def record_feedback(case_id: str, rating: str, reason: Optional[str] = None, comment: Optional[str] = None, interaction_id: Optional[str] = None) -> Dict[str, Any]:
+def record_feedback(
+    case_id: str,
+    rating: str,
+    reason: Optional[str] = None,
+    comment: Optional[str] = None,
+    interaction_id: Optional[str] = None,
+    agent_id: Optional[str] = None,
+    strategy_id: Optional[str] = None,
+    strategy_version: Optional[str] = None,
+) -> Dict[str, Any]:
     """Record user thumbs up / down feedback and update experience learning weights."""
     t0 = time.time()
     feedback_id = f"fb_{uuid.uuid4().hex[:12]}"
     rating_clean = rating.lower().strip()
+
+    # Automatically associate agent and strategy version from DB if not provided
+    if not agent_id or not strategy_version:
+        try:
+            case_row = db.fetch_one("SELECT strategy_id, strategy_version FROM cases WHERE id = %s;", (case_id,))
+            if case_row:
+                strategy_id = strategy_id or case_row.get("strategy_id")
+                strategy_version = strategy_version or case_row.get("strategy_version")
+            run_row = db.fetch_one(
+                "SELECT agent_id, strategy_id, strategy_version FROM agent_runs WHERE case_id = %s ORDER BY started_at DESC LIMIT 1;",
+                (case_id,)
+            )
+            if run_row:
+                agent_id = agent_id or run_row.get("agent_id")
+                strategy_id = strategy_id or run_row.get("strategy_id")
+                strategy_version = strategy_version or run_row.get("strategy_version")
+        except Exception:
+            pass
+
+    strategy_version = strategy_version or "v0"
+    agent_id = agent_id or "agent_unknown"
+
     # Ensure parent case exists to satisfy foreign key integrity
     try:
         db.execute(
@@ -320,9 +423,9 @@ def record_feedback(case_id: str, rating: str, reason: Optional[str] = None, com
         pass
 
     db.execute(
-        """INSERT INTO feedback (id, case_id, interaction_id, rating, reason, comment)
-           VALUES (%s, %s, %s, %s, %s, %s);""",
-        (feedback_id, case_id, interaction_id, rating_clean, reason, comment)
+        """INSERT INTO feedback (id, case_id, interaction_id, agent_id, strategy_id, strategy_version, rating, reason, comment)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""",
+        (feedback_id, case_id, interaction_id, agent_id, strategy_id, strategy_version, rating_clean, reason, comment)
     )
 
     # If positive feedback, boost confidence of associated experience
@@ -350,7 +453,10 @@ def record_feedback(case_id: str, rating: str, reason: Optional[str] = None, com
         "outcome": rating_clean,
         "rating": rating_clean,
         "reason": reason,
-        "comment": comment
+        "comment": comment,
+        "agent_id": agent_id,
+        "strategy_id": strategy_id,
+        "strategy_version": strategy_version,
     }
     db.execute(
         """INSERT INTO audit_events (id, organization_id, case_id, actor_type, actor_id, action, details)
@@ -362,7 +468,14 @@ def record_feedback(case_id: str, rating: str, reason: Optional[str] = None, com
         )
     )
 
-    res = {"feedback_id": feedback_id, "status": "recorded", "rating": rating_clean}
+    res = {
+        "feedback_id": feedback_id,
+        "status": "recorded",
+        "rating": rating_clean,
+        "agent_id": agent_id,
+        "strategy_id": strategy_id,
+        "strategy_version": strategy_version,
+    }
     log_tool_call(case_id, "record_feedback", {"rating": rating_clean}, res, t0, success=True)
     return res
 
@@ -370,6 +483,15 @@ def record_audit_event(case_id: Optional[str], action: str, details: Dict[str, A
     """Record compliance audit trail entry."""
     aud_id = f"aud_{uuid.uuid4().hex[:12]}"
     try:
+        if isinstance(details, dict):
+            details.setdefault("source_agent", actor_id or "system")
+            details.setdefault("destination_agent", "audit_log")
+            details.setdefault("handoff_reason", action)
+            details.setdefault("confidence", 1.0)
+            details.setdefault("context_summary", action)
+            details.setdefault("timestamp", time.time())
+            details.setdefault("outcome", "recorded")
+
         if case_id:
             try:
                 db.execute(

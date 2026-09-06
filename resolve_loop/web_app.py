@@ -42,6 +42,7 @@ from .finance_tools import (
     add_human_guidance,
     approve_human_guidance,
 )
+from .strategy import strategy_registry, diff_strategies, AgentStrategy
 
 
 # Initialize Flask
@@ -163,9 +164,12 @@ def api_feedback():
     data = request.get_json() or {}
     case_id = data.get("case_id")
     rating = data.get("rating", "positive")
-    reason = data.get("reason")
-    comment = data.get("comment")
+    reason = data.get("reason") or data.get("feedback")
+    comment = data.get("comment") or data.get("feedback")
     interaction_id = data.get("interaction_id")
+    agent_id = data.get("agent_id")
+    strategy_id = data.get("strategy_id")
+    strategy_version = data.get("strategy_version")
 
     if not case_id:
         return jsonify({"success": False, "error": "Missing required field: case_id"}), 400
@@ -177,6 +181,9 @@ def api_feedback():
             reason=reason,
             comment=comment,
             interaction_id=interaction_id,
+            agent_id=agent_id,
+            strategy_id=strategy_id,
+            strategy_version=strategy_version,
         )
         try:
             db.execute(
@@ -1127,6 +1134,223 @@ def api_executive_approve_guidance(guidance_id: str):
     """Approve a proposed human guidance policy."""
     result = approve_human_guidance(guidance_id)
     return jsonify(result)
+
+
+# ==============================================================================
+# PHASE 1 LEARNING LOOP API & STRATEGY SERVICES
+# ==============================================================================
+
+@app.route("/api/strategies", methods=["GET"])
+def api_list_strategies():
+    """List versioned agent strategies with optional filters by agent_id and status."""
+    agent_id = request.args.get("agent_id")
+    status = request.args.get("status")
+    strategies = strategy_registry.list_strategies(agent_id=agent_id, status=status)
+    return jsonify({
+        "strategies": [s.to_dict() for s in strategies],
+        "count": len(strategies)
+    })
+
+
+@app.route("/api/strategies/active", methods=["GET"])
+def api_get_active_strategy():
+    """Fetch the currently active strategy for a given agent, tier, or domain."""
+    agent_id = request.args.get("agent_id")
+    tier_str = request.args.get("tier")
+    domain = request.args.get("domain", "")
+    tier = int(tier_str) if tier_str and tier_str.isdigit() else None
+
+    strat = strategy_registry.get_active_strategy(agent_id=agent_id, tier=tier, domain=domain)
+    return jsonify({
+        "strategy": strat.to_dict(),
+        "is_active": True
+    })
+
+
+@app.route("/api/strategies/<strategy_id>", methods=["GET"])
+def api_get_strategy(strategy_id: str):
+    """Retrieve details of a specific strategy version."""
+    strat = strategy_registry.get_strategy(strategy_id)
+    if not strat:
+        return jsonify({"error": f"Strategy '{strategy_id}' not found"}), 404
+    return jsonify({"strategy": strat.to_dict()})
+
+
+@app.route("/api/strategies/candidate", methods=["POST"])
+def api_create_candidate_strategy():
+    """Create a new CANDIDATE strategy version without activating it."""
+    data = request.get_json() or {}
+    agent_id = data.get("agent_id")
+    if not agent_id:
+        return jsonify({"error": "agent_id is required"}), 400
+
+    changes = data.get("changes", {})
+    rationale = data.get("rationale") or data.get("reason") or "Manual candidate creation"
+    parent_strategy_id = data.get("parent_strategy_id")
+
+    try:
+        candidate = strategy_registry.create_candidate(
+            agent_id=agent_id,
+            changes=changes,
+            rationale=rationale,
+            parent_strategy_id=parent_strategy_id
+        )
+        return jsonify({
+            "success": True,
+            "candidate": candidate.to_dict()
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/strategies/diff", methods=["GET"])
+def api_diff_strategies():
+    """Generate structured diff between two strategies (e.g. ?base=strat_l2_ar_v0&candidate=strat_l2_ar_v1)."""
+    base_id = request.args.get("base")
+    cand_id = request.args.get("candidate")
+
+    if not base_id or not cand_id:
+        return jsonify({"error": "Both 'base' and 'candidate' query parameters are required"}), 400
+
+    base = strategy_registry.get_strategy(base_id)
+    cand = strategy_registry.get_strategy(cand_id)
+
+    if not base:
+        return jsonify({"error": f"Base strategy '{base_id}' not found"}), 404
+    if not cand:
+        return jsonify({"error": f"Candidate strategy '{cand_id}' not found"}), 404
+
+    diff = diff_strategies(base, cand)
+    return jsonify(diff)
+
+
+@app.route("/api/strategies/<strategy_id>/promote", methods=["POST"])
+def api_promote_strategy(strategy_id: str):
+    """Promote a candidate strategy to ACTIVE, archiving the previous active strategy."""
+    data = request.get_json() or {}
+    promoted_by = data.get("promoted_by", "supervisor")
+    notes = data.get("notes", "")
+
+    try:
+        active = strategy_registry.promote_candidate(
+            strategy_id=strategy_id,
+            promoted_by=promoted_by,
+            notes=notes
+        )
+        return jsonify({
+            "success": True,
+            "promoted_strategy": active.to_dict(),
+            "status": "ACTIVE"
+        })
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/strategies/<strategy_id>/reject", methods=["POST"])
+def api_reject_strategy(strategy_id: str):
+    """Reject a candidate strategy, keeping it preserved for auditing."""
+    data = request.get_json() or {}
+    rejected_by = data.get("rejected_by", "supervisor")
+    reason = data.get("reason", "Evaluation benchmark did not meet acceptance threshold")
+
+    try:
+        rejected = strategy_registry.reject_candidate(
+            strategy_id=strategy_id,
+            rejected_by=rejected_by,
+            reason=reason
+        )
+        return jsonify({
+            "success": True,
+            "rejected_strategy": rejected.to_dict(),
+            "status": "REJECTED"
+        })
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/learning/experiences", methods=["GET"])
+def api_get_learning_experiences():
+    """Retrieve rich learning experiences with domain, failure, lesson, and recommended changes."""
+    domain = request.args.get("domain")
+    case_id = request.args.get("case_id")
+    limit = int(request.args.get("limit", 50))
+
+    query = "SELECT * FROM experiences WHERE 1=1"
+    params = []
+    if domain:
+        query += " AND domain = %s"
+        params.append(domain)
+    if case_id:
+        query += " AND case_id = %s"
+        params.append(case_id)
+    query += " ORDER BY created_at DESC LIMIT %s;"
+    params.append(limit)
+
+    rows = db.fetch_all(query, tuple(params))
+    return jsonify({
+        "experiences": rows,
+        "count": len(rows)
+    })
+
+
+@app.route("/api/learning/failures", methods=["GET"])
+def api_get_agent_failures():
+    """Retrieve structured failures captured during evaluation."""
+    agent_id = request.args.get("agent_id")
+    failure_type = request.args.get("failure_type")
+    case_id = request.args.get("case_id")
+    limit = int(request.args.get("limit", 50))
+
+    query = "SELECT * FROM structured_failures WHERE 1=1"
+    params = []
+    if agent_id:
+        query += " AND affected_agent = %s"
+        params.append(agent_id)
+    if failure_type:
+        query += " AND failure_type = %s"
+        params.append(failure_type)
+    if case_id:
+        query += " AND case_id = %s"
+        params.append(case_id)
+    query += " ORDER BY created_at DESC LIMIT %s;"
+    params.append(limit)
+
+    rows = db.fetch_all(query, tuple(params))
+    return jsonify({
+        "failures": rows,
+        "count": len(rows)
+    })
+
+
+@app.route("/api/learning/history", methods=["GET"])
+def api_get_learning_history():
+    """Return unified audit timeline of learning events, strategy promotions, and reflections."""
+    limit = int(request.args.get("limit", 60))
+    events = db.fetch_all(
+        """SELECT id, case_id, actor_type, actor_id, action, details, created_at
+           FROM audit_events
+           WHERE action IN (
+               'FAILURE_DETECTED',
+               'REFLECTION_CREATED',
+               'EXPERIENCE_STORED',
+               'CANDIDATE_STRATEGY_CREATED',
+               'STRATEGY_PROMOTED',
+               'STRATEGY_REJECTED',
+               'CUSTOMER_FEEDBACK_RECORDED'
+           )
+           ORDER BY created_at DESC LIMIT %s;""",
+        (limit,)
+    )
+    strategies = [s.to_dict() for s in strategy_registry.list_strategies()]
+    return jsonify({
+        "timeline": events,
+        "strategies": strategies,
+        "total_events": len(events)
+    })
 
 
 def start_server(host="0.0.0.0", port=5000, debug=False):
